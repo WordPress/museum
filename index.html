@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Three interactive ways to explore WordPress release history.">
-<title>WordPress Museum — Three Experiences</title>
+<meta name="description" content="Two interactive ways to explore WordPress release history.">
+<title>WordPress Museum — Two Experiences</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%233858e9%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27Georgia%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EW%3C/text%3E%3C/svg%3E">
 <style>
   :root { --ink:#1b1b1f; --paper:#f6efe1; --muted:#57575e; }
@@ -38,9 +38,6 @@
   .winamp .art { background:radial-gradient(circle at 30% 30%, #201028, #06060c); }
   .winamp .art::before { content:"NOW PLAYING: 7.0 ARMSTRONG"; position:absolute; left:8px; top:10px; color:#00ff66; font:.72rem "Courier New", monospace; letter-spacing:.08em; text-shadow:0 0 6px #0f0; }
   .winamp .art::after { content:""; position:absolute; left:8px; right:8px; bottom:10px; height:30px; opacity:.8; background:repeating-linear-gradient(90deg,#0f0 0 3px,transparent 3px 7px); }
-  .kubrick .art { background:radial-gradient(800px 220px at 50% 120%, #6ea5d0 0%, transparent 70%), linear-gradient(#73a0c5,#244776); }
-  .kubrick .art::before { content:"The WordPress Museum"; position:absolute; left:16px; top:14px; color:#fff; font:italic 700 1.2rem Georgia, serif; text-shadow:0 1px 0 rgba(0,0,0,.3); }
-  .kubrick .art::after { content:""; position:absolute; left:0; right:0; bottom:0; height:18%; background:linear-gradient(#5c8c3f,#3e6826); }
   .pill { display:inline-block; margin-bottom:.8rem; padding:.3rem .55rem; color:#6b6b72; border:1px solid #e3e3e8; border-radius:999px; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; }
   .card h2 { margin:.2rem 0 .4rem; font:700 1.6rem Cochin, Didot, Bodoni, serif; }
   .card p { margin:0; color:#494951; font-size:.97rem; line-height:1.55; }
@@ -52,27 +49,21 @@
 <main class="frame">
   <header>
     <div class="eyebrow">wordpress.org / museum</div>
-    <h1>Three ways to see a history</h1>
-    <p class="sub">WordPress releases from 2003 to today, rendered as three interactive experiences. Pick a door.</p>
+    <h1>Two ways to see a history</h1>
+    <p class="sub">WordPress releases from 2003 to today, rendered as two interactive experiences. Pick a door.</p>
   </header>
   <div class="grid">
-    <a class="card desktop" href="desktop/">
+    <a class="card desktop" href="museums/desktop/">
       <div class="art" aria-hidden="true"></div>
       <span class="pill">Experience I</span>
       <h2>Desktop Museum</h2>
       <p>Boot into an early-2000s desktop where every version is a shortcut, the Start menu is a time machine, and the taskbar keeps ticking.</p>
     </a>
-    <a class="card winamp" href="winamp/">
+    <a class="card winamp" href="museums/winamp/">
       <div class="art" aria-hidden="true"></div>
       <span class="pill">Experience II</span>
-      <h2>Release Player</h2>
+      <h2>Winamp Timeline</h2>
       <p>Every release is a track. Cue up 2003, follow the timeline, and boot any version in WordPress Playground.</p>
-    </a>
-    <a class="card kubrick" href="kubrick/">
-      <div class="art" aria-hidden="true"></div>
-      <span class="pill">Experience III</span>
-      <h2>Kubrick Weblog</h2>
-      <p>Every release is a post in a period-inspired weblog, complete with archives, comments, and an interactive wp-admin facade.</p>
     </a>
   </div>
   <footer>Each experience can launch releases with <a href="https://playground.wordpress.net/">WordPress Playground</a>.</footer>

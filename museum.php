@@ -3,7 +3,7 @@
  * Plugin Name: WordPress Museum Experiences
  * Plugin URI:  https://github.com/WordPress/museum
  * Description: Serves the WordPress Museum's static experiences at clean URLs.
- * Version:     0.1.0
+ * Version:     0.2.0
  * Requires PHP: 7.4
  * License:     GPL-2.0-only
  */
@@ -11,8 +11,11 @@
 namespace WordPressdotorg\Museum;
 
 const ROUTE_QUERY_VAR = 'wporg_museum_asset';
+const ROUTE_VERSION = '2';
+const ROUTE_VERSION_OPTION = 'wporg_museum_route_version';
 
 add_action( 'init', __NAMESPACE__ . '\register_routes' );
+add_action( 'init', __NAMESPACE__ . '\refresh_routes_after_update', 20 );
 add_filter( 'query_vars', __NAMESPACE__ . '\register_query_var' );
 add_action( 'template_redirect', __NAMESPACE__ . '\serve_asset', 0 );
 register_activation_hook( __FILE__, __NAMESPACE__ . '\activate' );
@@ -71,6 +74,18 @@ function register_routes() {
 }
 
 /**
+ * Refresh stored rules once when the public route map changes.
+ */
+function refresh_routes_after_update() {
+	if ( ROUTE_VERSION === get_option( ROUTE_VERSION_OPTION ) ) {
+		return;
+	}
+
+	flush_rewrite_rules( false );
+	update_option( ROUTE_VERSION_OPTION, ROUTE_VERSION );
+}
+
+/**
  * Allow WordPress to retain the route selected by the rewrite rule.
  *
  * @param string[] $query_vars Public query variables.
@@ -86,14 +101,16 @@ function register_query_var( $query_vars ) {
  */
 function activate() {
 	register_routes();
-	flush_rewrite_rules();
+	flush_rewrite_rules( false );
+	update_option( ROUTE_VERSION_OPTION, ROUTE_VERSION );
 }
 
 /**
  * Remove the clean URL rules.
  */
 function deactivate() {
-	flush_rewrite_rules();
+	delete_option( ROUTE_VERSION_OPTION );
+	flush_rewrite_rules( false );
 }
 
 /**
@@ -107,32 +124,27 @@ function deactivate() {
 function assets() {
 	return array(
 		'desktop' => array(
-			'file'  => 'desktop/index.html',
+			'file'  => 'museums/desktop/index.html',
 			'type'  => 'text/html; charset=UTF-8',
 			'cache' => 'Cache-Control: no-cache',
 		),
 		'winamp' => array(
-			'file'  => 'winamp/index.html',
-			'type'  => 'text/html; charset=UTF-8',
-			'cache' => 'Cache-Control: no-cache',
-		),
-		'kubrick' => array(
-			'file'  => 'kubrick/index.html',
+			'file'  => 'museums/winamp/index.html',
 			'type'  => 'text/html; charset=UTF-8',
 			'cache' => 'Cache-Control: no-cache',
 		),
 		'data/releases.js' => array(
-			'file'  => 'data/releases.js',
+			'file'  => 'museums/data/releases.js',
 			'type'  => 'text/javascript; charset=UTF-8',
 			'cache' => 'Cache-Control: public, max-age=3600',
 		),
 		'assets/fonts/press-start-2p/PressStart2P-Regular.ttf' => array(
-			'file'  => 'assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
+			'file'  => 'museums/assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
 			'type'  => 'font/ttf',
 			'cache' => 'Cache-Control: public, max-age=31536000, immutable',
 		),
 		'assets/fonts/vt323/VT323-Regular.ttf' => array(
-			'file'  => 'assets/fonts/vt323/VT323-Regular.ttf',
+			'file'  => 'museums/assets/fonts/vt323/VT323-Regular.ttf',
 			'type'  => 'font/ttf',
 			'cache' => 'Cache-Control: public, max-age=31536000, immutable',
 		),
