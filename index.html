@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Three interactive ways to explore WordPress release history.">
+<title>WordPress Museum — Three Experiences</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%233858e9%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27Georgia%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EW%3C/text%3E%3C/svg%3E">
+<style>
+  :root { --ink:#1b1b1f; --paper:#f6efe1; --muted:#57575e; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; min-height:100%; }
+  body {
+    display:flex; align-items:center; justify-content:center; padding:3rem 1.5rem;
+    color:var(--ink); background:
+      radial-gradient(1200px 600px at 20% 0%, #fff7e6 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 100%, #e8f0ff 0%, transparent 55%),
+      var(--paper);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .frame { width:100%; max-width:1100px; }
+  header { max-width:700px; margin:0 auto 3rem; text-align:center; }
+  .eyebrow { color:#6b6b72; font-size:.75rem; letter-spacing:.35em; text-transform:uppercase; }
+  h1 { margin:.4em 0 .2em; font:700 clamp(2.8rem, 6vw, 4.6rem)/1 Cochin, Didot, Bodoni, serif; }
+  .sub { margin:0; color:var(--muted); font-style:italic; line-height:1.55; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.25rem; }
+  .card {
+    display:block; padding:1.5rem; overflow:hidden; color:inherit; text-decoration:none;
+    background:#fff; border-radius:18px; box-shadow:0 1px 2px rgba(0,0,0,.04), 0 20px 40px -20px rgba(0,0,0,.15);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover, .card:focus-visible { transform:translateY(-4px); box-shadow:0 1px 2px rgba(0,0,0,.04), 0 30px 60px -20px rgba(0,0,0,.22); }
+  .card:focus-visible { outline:3px solid #3858e9; outline-offset:3px; }
+  .art { position:relative; margin-bottom:1rem; overflow:hidden; aspect-ratio:16/10; border-radius:12px; }
+  .desktop .art { background:linear-gradient(#5b92e5, #245edb 40%, #3a81f3); }
+  .desktop .art::before { content:""; position:absolute; inset:8px 8px auto; height:50px; background:linear-gradient(#fafafa,#dcdcdc); border:1px solid #8aa; border-radius:6px 6px 0 0; }
+  .desktop .art::after { content:"start"; position:absolute; left:6px; bottom:6px; padding:3px 12px; color:#fff; background:linear-gradient(#7cc04a,#2b7d20); border-radius:10px 3px 3px 10px; font:bold .75rem "Trebuchet MS", sans-serif; }
+  .winamp .art { background:radial-gradient(circle at 30% 30%, #201028, #06060c); }
+  .winamp .art::before { content:"NOW PLAYING: 7.0 ARMSTRONG"; position:absolute; left:8px; top:10px; color:#00ff66; font:.72rem "Courier New", monospace; letter-spacing:.08em; text-shadow:0 0 6px #0f0; }
+  .winamp .art::after { content:""; position:absolute; left:8px; right:8px; bottom:10px; height:30px; opacity:.8; background:repeating-linear-gradient(90deg,#0f0 0 3px,transparent 3px 7px); }
+  .kubrick .art { background:radial-gradient(800px 220px at 50% 120%, #6ea5d0 0%, transparent 70%), linear-gradient(#73a0c5,#244776); }
+  .kubrick .art::before { content:"The WordPress Museum"; position:absolute; left:16px; top:14px; color:#fff; font:italic 700 1.2rem Georgia, serif; text-shadow:0 1px 0 rgba(0,0,0,.3); }
+  .kubrick .art::after { content:""; position:absolute; left:0; right:0; bottom:0; height:18%; background:linear-gradient(#5c8c3f,#3e6826); }
+  .pill { display:inline-block; margin-bottom:.8rem; padding:.3rem .55rem; color:#6b6b72; border:1px solid #e3e3e8; border-radius:999px; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; }
+  .card h2 { margin:.2rem 0 .4rem; font:700 1.6rem Cochin, Didot, Bodoni, serif; }
+  .card p { margin:0; color:#494951; font-size:.97rem; line-height:1.55; }
+  footer { margin-top:3rem; color:#6b6b72; font-size:.85rem; text-align:center; }
+  footer a { color:inherit; text-underline-offset:3px; }
+</style>
+</head>
+<body>
+<main class="frame">
+  <header>
+    <div class="eyebrow">wordpress.org / museum</div>
+    <h1>Three ways to see a history</h1>
+    <p class="sub">WordPress releases from 2003 to today, rendered as three interactive experiences. Pick a door.</p>
+  </header>
+  <div class="grid">
+    <a class="card desktop" href="desktop/">
+      <div class="art" aria-hidden="true"></div>
+      <span class="pill">Experience I</span>
+      <h2>Desktop Museum</h2>
+      <p>Boot into an early-2000s desktop where every version is a shortcut, the Start menu is a time machine, and the taskbar keeps ticking.</p>
+    </a>
+    <a class="card winamp" href="winamp/">
+      <div class="art" aria-hidden="true"></div>
+      <span class="pill">Experience II</span>
+      <h2>Release Player</h2>
+      <p>Every release is a track. Cue up 2003, follow the timeline, and boot any version in WordPress Playground.</p>
+    </a>
+    <a class="card kubrick" href="kubrick/">
+      <div class="art" aria-hidden="true"></div>
+      <span class="pill">Experience III</span>
+      <h2>Kubrick Weblog</h2>
+      <p>Every release is a post in a period-inspired weblog, complete with archives, comments, and an interactive wp-admin facade.</p>
+    </a>
+  </div>
+  <footer>Each experience can launch releases with <a href="https://playground.wordpress.net/">WordPress Playground</a>.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Browse WordPress release history as posts in a Kubrick-era weblog.">
+<link rel="canonical" href="https://wordpress.org/museum/kubrick/">
+<title>The WordPress Museum · just another release weblog</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%233858e9%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27Georgia%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EW%3C/text%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   THE WORDPRESS MUSEUM — v4 "Kubrick weblog"
+   A period-accurate early-WordPress blog (1.5–3.0 vintage)
+   with a working fake wp-admin dashboard.
+   ============================================================ */
+
+:root {
+  --serif: Georgia, "Times New Roman", Times, serif;
+  --sans: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+  --mono: "Courier New", Courier, monospace;
+
+  /* Kubrick palette */
+  --page-bg: #d5d6d7;
+  --card-bg: #ffffff;
+  --ink: #333;
+  --muted: #777;
+  --rule: #dadada;
+  --link: #2583AD;
+  --link-hover: #FF4B33;
+  --kub-top: #73a0c5;
+  --kub-bottom: #244776;
+  --kub-band: #0f3b63;
+  --kub-cream: #F2F0E8;
+
+  /* Admin (Fresh / Coltrane 2.7 feel — default scheme) */
+  --admin-bar-bg: linear-gradient(#464646, #353535);
+  --admin-bar-ink: #e6e6e6;
+  --admin-bar-link: #ffffff;
+  --admin-sidebar-bg: #ece9d8;
+  --admin-sidebar-ink: #333;
+  --admin-sidebar-hot: #21759B;
+  --admin-canvas-bg: #f1f1f1;
+  --admin-blue: #21759B;
+  --admin-blue-hover: #d54e21;
+  --admin-widget-bg: #ffffff;
+  --admin-widget-head: #f0f0f0;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { color: var(--link-hover); text-decoration: underline; }
+
+/* ----- wp-admin bar at top (Coltrane/MP6 hybrid) ----- */
+#adminbar {
+  position: sticky; top: 0; z-index: 80;
+  height: 28px;
+  background: var(--admin-bar-bg);
+  color: var(--admin-bar-ink);
+  font-family: var(--sans);
+  font-size: 12px;
+  display: flex; align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid #2a2a2a;
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 2px 4px rgba(0,0,0,.1);
+}
+#adminbar .wp-logo {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #8ec8f0, #21759B 65%, #113f55);
+  display: inline-block;
+  margin-right: 8px;
+  box-shadow: 0 0 0 1px #0008 inset, 0 1px 0 #fff3;
+  position: relative;
+}
+#adminbar .wp-logo::after {
+  content: "W"; color: #fff; font: 700 10px/18px var(--sans);
+  position: absolute; inset: 0; text-align: center;
+}
+#adminbar a, #adminbar .ab-sep { color: var(--admin-bar-link); padding: 0 10px; height: 28px; line-height: 28px; display: inline-block; }
+#adminbar a:hover { background: rgba(255,255,255,.08); text-decoration: none; color: #fff; }
+#adminbar .ab-spacer { flex: 1; }
+#adminbar .howdy { opacity: .9; }
+#adminbar .ab-sep { opacity: .3; padding: 0 2px; }
+
+/* ----- Kubrick header ----- */
+header#kubrick {
+  position: relative;
+  height: 200px;
+  background:
+    radial-gradient(1200px 300px at 50% 120%, #6ea5d0 0%, transparent 70%),
+    linear-gradient(#73a0c5 0%, #3e6ea0 55%, var(--kub-bottom) 100%);
+  overflow: hidden;
+  border-bottom: 6px solid var(--kub-band);
+}
+header#kubrick .clouds {
+  position: absolute; inset: 0; opacity: .35;
+  background:
+    radial-gradient(120px 40px at 10% 40%, #fff, transparent 70%),
+    radial-gradient(180px 50px at 70% 30%, #fff, transparent 70%),
+    radial-gradient(90px 30px at 40% 60%, #fff, transparent 70%);
+  animation: drift 60s linear infinite;
+}
+@keyframes drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-220px); }
+}
+header#kubrick svg.horizon {
+  position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 70px; display: block;
+}
+header#kubrick .hgrass {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 28px;
+  background: linear-gradient(#5c8c3f, #3e6826);
+  filter: drop-shadow(0 -2px 0 #3a5c25);
+}
+header#kubrick .hgrass::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 12px;
+  background-image:
+    radial-gradient(12px 10px at 0% 100%, #446e2a 40%, transparent 41%),
+    radial-gradient(10px 8px at 40px 100%, #4a7830 40%, transparent 41%),
+    radial-gradient(16px 12px at 100px 100%, #446e2a 40%, transparent 41%),
+    radial-gradient(8px 7px at 150px 100%, #547e34 40%, transparent 41%),
+    radial-gradient(14px 10px at 200px 100%, #456e2a 40%, transparent 41%);
+  background-repeat: repeat-x;
+  background-size: 240px 12px;
+}
+header#kubrick .title-wrap {
+  position: relative; z-index: 2;
+  max-width: 1100px; margin: 0 auto;
+  padding: 32px 40px 0;
+  color: #fff;
+  text-shadow: 0 1px 0 #0006;
+}
+header#kubrick h1 {
+  margin: 0;
+  font: italic 700 48px/1 var(--serif);
+  letter-spacing: -0.5px;
+}
+header#kubrick .tagline {
+  margin: 8px 0 0;
+  font: italic 16px/1.4 var(--serif);
+  color: #e7f0f9;
+  opacity: .92;
+}
+
+/* ----- primary nav (pages) ----- */
+nav#mainnav {
+  background: var(--kub-cream);
+  border-bottom: 1px solid #c9c3b4;
+  font-family: var(--serif);
+}
+nav#mainnav ul {
+  max-width: 1100px; margin: 0 auto; padding: 0 40px;
+  list-style: none; display: flex; gap: 28px;
+  height: 38px; align-items: center;
+}
+nav#mainnav a {
+  color: #3a3a3a; font-style: italic; font-size: 14px;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+}
+nav#mainnav a:hover, nav#mainnav a.active { border-bottom-color: var(--link); color: var(--link); text-decoration: none; }
+
+/* ----- Layout ----- */
+#page { background: var(--page-bg); min-height: calc(100vh - 228px); }
+#content-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 24px 40px 60px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 40px;
+}
+
+/* ----- posts ----- */
+main#posts { min-width: 0; }
+.post {
+  background: var(--card-bg);
+  margin-bottom: 28px;
+  padding: 22px 28px 18px;
+  box-shadow: 0 1px 0 #fff inset, 0 1px 2px rgba(0,0,0,.06);
+  position: relative;
+}
+.post.significant { box-shadow: 0 0 0 2px var(--link) inset, 0 2px 6px rgba(37,131,173,.15); }
+.post h2.ptitle {
+  font: italic 700 28px/1.2 var(--serif);
+  margin: 0 0 6px;
+}
+.post h2.ptitle a { color: #1a1a1a; }
+.post h2.ptitle a:hover { color: var(--link-hover); text-decoration: none; }
+.post h2 .codename { color: var(--link); font-style: italic; font-weight: normal; }
+.post .postmeta {
+  font: 11px/1.6 var(--sans);
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+.post .postmeta a { color: var(--muted); border-bottom: 1px dotted #bbb; }
+.post .postmeta a:hover { color: var(--link); border-bottom-color: var(--link); }
+.post .postmeta .sep { margin: 0 6px; color: #bbb; }
+
+.thumbwrap {
+  position: relative; margin: 0 0 16px;
+  background: #000; cursor: pointer;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #d4d4d4;
+  box-shadow: 0 2px 4px rgba(0,0,0,.08);
+  transition: transform .12s ease;
+}
+.thumbwrap:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+.thumbwrap.loaded { cursor: default; transform: none; }
+.thumbwrap iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+.thumbwrap .poster { position: absolute; inset: 0; }
+.thumbwrap .playcue {
+  position: absolute; inset: auto 0 0 0; padding: 8px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,.7));
+  color: #fff; font: italic 12px/1.4 var(--serif);
+  display: flex; justify-content: space-between; align-items: center;
+  pointer-events: none;
+}
+.thumbwrap .activate {
+  background: var(--admin-blue); border: 0; color: #fff; padding: 4px 10px;
+  font: 600 11px/1 var(--sans); text-transform: uppercase; letter-spacing: .5px;
+  pointer-events: auto; cursor: pointer; border-radius: 2px;
+}
+.thumbwrap.loading .activate { opacity: .6; }
+.thumbwrap.loading::before {
+  content: "Activating plugin…"; position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(0,0,0,.6); color: #fff; font: italic 14px var(--serif);
+  z-index: 2; animation: pulse 1.2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+
+/* ----- era thumbnail templates ----- */
+.poster .bar { position: absolute; }
+.poster .caption {
+  position: absolute; bottom: 4px; right: 6px; font: 600 10px/1 var(--sans);
+  color: #fff; text-shadow: 0 1px 2px #0009; letter-spacing: .4px;
+}
+
+/* era: b2 (0.x) — b2/cafelog, pre-WP era */
+.poster.era-b2 { background: #fafafa; }
+.poster.era-b2::before {
+  content: "b2 » a weblog tool";
+  position: absolute; top: 0; left: 0; right: 0; height: 40px;
+  background: #333; color: #ffcc66;
+  font: 700 14px/40px var(--mono); padding-left: 12px;
+  border-bottom: 3px solid #111;
+}
+.poster.era-b2::after {
+  content: "Hello, world. Posted by Mike on Monday."; color: #222;
+  position: absolute; top: 56px; left: 16px; right: 16px;
+  font: italic 12px/1.5 var(--serif);
+}
+
+/* era: kubrick (1.x–2.4) — iconic blue gradient */
+.poster.era-kubrick {
+  background:
+    radial-gradient(800px 200px at 50% 120%, #6ea5d0 0%, transparent 70%),
+    linear-gradient(#73a0c5, #234B6A);
+}
+.poster.era-kubrick::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 28%; height: 1px;
+  background: rgba(255,255,255,.5);
+}
+.poster.era-kubrick::after {
+  content: "The WordPress Blog"; color: #fff;
+  position: absolute; top: 18px; left: 18px;
+  font: italic 700 22px/1 var(--serif); text-shadow: 0 1px 0 #0006;
+}
+.poster.era-kubrick .bar.ksky { inset: auto 0 0 0; height: 20%; background: linear-gradient(#4a7830, #3e6826); }
+
+/* era: happycog (2.5) — Matt Thomas/Happy Cog grey+orange redesign */
+.poster.era-happycog { background: #efefef; }
+.poster.era-happycog .bar.hctop { top: 0; left: 0; right: 0; height: 44px; background: linear-gradient(#464646, #2d2d2d); }
+.poster.era-happycog .bar.hcorange { top: 44px; left: 0; right: 0; height: 4px; background: #d54e21; }
+.poster.era-happycog::before {
+  content: "WordPress"; color: #fff; position: absolute; top: 0; left: 16px; line-height: 44px;
+  font: 700 16px/44px var(--sans); z-index: 2;
+}
+.poster.era-happycog::after {
+  content: "Dashboard · Posts · Pages · Comments"; color: #666;
+  position: absolute; top: 58px; left: 16px; font: 12px/1.4 var(--sans);
+}
+
+/* era: coltrane (2.7–3.7) — left-hand nav UI */
+.poster.era-coltrane { background: #f1f1f1; }
+.poster.era-coltrane .bar.cltop { top: 0; left: 0; right: 0; height: 28px; background: linear-gradient(#464646, #2d2d2d); }
+.poster.era-coltrane .bar.clnav { top: 28px; left: 0; bottom: 0; width: 28%; background: #464646; }
+.poster.era-coltrane::before {
+  content: ""; color: #aaa; position: absolute; top: 40px; left: 8px; right: 70%; bottom: 10px;
+  background:
+    linear-gradient(#bbb 8px, transparent 8px) 0 0/100% 22px,
+    linear-gradient(#999 4px, transparent 4px) 0 12px/80% 22px;
+  background-repeat: repeat-y;
+}
+.poster.era-coltrane::after {
+  content: "Howdy, Matt"; position: absolute; right: 10px; top: 4px;
+  color: #ccc; font: 11px/20px var(--sans);
+}
+
+/* era: mp6 (3.8–4.9) — flat blue sidebar */
+.poster.era-mp6 { background: #f1f1f1; }
+.poster.era-mp6 .bar.m6bar { top: 0; left: 0; right: 0; height: 32px; background: #23282d; }
+.poster.era-mp6 .bar.m6side { top: 32px; left: 0; bottom: 0; width: 22%; background: #32373c; }
+.poster.era-mp6::before {
+  content: ""; position: absolute; left: 26%; top: 46px; right: 10px; bottom: 20px;
+  background:
+    linear-gradient(#fff 60%, #f7f7f7) 0 0/100% 100%,
+    linear-gradient(#ddd 1px, transparent 1px) 0 0/100% 30px;
+  box-shadow: 0 1px 2px #0002;
+}
+.poster.era-mp6::after {
+  content: "Add New Post"; position: absolute; top: 50px; left: calc(26% + 16px); color: #23282d;
+  font: 500 18px/1 var(--sans);
+}
+
+/* era: gutenberg (5.0–5.8) — block editor */
+.poster.era-gutenberg { background: #f6f7f7; }
+.poster.era-gutenberg .bar.gtop { top: 0; left: 0; right: 0; height: 32px; background: #fff; border-bottom: 1px solid #ddd; }
+.poster.era-gutenberg .bar.gside { top: 32px; right: 0; bottom: 0; width: 22%; background: #fff; border-left: 1px solid #ddd; }
+.poster.era-gutenberg::before {
+  content: ""; position: absolute; left: 10%; right: 26%; top: 64px; height: 48px;
+  background: #fff; border: 1px solid #2271b1; box-shadow: 0 0 0 1px #72aee6;
+}
+.poster.era-gutenberg::after {
+  content: "Add title"; position: absolute; left: calc(10% + 12px); top: 78px;
+  color: #949494; font: 300 22px/1 var(--sans);
+}
+
+/* era: fse (5.9+) — site editor */
+.poster.era-fse { background: #1e1e1e; }
+.poster.era-fse .bar.fleft { top: 0; left: 0; bottom: 0; width: 18%; background: #1e1e1e; border-right: 1px solid #303030; }
+.poster.era-fse::before {
+  content: ""; position: absolute; left: 20%; right: 6%; top: 8%; bottom: 8%;
+  background: #fff;
+  box-shadow: 0 0 0 1px #444, 0 10px 40px #000a;
+}
+.poster.era-fse::after {
+  content: "Editor"; color: #fff; opacity: .8;
+  position: absolute; top: 6px; left: 10px; font: 500 11px/1 var(--sans); letter-spacing: .5px;
+}
+
+/* ----- significance ribbon ----- */
+.sig-ribbon {
+  display: inline-block;
+  background: #fff6a8; color: #665200;
+  border: 1px solid #e6d24a;
+  padding: 2px 10px;
+  font: italic 600 11px/1.4 var(--serif);
+  letter-spacing: .4px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 0 #fff inset;
+}
+.sig-ribbon::before { content: "★ "; color: #b68f00; }
+
+.pbody p { margin: 0 0 10px; }
+.post .taglist {
+  font: 11px/1.6 var(--sans); color: var(--muted);
+  margin: 10px 0 0; text-transform: lowercase;
+}
+.post .taglist a { color: var(--muted); border-bottom: 1px dotted #bbb; }
+.post .taglist a:hover { color: var(--link); border-bottom-color: var(--link); }
+
+.post .foot {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+  display: flex; gap: 18px; align-items: center;
+  font: 12px/1.4 var(--sans); color: var(--muted);
+}
+.post .foot a { color: var(--muted); border-bottom: 1px dotted #bbb; }
+.post .foot a:hover { color: var(--link); border-bottom-color: var(--link); }
+.post .foot .pingback { background: #f3efe0; border: 1px dashed #c7b78e; padding: 2px 8px; font-style: italic; color: #6a5a2a; }
+
+/* ----- comments ----- */
+.comments-section {
+  display: none;
+  margin-top: 14px;
+  background: #fafafa; border: 1px solid #e5e5e5;
+  padding: 14px 18px;
+}
+.comments-section.open { display: block; }
+.comments-section h4 {
+  margin: 0 0 10px; font: italic 700 16px/1 var(--serif);
+  padding-bottom: 6px; border-bottom: 1px solid #e5e5e5;
+}
+.cmt { display: grid; grid-template-columns: 44px 1fr; gap: 10px; margin: 10px 0; padding-bottom: 10px; border-bottom: 1px dashed #e5e5e5; }
+.cmt:last-child { border-bottom: 0; }
+.cmt .grav {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--g1,#9ab), var(--g2,#556));
+  border: 1px solid #999;
+  image-rendering: pixelated;
+  box-shadow: 0 0 0 1px #fff inset;
+}
+.cmt .cbody .who { font: 600 12px/1 var(--sans); }
+.cmt .cbody .when { font: 11px/1 var(--sans); color: var(--muted); margin-left: 6px; }
+.cmt .cbody .text { font: italic 13px/1.5 var(--serif); color: #444; margin-top: 6px; }
+.cmt.pingback { background: #f3efe0; border: 1px dashed #c7b78e; padding: 6px 10px; grid-template-columns: 1fr; color: #6a5a2a; font: italic 12px/1.5 var(--serif); border-bottom: 0; }
+
+.leave-reply { margin-top: 14px; padding-top: 10px; border-top: 1px solid #e5e5e5; }
+.leave-reply h5 { margin: 0 0 8px; font: italic 700 14px/1 var(--serif); }
+.leave-reply .row { display: flex; gap: 8px; margin-bottom: 8px; }
+.leave-reply input[type=text], .leave-reply textarea {
+  width: 100%; padding: 6px 8px; font-family: var(--serif); font-size: 13px;
+  border: 1px solid #ccc; background: #fff;
+}
+.leave-reply textarea { min-height: 60px; resize: vertical; }
+.leave-reply button {
+  background: var(--admin-blue); color: #fff; border: 1px solid #145a79;
+  padding: 6px 14px; font: 600 12px var(--sans); cursor: pointer;
+  border-radius: 2px;
+}
+.leave-reply button:hover { background: #145a79; }
+.leave-reply .ok {
+  display: none; color: #3c763d; background: #dff0d8; border: 1px solid #b7daab;
+  padding: 6px 10px; margin-top: 8px; font: italic 12px var(--serif);
+}
+.leave-reply .ok.show { display: block; animation: pop .3s ease; }
+@keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ----- sidebar ----- */
+aside#sidebar { font-family: var(--serif); font-size: 13px; }
+.widget {
+  background: var(--card-bg);
+  margin-bottom: 20px;
+  padding: 12px 14px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  position: relative;
+  cursor: grab;
+}
+.widget.dragging { opacity: .5; }
+.widget h3 {
+  margin: 0 0 8px; padding-bottom: 6px;
+  font: italic 700 14px/1.2 var(--serif);
+  color: #3a3a3a; text-transform: capitalize;
+  border-bottom: 1px solid var(--rule);
+  letter-spacing: .2px;
+}
+.widget ul { margin: 0; padding: 0 0 0 16px; }
+.widget li { margin: 2px 0; }
+.widget li a { color: var(--link); }
+.widget .small { font-size: 11px; color: var(--muted); font-family: var(--sans); }
+
+/* search */
+#wsearch input {
+  width: 100%; padding: 6px 8px;
+  font: italic 13px var(--serif);
+  border: 1px solid #ccc; background: #fff;
+}
+#wsearch .hint { font: 11px var(--sans); color: var(--muted); margin-top: 4px; }
+
+/* calendar */
+.wcal table { width: 100%; border-collapse: collapse; font: 12px/1.4 var(--sans); }
+.wcal caption { caption-side: top; padding: 2px 0 6px; font: italic 700 13px var(--serif); }
+.wcal .calnav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.wcal .calnav button {
+  border: 1px solid #ccc; background: #fafafa; cursor: pointer;
+  padding: 2px 8px; font: 600 11px var(--sans); border-radius: 2px;
+}
+.wcal .calnav button:hover { background: var(--link); color: #fff; border-color: var(--link); }
+.wcal th, .wcal td {
+  padding: 3px 0; text-align: center;
+  border: 1px solid transparent;
+}
+.wcal th { color: var(--muted); font-weight: 600; }
+.wcal td.has-release {
+  background: var(--link); color: #fff; font-weight: 700;
+  border-color: #145a79; cursor: pointer;
+}
+.wcal td.has-release:hover { background: var(--link-hover); }
+.wcal td.today { outline: 2px dotted var(--link-hover); }
+.wcal td.padding { color: #ddd; }
+
+/* categories / tags cloud */
+.cloud a {
+  display: inline-block; margin: 2px 4px 2px 0; line-height: 1.2;
+  font-family: var(--serif); color: var(--link);
+}
+.cloud a.s1 { font-size: 11px; }
+.cloud a.s2 { font-size: 13px; }
+.cloud a.s3 { font-size: 15px; font-weight: 700; }
+.cloud a.s4 { font-size: 17px; font-weight: 700; font-style: italic; }
+
+/* akismet */
+#akismet-widget .big { font: 700 22px/1 var(--sans); color: #3a3a3a; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
+#akismet-widget .sub { font: italic 12px var(--serif); color: var(--muted); }
+
+/* meta */
+#meta-widget li::marker { color: var(--link); }
+
+/* footer */
+footer#foot {
+  max-width: 1100px; margin: 0 auto; padding: 20px 40px 36px;
+  font: 12px var(--sans); color: var(--muted); text-align: center;
+  border-top: 1px solid #c8c9ca;
+}
+footer#foot a { color: var(--muted); border-bottom: 1px dotted #bbb; }
+footer#foot a:hover { color: var(--link); }
+
+/* ============================================================
+   Fake wp-admin overlay (slides down)
+   ============================================================ */
+#wpadmin {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--admin-canvas-bg);
+  font-family: var(--sans); font-size: 13px; color: #333;
+  display: grid; grid-template-columns: 160px 1fr; grid-template-rows: 32px 1fr;
+  transform: translateY(-100%);
+  transition: transform .45s cubic-bezier(.22,.61,.36,1);
+}
+#wpadmin.open { transform: translateY(0); }
+
+#wpadmin > .topbar {
+  grid-column: 1 / -1; grid-row: 1;
+  background: var(--admin-bar-bg);
+  color: var(--admin-bar-ink);
+  display: flex; align-items: center; padding: 0 10px;
+  border-bottom: 1px solid #2a2a2a;
+  font-size: 12px;
+}
+#wpadmin .topbar .wp-logo { width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #8ec8f0, #21759B 65%, #113f55);
+  margin-right: 10px;
+}
+#wpadmin .topbar .spacer { flex: 1; }
+#wpadmin .topbar a { color: #fff; padding: 0 10px; line-height: 32px; }
+#wpadmin .topbar a:hover { background: rgba(255,255,255,.08); text-decoration: none; }
+
+#wpadmin > nav {
+  grid-column: 1; grid-row: 2;
+  background: var(--admin-sidebar-bg);
+  padding: 8px 0;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+}
+#wpadmin nav a {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px; color: var(--admin-sidebar-ink);
+  border-left: 3px solid transparent;
+  font-size: 13px;
+}
+#wpadmin nav a:hover { background: rgba(0,0,0,.05); text-decoration: none; }
+#wpadmin nav a.active {
+  background: var(--admin-sidebar-hot); color: #fff;
+  border-left-color: #fff;
+}
+#wpadmin nav a .ico {
+  width: 16px; height: 16px; flex-shrink: 0;
+  background: currentColor;
+  mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+  -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+  opacity: .8;
+}
+#wpadmin nav a.active .ico { opacity: 1; }
+/* Ben-Dunkle-ish pixel icons via inline SVG data-URLs */
+.ico-dash { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='1' width='6' height='6' fill='black'/><rect x='9' y='1' width='6' height='4' fill='black'/><rect x='9' y='7' width='6' height='8' fill='black'/><rect x='1' y='9' width='6' height='6' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='1' width='6' height='6' fill='black'/><rect x='9' y='1' width='6' height='4' fill='black'/><rect x='9' y='7' width='6' height='8' fill='black'/><rect x='1' y='9' width='6' height='6' fill='black'/></svg>"); }
+.ico-post { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 2h10v12H2z' fill='black'/><path d='M4 5h6M4 8h6M4 11h4' stroke='white' stroke-width='1' fill='none'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 2h10v12H2z' fill='black'/><path d='M4 5h6M4 8h6M4 11h4' stroke='white' stroke-width='1' fill='none'/></svg>"); }
+.ico-media { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='2' width='14' height='11' fill='black'/><circle cx='5' cy='6' r='1.5' fill='white'/><path d='M2 11l4-4 3 3 2-2 4 4H2z' fill='white'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='2' width='14' height='11' fill='black'/><circle cx='5' cy='6' r='1.5' fill='white'/><path d='M2 11l4-4 3 3 2-2 4 4H2z' fill='white'/></svg>"); }
+.ico-page { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 1h7l3 3v11H3z' fill='black'/><path d='M10 1v3h3' fill='none' stroke='white'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 1h7l3 3v11H3z' fill='black'/><path d='M10 1v3h3' fill='none' stroke='white'/></svg>"); }
+.ico-comment { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 3h12v8H6l-3 3v-3H2z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 3h12v8H6l-3 3v-3H2z' fill='black'/></svg>"); }
+.ico-appear { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1a7 7 0 100 14c1.5 0 2-1 1.5-2s-.5-2 1-2 4 .5 4-3A7 7 0 008 1z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1a7 7 0 100 14c1.5 0 2-1 1.5-2s-.5-2 1-2 4 .5 4-3A7 7 0 008 1z' fill='black'/></svg>"); }
+.ico-plug { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M5 2v3H3v3l4 4 4-4V5h-2V2z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M5 2v3H3v3l4 4 4-4V5h-2V2z' fill='black'/></svg>"); }
+.ico-user { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5' r='3' fill='black'/><path d='M2 15c0-4 3-6 6-6s6 2 6 6z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='5' r='3' fill='black'/><path d='M2 15c0-4 3-6 6-6s6 2 6 6z' fill='black'/></svg>"); }
+.ico-tool { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 12l7-7 3 3-7 7zm8-8l2-2 3 3-2 2z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M2 12l7-7 3 3-7 7zm8-8l2-2 3 3-2 2z' fill='black'/></svg>"); }
+.ico-cog { -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 3a5 5 0 100 10A5 5 0 008 3zm0 3a2 2 0 110 4 2 2 0 010-4zM7 1h2v2H7zm0 12h2v2H7zM1 7h2v2H1zm12 0h2v2h-2zM3 3l1-1 1 1-1 1zm9 9l1-1 1 1-1 1zM3 13l-1-1 1-1 1 1zm9-9l-1-1 1-1 1 1z' fill='black'/></svg>"); mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 3a5 5 0 100 10A5 5 0 008 3zm0 3a2 2 0 110 4 2 2 0 010-4zM7 1h2v2H7zm0 12h2v2H7zM1 7h2v2H1zm12 0h2v2h-2zM3 3l1-1 1 1-1 1zm9 9l1-1 1 1-1 1zM3 13l-1-1 1-1 1 1zm9-9l-1-1 1-1 1 1z' fill='black'/></svg>"); }
+
+#wpadmin > main {
+  grid-column: 2; grid-row: 2;
+  padding: 16px 24px;
+  overflow-y: auto;
+}
+#wpadmin main h1.wrap-h {
+  font: 300 23px/1.3 var(--sans); color: #222;
+  margin: 0 0 18px;
+}
+#wpadmin main .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 1000px) { #wpadmin main .cols { grid-template-columns: 1fr; } }
+
+.adminw {
+  background: var(--admin-widget-bg);
+  border: 1px solid #e5e5e5;
+  margin-bottom: 12px;
+}
+.adminw.dragging { opacity: .4; outline: 2px dashed var(--admin-blue); }
+.adminw > h3 {
+  margin: 0; padding: 7px 12px;
+  background: var(--admin-widget-head);
+  border-bottom: 1px solid #e5e5e5;
+  font: 600 13px/1.4 var(--sans);
+  cursor: grab;
+}
+.adminw .body { padding: 10px 12px; }
+.adminw .body ul { margin: 0; padding: 0; list-style: none; }
+.adminw .body li { padding: 3px 0; border-bottom: 1px dotted #eee; }
+.adminw .body li:last-child { border-bottom: 0; }
+.adminw .rn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+.adminw .rn-grid span.n { font: 600 16px/1 var(--sans); color: var(--admin-blue); display: inline-block; min-width: 32px; }
+.adminw .rn-grid span.lbl { color: #666; font-size: 12px; }
+.adminw .rn-ver { margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; font-size: 12px; color: #666; }
+
+.qp label { display: block; font-size: 12px; color: #666; margin: 4px 0 2px; }
+.qp input[type=text], .qp textarea {
+  width: 100%; padding: 5px 8px; border: 1px solid #ddd; font: 12px var(--sans);
+}
+.qp textarea { min-height: 54px; resize: vertical; }
+.qp .actions { margin-top: 8px; display: flex; gap: 6px; }
+.qp button {
+  border: 1px solid #145a79; background: var(--admin-blue); color: #fff;
+  padding: 5px 10px; font: 600 11px var(--sans); cursor: pointer; border-radius: 2px;
+}
+.qp button.save { background: #ccc; color: #333; border-color: #bbb; }
+.qp .drafts { margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee; font-size: 12px; color: #555; }
+.qp .drafts div { padding: 2px 0; color: #555; }
+
+.plugins-list .plugin { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px dotted #eee; }
+.plugins-list .plugin:last-child { border-bottom: 0; }
+.plugins-list .plugin .name { font-weight: 600; }
+.plugins-list .plugin .desc { display: block; font-size: 11px; color: #666; font-weight: 400; }
+.plugins-list .plugin button {
+  border: 1px solid #999; background: #eee; color: #333;
+  padding: 3px 8px; font: 500 11px var(--sans); cursor: pointer; border-radius: 2px;
+}
+.plugins-list .plugin.active button { background: var(--admin-blue); color: #fff; border-color: #145a79; }
+
+/* color scheme picker */
+.schemes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.scheme-card { cursor: pointer; border: 2px solid transparent; padding: 2px; background: #fff; text-align: center; font-size: 12px; }
+.scheme-card.active { border-color: var(--admin-blue); }
+.scheme-card .swatches { display: flex; height: 40px; }
+.scheme-card .swatches span { flex: 1; }
+.scheme-card .lbl { display: block; padding: 4px 0 0; font-size: 11px; color: #666; }
+
+/* Color scheme overrides for the admin overlay + adminbar */
+body.scheme-fresh { }
+body.scheme-classic {
+  --admin-bar-bg: linear-gradient(#5a5a5a, #3c3c3c);
+  --admin-sidebar-bg: #ece9d8;
+  --admin-sidebar-hot: #d54e21;
+  --admin-blue: #d54e21;
+}
+body.scheme-blue {
+  --admin-bar-bg: linear-gradient(#52accc, #096484);
+  --admin-sidebar-bg: #4796b3;
+  --admin-sidebar-ink: #fff;
+  --admin-sidebar-hot: #e1a948;
+  --admin-blue: #096484;
+  --admin-canvas-bg: #f1f1f1;
+}
+body.scheme-coffee {
+  --admin-bar-bg: linear-gradient(#59524c, #46403c);
+  --admin-sidebar-bg: #59524c;
+  --admin-sidebar-ink: #ccc5bf;
+  --admin-sidebar-hot: #c7a589;
+  --admin-blue: #c7a589;
+}
+body.scheme-ectoplasm {
+  --admin-bar-bg: linear-gradient(#523f6d, #413256);
+  --admin-sidebar-bg: #523f6d;
+  --admin-sidebar-ink: #cbc5d3;
+  --admin-sidebar-hot: #a3b745;
+  --admin-blue: #a3b745;
+}
+body.scheme-midnight {
+  --admin-bar-bg: linear-gradient(#363b3f, #25282b);
+  --admin-sidebar-bg: #363b3f;
+  --admin-sidebar-ink: #c3c4c5;
+  --admin-sidebar-hot: #e14d43;
+  --admin-blue: #e14d43;
+}
+body.scheme-ocean {
+  --admin-bar-bg: linear-gradient(#738e96, #627c83);
+  --admin-sidebar-bg: #738e96;
+  --admin-sidebar-ink: #f2fcff;
+  --admin-sidebar-hot: #9ebaa0;
+  --admin-blue: #738e96;
+}
+body.scheme-sunrise {
+  --admin-bar-bg: linear-gradient(#cf4944, #b43c38);
+  --admin-sidebar-bg: #cf4944;
+  --admin-sidebar-ink: #f3f1f1;
+  --admin-sidebar-hot: #dd823b;
+  --admin-blue: #dd823b;
+}
+
+/* Hello Dolly banner */
+#dolly {
+  position: fixed; top: 34px; right: 10px;
+  font: italic 600 13px var(--serif); color: #666;
+  max-width: 300px; text-align: right;
+  pointer-events: none;
+  opacity: 0; transition: opacity .7s;
+  z-index: 90;
+  text-shadow: 0 1px 0 #fff;
+}
+#dolly.on { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  #content-wrap { grid-template-columns: 1fr; padding: 18px; }
+  header#kubrick h1 { font-size: 36px; }
+  nav#mainnav ul { gap: 16px; padding: 0 18px; }
+  #wpadmin { grid-template-columns: 48px 1fr; }
+  #wpadmin nav a .lbl { display: none; }
+}
+
+/* hidden helper */
+.hide { display: none !important; }
+</style>
+</head>
+<body class="scheme-fresh">
+
+<!-- =========================  ADMIN BAR  ========================= -->
+<div id="adminbar">
+  <span class="wp-logo" aria-hidden="true"></span>
+  <a href="#" id="openAdmin">My Museum</a>
+  <span class="ab-sep">|</span>
+  <a href="#" id="openAdmin2">Dashboard</a>
+  <a href="#">Comments <span id="ab-cmtcount">(0)</span></a>
+  <a href="#" id="newpostAb">+ New</a>
+  <span class="ab-spacer"></span>
+  <span class="howdy">Howdy, <b>museum‑goer</b></span>
+  <span class="ab-sep">|</span>
+  <a href="#" id="logout">Log Out</a>
+</div>
+
+<!-- =========================  KUBRICK HEADER  ========================= -->
+<header id="kubrick">
+  <div class="clouds" aria-hidden="true"></div>
+  <div class="title-wrap">
+    <h1>The WordPress Museum</h1>
+    <p class="tagline">just another WordPress release weblog — est. May 27<sup>th</sup>, 2003</p>
+  </div>
+  <div class="hgrass" aria-hidden="true"></div>
+</header>
+
+<!-- =========================  NAV  ========================= -->
+<nav id="mainnav">
+  <ul>
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#" id="navAbout">About</a></li>
+    <li><a href="#" id="navArchives">Archives</a></li>
+    <li><a href="#" id="navCodex">Codex</a></li>
+    <li><a href="#" id="navColo">Colophon</a></li>
+  </ul>
+</nav>
+
+<!-- =========================  CONTENT  ========================= -->
+<div id="page">
+<div id="content-wrap">
+
+<main id="posts">
+  <!-- rendered by JS -->
+</main>
+
+<aside id="sidebar">
+
+  <!-- Search -->
+  <div class="widget" id="wsearch" data-key="search">
+    <h3>Search the Museum</h3>
+    <input id="searchBox" type="text" placeholder="Search releases…" aria-label="Search releases">
+    <div class="hint">Matches version, codename, or trivia text.</div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="widget wcal" data-key="calendar">
+    <h3>Release Calendar</h3>
+    <div class="calnav">
+      <button id="calPrev" title="Previous month">«</button>
+      <span id="calLabel" style="font-weight:700;">May 2003</span>
+      <button id="calNext" title="Next month">»</button>
+    </div>
+    <table id="calTable" role="grid" aria-label="Release calendar"></table>
+  </div>
+
+  <!-- Categories (codename cloud) -->
+  <div class="widget" data-key="cats">
+    <h3>Jazz Categories</h3>
+    <div class="cloud" id="catCloud"></div>
+  </div>
+
+  <!-- Archives by Year -->
+  <div class="widget" data-key="archives">
+    <h3>Archives</h3>
+    <ul id="archList"></ul>
+  </div>
+
+  <!-- Recent Pingbacks -->
+  <div class="widget" data-key="pingbacks">
+    <h3>Recent Pingbacks</h3>
+    <ul id="pingbackList">
+      <li><em>ma.tt</em> <span class="small">on 3.0 Thelonious</span></li>
+      <li><em>Planet WordPress</em> <span class="small">on 2.7 Coltrane</span></li>
+      <li><em>WP Tavern</em> <span class="small">on 5.0 Bebo</span></li>
+      <li><em>Mike Little's blog</em> <span class="small">on 0.70</span></li>
+    </ul>
+  </div>
+
+  <!-- Blogroll -->
+  <div class="widget" data-key="blogroll">
+    <h3>Blogroll</h3>
+    <ul>
+      <li><a href="#">Photo Matt</a></li>
+      <li><a href="#">Mike Little's Zed1</a></li>
+      <li><a href="#">b2/cafelog</a></li>
+      <li><a href="#">WordPress.org News</a></li>
+      <li><a href="#">WordPress Codex</a></li>
+      <li><a href="#">Planet WordPress</a></li>
+    </ul>
+  </div>
+
+  <!-- Akismet -->
+  <div class="widget" id="akismet-widget" data-key="akismet">
+    <h3>Akismet</h3>
+    <div class="big" id="akismetCount">14,832</div>
+    <div class="sub">spam comments blocked (and counting)</div>
+  </div>
+
+  <!-- Meta -->
+  <div class="widget" id="meta-widget" data-key="meta">
+    <h3>Meta</h3>
+    <ul>
+      <li><a href="#" id="metaLogin">Log in</a></li>
+      <li><a href="#">Entries <span class="small">(RSS)</span></a></li>
+      <li><a href="#">Comments <span class="small">(RSS)</span></a></li>
+      <li><a href="https://wordpress.org/" target="_blank" rel="noopener">WordPress.org</a></li>
+    </ul>
+  </div>
+
+</aside>
+
+</div><!-- /#content-wrap -->
+
+<footer id="foot">
+  <p>Proudly powered by <a href="https://wordpress.org/" target="_blank" rel="noopener">WordPress</a>.
+    Theme <em>Kubrick</em> by Michael Heilemann.
+    <a href="#" id="feed1">Entries (RSS)</a> and <a href="#" id="feed2">Comments (RSS)</a>.
+    53 posts · <span id="footCmtCount">0</span> comments · 3 pages.
+  </p>
+</footer>
+</div><!-- /#page -->
+
+<!-- =========================  FAKE WP-ADMIN  ========================= -->
+<div id="wpadmin" aria-hidden="true">
+  <div class="topbar">
+    <span class="wp-logo"></span>
+    <a href="#" id="adminSiteName">The WordPress Museum</a>
+    <a href="#" data-adminview="dashboard">Dashboard</a>
+    <a href="#" data-adminview="plugins">Plugins</a>
+    <a href="#" data-adminview="profile">Your Profile</a>
+    <span class="spacer"></span>
+    <span style="opacity:.7">Howdy, <b>matt</b></span>
+    <a href="#" id="adminClose">Close ×</a>
+  </div>
+  <nav aria-label="Admin navigation">
+    <a href="#" data-adminview="dashboard" class="active"><span class="ico ico-dash"></span><span class="lbl">Dashboard</span></a>
+    <a href="#" data-adminview="posts"><span class="ico ico-post"></span><span class="lbl">Posts</span></a>
+    <a href="#" data-adminview="media"><span class="ico ico-media"></span><span class="lbl">Media</span></a>
+    <a href="#" data-adminview="pages"><span class="ico ico-page"></span><span class="lbl">Pages</span></a>
+    <a href="#" data-adminview="comments"><span class="ico ico-comment"></span><span class="lbl">Comments</span></a>
+    <a href="#" data-adminview="appearance"><span class="ico ico-appear"></span><span class="lbl">Appearance</span></a>
+    <a href="#" data-adminview="plugins"><span class="ico ico-plug"></span><span class="lbl">Plugins</span></a>
+    <a href="#" data-adminview="users"><span class="ico ico-user"></span><span class="lbl">Users</span></a>
+    <a href="#" data-adminview="tools"><span class="ico ico-tool"></span><span class="lbl">Tools</span></a>
+    <a href="#" data-adminview="settings"><span class="ico ico-cog"></span><span class="lbl">Settings</span></a>
+    <a href="#" data-adminview="profile"><span class="ico ico-user"></span><span class="lbl">Your Profile</span></a>
+  </nav>
+  <main id="adminMain"></main>
+</div>
+
+<div id="dolly" aria-live="polite"></div>
+
+<!-- =========================  DATA  ========================= -->
+<script src="../data/releases.js"></script>
+
+<!-- =========================  APP  ========================= -->
+<script>
+/* ---------- data ---------- */
+const RELEASES = window.WP_MUSEUM_RELEASES;
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function eraOf(v) {
+  const n = parseFloat(v);
+  if (n < 1)    return 'b2';
+  if (n < 2.5)  return 'kubrick';
+  if (n < 2.7)  return 'happycog';
+  if (n < 3.8)  return 'coltrane';
+  if (n < 5.0)  return 'mp6';
+  if (n < 5.9)  return 'gutenberg';
+  return 'fse';
+}
+function fmtDate(d) {
+  const [y,m,day] = d.split('-').map(Number);
+  return `${monthNames[m-1]} ${day}, ${y}`;
+}
+function slug(v) { return 'wp-' + v.replace(/\./g,'-'); }
+
+/* ---------- period-accurate fake commenters ---------- */
+const COMMENTERS = [
+  {n:'photomatt',     g1:'#a9c3e0', g2:'#234B6A'},
+  {n:'Mike Little',   g1:'#b6c9a2', g2:'#3e6826'},
+  {n:'Donncha',       g1:'#d1b98e', g2:'#8a6a32'},
+  {n:'Lorelle',       g1:'#e6b3c8', g2:'#7a3256'},
+  {n:'Mark J',        g1:'#c8b9e0', g2:'#4a3a78'},
+  {n:'Ryan',          g1:'#f0c27b', g2:'#a8601a'},
+  {n:'Ptah Dunbar',   g1:'#9fcfc0', g2:'#225e56'},
+  {n:'Westi',         g1:'#b7b7b7', g2:'#3e3e3e'},
+  {n:'nacin',         g1:'#a3c6d8', g2:'#255a78'},
+  {n:'Jane',          g1:'#e6a88b', g2:'#8a3a1a'},
+];
+const COMMENT_TEMPLATES = [
+  "Congrats on the release! Upgrading now.",
+  "Works great on my site. Thanks for all the hard work.",
+  "Finally! I've been waiting for this.",
+  "Is anyone else seeing an issue with the theme editor?",
+  "Just upgraded my 12 blogs, ran without a hitch.",
+  "Lovely! The new admin feels so much snappier.",
+  "Any chance of a changelog in plain English?",
+  "This is the best release yet. Cheers, Matt & team.",
+  "Pretty please fix the Kubrick widget area next!",
+  "Great work! One small thing — trackbacks are showing twice for me.",
+];
+const PINGBACKS = [
+  "An overview of what's new in WordPress X.Y by WP Tavern",
+  "WordPress X.Y: first impressions by Planet WordPress",
+  "ma.tt — State of the Word notes",
+  "Lorelle on WordPress: Upgrade thoughts",
+  "WPBeginner: What's new in X.Y",
+];
+function commentsFor(rel) {
+  // Deterministic-ish by version so each release has a consistent comment set
+  const seed = rel.v.split('.').reduce((a,b)=>a*31+parseInt(b)+99, 7);
+  const mk = (i) => COMMENTERS[(seed + i) % COMMENTERS.length];
+  const tmpl = (i) => COMMENT_TEMPLATES[(seed * 7 + i * 11) % COMMENT_TEMPLATES.length];
+  const count = 2 + (seed % 3); // 2–4 comments
+  const base = new Date(rel.date);
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const when = new Date(base.getTime() + (i+1) * 2.3 * 3600 * 1000);
+    out.push({ ...mk(i), text: tmpl(i), when: when });
+  }
+  // Insert a pingback sometimes
+  if (seed % 3 === 0) {
+    const pb = PINGBACKS[seed % PINGBACKS.length].replace('X.Y', rel.v);
+    out.splice(Math.min(1, out.length), 0, { pingback: true, text: pb });
+  }
+  return out;
+}
+function whenString(d) {
+  const hh = String(d.getUTCHours()).padStart(2,'0');
+  const mm = String(d.getUTCMinutes()).padStart(2,'0');
+  return `${monthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} at ${hh}:${mm}`;
+}
+
+/* ---------- render posts ---------- */
+function tagsFor(rel) {
+  const base = [rel.name && rel.name !== '—' ? rel.name.toLowerCase() : 'wordpress', 'jazz', 'release'];
+  const trivia = rel.trivia.toLowerCase();
+  if (trivia.includes('theme')) base.push('themes');
+  if (trivia.includes('plugin')) base.push('plugins');
+  if (trivia.includes('admin')) base.push('admin');
+  if (trivia.includes('block')) base.push('blocks');
+  if (trivia.includes('gutenberg')) base.push('gutenberg');
+  if (trivia.includes('rest')) base.push('rest-api');
+  if (trivia.includes('performance') || trivia.includes('faster')) base.push('performance');
+  if (trivia.includes('security') || trivia.includes('https')) base.push('security');
+  return [...new Set(base)].slice(0, 6);
+}
+
+function renderPosts() {
+  const html = RELEASES.map((rel, i) => {
+    const era = eraOf(rel.v);
+    const bars = {
+      kubrick: '<div class="bar ksky"></div>',
+      happycog: '<div class="bar hctop"></div><div class="bar hcorange"></div>',
+      coltrane: '<div class="bar cltop"></div><div class="bar clnav"></div>',
+      mp6: '<div class="bar m6bar"></div><div class="bar m6side"></div>',
+      gutenberg: '<div class="bar gtop"></div><div class="bar gside"></div>',
+      fse: '<div class="bar fleft"></div>',
+    }[era] || '';
+    const tagList = tagsFor(rel);
+    const commentCount = commentsFor(rel).filter(c => !c.pingback).length;
+    const codename = rel.name && rel.name !== '—' ? ` <span class="codename">“${rel.name}”</span>` : '';
+    return `
+    <article class="post${rel.significant ? ' significant' : ''}" id="${slug(rel.v)}" data-version="${rel.v}" data-date="${rel.date}" data-codename="${(rel.name||'').toLowerCase()}">
+      ${rel.significant ? '<div class="sig-ribbon">Significant Release</div>' : ''}
+      <h2 class="ptitle"><a href="#${slug(rel.v)}">WordPress&nbsp;${rel.v}${codename}</a></h2>
+      <div class="postmeta">
+        <span>Published by <a href="#">matt</a></span>
+        <span class="sep">·</span>
+        <span>${fmtDate(rel.date)}</span>
+        <span class="sep">·</span>
+        <span>Filed in <a href="#">Jazz Greats</a></span>
+        <span class="sep">·</span>
+        <span><a href="#" class="cmt-toggle" data-v="${rel.v}">${commentCount} Comment${commentCount===1?'':'s'}</a></span>
+      </div>
+      <div class="thumbwrap" data-v="${rel.v}" role="button" aria-label="Launch WordPress ${rel.v} in the Playground">
+        <div class="poster era-${era}">
+          ${bars}
+          <span class="caption">WordPress ${rel.v} — ${era.toUpperCase()}</span>
+        </div>
+        <div class="playcue">
+          <span>Click the screenshot to boot WordPress&nbsp;${rel.v} in the Playground.</span>
+          <button type="button" class="activate">Activate ▸</button>
+        </div>
+      </div>
+      <div class="pbody">
+        <p>${rel.trivia}</p>
+      </div>
+      <div class="taglist">
+        Tagged: ${tagList.map(t => `<a href="#">${t}</a>`).join(', ')}
+      </div>
+      <div class="foot">
+        <a href="#" class="cmt-toggle" data-v="${rel.v}">💬 ${commentCount} comment${commentCount===1?'':'s'}</a>
+        ${commentsFor(rel).some(c=>c.pingback) ? '<span class="pingback">Pingback received</span>' : ''}
+        <a href="#" title="Edit this post">Edit</a>
+        <span style="flex:1"></span>
+        <span>Permalink: <code>?p=${100+i}</code></span>
+      </div>
+      <div class="comments-section" id="cmt-${slug(rel.v)}"></div>
+    </article>`;
+  }).join('');
+  document.getElementById('posts').innerHTML = html;
+  // Compute and set footer comment count
+  const total = RELEASES.reduce((a, r) => a + commentsFor(r).filter(c => !c.pingback).length, 0);
+  document.getElementById('footCmtCount').textContent = total;
+  document.getElementById('ab-cmtcount').textContent = '(' + total + ')';
+}
+
+function buildComments(rel) {
+  const arr = commentsFor(rel);
+  const html = arr.map(c => {
+    if (c.pingback) {
+      return `<div class="cmt pingback"><em>Pingback:</em> ${c.text}</div>`;
+    }
+    return `<div class="cmt">
+      <div class="grav" style="--g1:${c.g1};--g2:${c.g2}"></div>
+      <div class="cbody">
+        <span class="who">${c.n}</span><span class="when">on ${whenString(c.when)}</span>
+        <div class="text">${c.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+    <h4>${arr.filter(x=>!x.pingback).length} Comments on “WordPress ${rel.v}”</h4>
+    ${html}
+    <div class="leave-reply">
+      <h5>Leave a Reply</h5>
+      <div class="row"><input type="text" placeholder="Name (required)"><input type="text" placeholder="Mail (required, not published)"></div>
+      <textarea placeholder="Your comment…"></textarea>
+      <div class="row" style="justify-content:flex-end">
+        <button type="button" class="submitcmt" data-v="${rel.v}">Submit Comment</button>
+      </div>
+      <div class="ok">✓ Your comment is awaiting moderation. Thanks!</div>
+    </div>`;
+}
+
+/* ---------- iframe swap ---------- */
+function activatePost(wrap) {
+  if (wrap.classList.contains('loaded')) return;
+  const v = wrap.dataset.v;
+  wrap.classList.add('loading');
+  const iframe = document.createElement('iframe');
+  iframe.loading = 'lazy';
+  iframe.referrerPolicy = 'no-referrer';
+  iframe.src = `https://playground.wordpress.net/?wp=${encodeURIComponent(v)}`;
+  iframe.onload = () => {
+    wrap.classList.remove('loading');
+    wrap.classList.add('loaded');
+  };
+  // Remove poster + playcue, keep iframe
+  wrap.innerHTML = '';
+  wrap.appendChild(iframe);
+  // In case onload never fires for opaque cross-origin, remove loading after timeout
+  setTimeout(() => wrap.classList.remove('loading'), 2500);
+}
+
+/* ---------- calendar ---------- */
+const firstRel = RELEASES[0];
+const lastRel = RELEASES[RELEASES.length - 1];
+const calState = { y: parseInt(firstRel.date.slice(0,4)), m: parseInt(firstRel.date.slice(5,7)) };
+
+function releasesInMonth(y, m) {
+  return RELEASES.filter(r => {
+    const rd = r.date;
+    return parseInt(rd.slice(0,4)) === y && parseInt(rd.slice(5,7)) === m;
+  });
+}
+function renderCalendar() {
+  const { y, m } = calState;
+  document.getElementById('calLabel').textContent = `${monthNames[m-1]} ${y}`;
+  const first = new Date(Date.UTC(y, m-1, 1));
+  const startDow = first.getUTCDay(); // 0=Sun
+  const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const releases = releasesInMonth(y, m);
+  const relByDay = {};
+  releases.forEach(r => relByDay[parseInt(r.date.slice(8,10))] = r);
+
+  let html = '<thead><tr>' + ['S','M','T','W','T','F','S'].map(d => `<th>${d}</th>`).join('') + '</tr></thead><tbody>';
+  let day = 1;
+  for (let row = 0; row < 6 && day <= daysInMonth; row++) {
+    html += '<tr>';
+    for (let col = 0; col < 7; col++) {
+      const cellIdx = row*7 + col;
+      if (cellIdx < startDow || day > daysInMonth) {
+        html += '<td class="padding">&nbsp;</td>';
+      } else {
+        const rel = relByDay[day];
+        if (rel) {
+          html += `<td class="has-release" data-v="${rel.v}" title="WordPress ${rel.v} ${rel.name !== '—' ? rel.name : ''}">${day}</td>`;
+        } else {
+          html += `<td>${day}</td>`;
+        }
+        day++;
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody>';
+  document.getElementById('calTable').innerHTML = html;
+}
+function calNav(delta) {
+  calState.m += delta;
+  while (calState.m > 12) { calState.m -= 12; calState.y++; }
+  while (calState.m < 1)  { calState.m += 12; calState.y--; }
+  // Don't go before first release or past last release +6 months
+  const minY = parseInt(firstRel.date.slice(0,4));
+  const minM = parseInt(firstRel.date.slice(5,7));
+  const maxY = parseInt(lastRel.date.slice(0,4));
+  const maxM = parseInt(lastRel.date.slice(5,7));
+  if (calState.y < minY || (calState.y === minY && calState.m < minM)) { calState.y = minY; calState.m = minM; }
+  if (calState.y > maxY || (calState.y === maxY && calState.m > maxM)) { calState.y = maxY; calState.m = maxM; }
+  renderCalendar();
+}
+
+/* ---------- categories + archives ---------- */
+function renderCategories() {
+  const el = document.getElementById('catCloud');
+  const eras = {};
+  RELEASES.forEach(r => { const e = eraOf(r.v); eras[e] = (eras[e]||0) + 1; });
+  const max = Math.max(...Object.values(eras));
+  const labels = { b2:'b2', kubrick:'Kubrick', happycog:'Happy Cog', coltrane:'Coltrane', mp6:'MP6 Flat', gutenberg:'Gutenberg', fse:'Site Editor' };
+  el.innerHTML = Object.entries(eras).map(([k,v]) => {
+    const size = Math.min(4, Math.ceil((v/max) * 4));
+    return `<a href="#" class="s${size}" data-era="${k}">${labels[k]} (${v})</a>`;
+  }).join(' ');
+}
+function renderArchives() {
+  const el = document.getElementById('archList');
+  const by = {};
+  RELEASES.forEach(r => {
+    const y = parseInt(r.date.slice(0,4));
+    by[y] = (by[y]||0) + 1;
+  });
+  el.innerHTML = Object.keys(by).sort().map(y => {
+    const first = RELEASES.find(r => r.date.startsWith(y));
+    return `<li><a href="#${slug(first.v)}" data-year="${y}">${y}</a> <span class="small">(${by[y]})</span></li>`;
+  }).join('');
+}
+
+/* ---------- search (live filter) ---------- */
+function applySearch(q) {
+  q = (q||'').trim().toLowerCase();
+  document.querySelectorAll('article.post').forEach(p => {
+    if (!q) { p.classList.remove('hide'); return; }
+    const ver = p.dataset.version;
+    const name = p.dataset.codename;
+    const body = p.querySelector('.pbody').textContent.toLowerCase();
+    const match = ver.includes(q) || name.includes(q) || body.includes(q);
+    p.classList.toggle('hide', !match);
+  });
+}
+
+/* ---------- admin overlay ---------- */
+const adminState = {
+  hellodolly: false,
+  quickPosts: [],
+  scheme: 'fresh',
+  view: 'dashboard',
+};
+function openAdmin() {
+  document.getElementById('wpadmin').classList.add('open');
+  document.getElementById('wpadmin').setAttribute('aria-hidden', 'false');
+  renderAdminView();
+}
+function closeAdmin() {
+  document.getElementById('wpadmin').classList.remove('open');
+  document.getElementById('wpadmin').setAttribute('aria-hidden', 'true');
+}
+function renderAdminView() {
+  // Update left nav active class
+  document.querySelectorAll('#wpadmin nav a').forEach(a => {
+    a.classList.toggle('active', a.dataset.adminview === adminState.view);
+  });
+  const main = document.getElementById('adminMain');
+  const view = adminState.view;
+  if (view === 'dashboard') main.innerHTML = dashboardHTML();
+  else if (view === 'plugins') main.innerHTML = pluginsHTML();
+  else if (view === 'profile') main.innerHTML = profileHTML();
+  else if (view === 'posts') main.innerHTML = postsViewHTML();
+  else if (view === 'comments') main.innerHTML = commentsViewHTML();
+  else main.innerHTML = `<h1 class="wrap-h">${view.charAt(0).toUpperCase()+view.slice(1)}</h1>
+    <div class="adminw"><h3>Coming soon</h3><div class="body">This section is part of the museum facade. Try <em>Dashboard</em>, <em>Plugins</em>, or <em>Your Profile</em>.</div></div>`;
+  if (view === 'dashboard') attachDashHandlers();
+  if (view === 'plugins') attachPluginHandlers();
+  if (view === 'profile') attachProfileHandlers();
+}
+
+function dashboardHTML() {
+  const lastRelCode = lastRel.name && lastRel.name !== '—' ? lastRel.name : '—';
+  const activePlugins = [adminState.hellodolly ? 'Hello Dolly' : null, 'Akismet'].filter(Boolean);
+  const quickDraftsHtml = adminState.quickPosts.length
+    ? adminState.quickPosts.map(p => `<div>“${p}” <span style="color:#888">· just now</span></div>`).join('')
+    : '<div style="color:#888; font-style: italic;">No drafts yet.</div>';
+  return `
+  <h1 class="wrap-h">Dashboard</h1>
+  <div class="cols">
+    <div class="col col-a" data-col="a">
+      <div class="adminw" draggable="true" data-id="rightnow">
+        <h3>Right Now</h3>
+        <div class="body">
+          <div class="rn-grid">
+            <div><span class="n">53</span><span class="lbl">Posts</span></div>
+            <div><span class="n">3</span><span class="lbl">Pages</span></div>
+            <div><span class="n" id="rnCmt">0</span><span class="lbl">Comments</span></div>
+            <div><span class="n">7</span><span class="lbl">Categories</span></div>
+            <div><span class="n">26</span><span class="lbl">Tags</span></div>
+            <div><span class="n">1</span><span class="lbl">User</span></div>
+          </div>
+          <div class="rn-ver">You are using <b>WordPress ${lastRel.v} “${lastRelCode}”</b> with the <b>Kubrick</b> theme.</div>
+        </div>
+      </div>
+      <div class="adminw" draggable="true" data-id="recent">
+        <h3>Recent Comments</h3>
+        <div class="body">
+          <ul>
+            ${
+              RELEASES.slice(-5).reverse().flatMap(r => commentsFor(r).filter(c => !c.pingback).slice(0,1).map(c => (
+                `<li><b>${c.n}</b> on <a href="#${slug(r.v)}">WordPress ${r.v}</a>: <em>${c.text.slice(0,90)}${c.text.length>90?'…':''}</em></li>`
+              ))).join('')
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="adminw" draggable="true" data-id="incoming">
+        <h3>Incoming Links</h3>
+        <div class="body">
+          <ul>
+            <li><b>ma.tt</b> — "The museum lives!" linked to <a href="#${slug('3.0')}">WordPress 3.0 Thelonious</a></li>
+            <li><b>WP Tavern</b> — "A nostalgic tour of WordPress" linked to <a href="#${slug('1.5')}">WordPress 1.5 Strayhorn</a></li>
+            <li><b>Planet WordPress</b> — "Hello from 2008" linked to <a href="#${slug('2.7')}">WordPress 2.7 Coltrane</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col col-b" data-col="b">
+      <div class="adminw qp" draggable="true" data-id="quickpress">
+        <h3>QuickPress</h3>
+        <div class="body">
+          <label for="qp-title">Title</label>
+          <input id="qp-title" type="text" placeholder="A new post…">
+          <label for="qp-body">Content</label>
+          <textarea id="qp-body" placeholder="What's on your mind?"></textarea>
+          <div class="actions">
+            <button type="button" class="save" id="qpSave">Save Draft</button>
+            <button type="button" id="qpPublish">Publish</button>
+          </div>
+          <div class="drafts">
+            <b>Recent Drafts</b>
+            ${quickDraftsHtml}
+          </div>
+        </div>
+      </div>
+      <div class="adminw" draggable="true" data-id="devblog">
+        <h3>WordPress Development Blog</h3>
+        <div class="body">
+          <ul>
+            <li><b>Matt:</b> "State of the Word 2024 — highlights and next steps."</li>
+            <li><b>Helen Hou-Sandí:</b> "Release leads: a look behind the squad model."</li>
+            <li><b>Andrew Ozz:</b> "Widget drag &amp; drop in 3.3: a postmortem."</li>
+          </ul>
+        </div>
+      </div>
+      <div class="adminw" draggable="true" data-id="plugcard">
+        <h3>Plugins</h3>
+        <div class="body">
+          <div class="plugins-list">
+            <div class="plugin${adminState.hellodolly?' active':''}" data-plugin="hellodolly">
+              <div><span class="name">Hello Dolly</span><span class="desc">Random line in the top-right corner of every page. The simplest plugin ever written.</span></div>
+              <button type="button" class="toggleDolly">${adminState.hellodolly ? 'Deactivate' : 'Activate'}</button>
+            </div>
+            <div class="plugin active" data-plugin="akismet">
+              <div><span class="name">Akismet</span><span class="desc">Catches spam so you don't have to.</span></div>
+              <button type="button">Active</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function pluginsHTML() {
+  return `
+  <h1 class="wrap-h">Plugins</h1>
+  <div class="adminw">
+    <h3>Installed Plugins</h3>
+    <div class="body plugins-list">
+      <div class="plugin${adminState.hellodolly?' active':''}" data-plugin="hellodolly">
+        <div><span class="name">Hello Dolly</span><span class="desc">When activated, you will randomly see a short musing from our release history in the top-right corner of every page.</span></div>
+        <button type="button" class="toggleDolly">${adminState.hellodolly ? 'Deactivate' : 'Activate'}</button>
+      </div>
+      <div class="plugin active" data-plugin="akismet">
+        <div><span class="name">Akismet Anti-Spam</span><span class="desc">Catches spam so you don't have to. Currently blocking ~1,000 messages/day.</span></div>
+        <button type="button">Active</button>
+      </div>
+      <div class="plugin" data-plugin="wpimporter">
+        <div><span class="name">WordPress Importer</span><span class="desc">Import posts, pages, comments, custom fields, categories, and tags from a WordPress eXtended RSS export.</span></div>
+        <button type="button">Activate</button>
+      </div>
+      <div class="plugin" data-plugin="jazz">
+        <div><span class="name">Jazz Codenames</span><span class="desc">Display the release codename next to the version number. Because naming is hard.</span></div>
+        <button type="button">Activate</button>
+      </div>
+    </div>
+  </div>`;
+}
+function profileHTML() {
+  const schemes = [
+    ['fresh',    ['#464646','#21759B','#ffffff']],
+    ['classic',  ['#5a5a5a','#d54e21','#ece9d8']],
+    ['blue',     ['#096484','#e1a948','#4796b3']],
+    ['coffee',   ['#46403c','#c7a589','#59524c']],
+    ['ectoplasm',['#413256','#a3b745','#523f6d']],
+    ['midnight', ['#25282b','#e14d43','#363b3f']],
+    ['ocean',    ['#627c83','#9ebaa0','#738e96']],
+    ['sunrise',  ['#b43c38','#dd823b','#cf4944']],
+  ];
+  const cards = schemes.map(([k, cols]) => `
+    <div class="scheme-card${adminState.scheme === k ? ' active' : ''}" data-scheme="${k}">
+      <div class="swatches">
+        ${cols.map(c => `<span style="background:${c}"></span>`).join('')}
+      </div>
+      <span class="lbl">${k.charAt(0).toUpperCase()+k.slice(1)}</span>
+    </div>`).join('');
+  return `
+  <h1 class="wrap-h">Your Profile</h1>
+  <div class="adminw">
+    <h3>Admin Color Scheme</h3>
+    <div class="body">
+      <p style="margin:0 0 10px">Choose a theme for your wp-admin toolbar and sidebar. (Introduced in WordPress 3.8 “Parker”.)</p>
+      <div class="schemes">${cards}</div>
+    </div>
+  </div>
+  <div class="adminw">
+    <h3>Name</h3>
+    <div class="body">
+      <p><b>Username:</b> matt</p>
+      <p><b>Role:</b> Administrator</p>
+      <p><b>Biographical Info:</b> <em>A little about yourself, to be displayed on your profile page.</em></p>
+    </div>
+  </div>`;
+}
+function postsViewHTML() {
+  return `
+  <h1 class="wrap-h">Posts</h1>
+  <div class="adminw">
+    <h3>All Posts (${RELEASES.length})</h3>
+    <div class="body">
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead><tr style="background:#f0f0f0; text-align:left;">
+          <th style="padding:6px">Title</th><th style="padding:6px">Author</th><th style="padding:6px">Categories</th><th style="padding:6px">Date</th>
+        </tr></thead>
+        <tbody>
+          ${RELEASES.map(r => `
+            <tr style="border-bottom:1px solid #eee">
+              <td style="padding:6px"><a href="#${slug(r.v)}" class="closeAdminLink"><b>WordPress ${r.v}</b></a> <span style="color:#888">${r.name!=='—'?'"'+r.name+'"':''}</span></td>
+              <td style="padding:6px">matt</td>
+              <td style="padding:6px">Jazz Greats</td>
+              <td style="padding:6px; color:#666">${fmtDate(r.date)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function commentsViewHTML() {
+  const all = RELEASES.flatMap(r => commentsFor(r).filter(c=>!c.pingback).map(c => ({rel: r, c})));
+  all.sort((a,b) => b.c.when - a.c.when);
+  return `
+  <h1 class="wrap-h">Comments</h1>
+  <div class="adminw">
+    <h3>All Comments (${all.length})</h3>
+    <div class="body">
+      ${all.slice(0,20).map(({rel,c}) => `
+        <div style="padding:6px 0;border-bottom:1px dotted #eee">
+          <b>${c.n}</b> on <a href="#${slug(rel.v)}" class="closeAdminLink">WordPress ${rel.v}</a>
+          <span style="color:#888;font-size:11px"> · ${whenString(c.when)}</span>
+          <div style="color:#444;font-style:italic;margin-top:3px">${c.text}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------- admin: plugin toggle / profile / quickpress ---------- */
+function attachDashHandlers() {
+  document.getElementById('rnCmt').textContent = document.getElementById('footCmtCount').textContent;
+  const qpPub = document.getElementById('qpPublish');
+  const qpSave = document.getElementById('qpSave');
+  const t = document.getElementById('qp-title');
+  const b = document.getElementById('qp-body');
+  qpPub.addEventListener('click', () => {
+    if (!t.value.trim()) { t.focus(); return; }
+    adminState.quickPosts.unshift(t.value.trim());
+    t.value = ''; b.value = '';
+    renderAdminView();
+  });
+  qpSave.addEventListener('click', () => {
+    if (!t.value.trim()) { t.focus(); return; }
+    adminState.quickPosts.unshift('[draft] ' + t.value.trim());
+    t.value = ''; b.value = '';
+    renderAdminView();
+  });
+  document.querySelectorAll('.toggleDolly').forEach(btn => {
+    btn.addEventListener('click', toggleDolly);
+  });
+  wireAdminDrag();
+  wireCloseLinks();
+}
+function attachPluginHandlers() {
+  document.querySelectorAll('.toggleDolly').forEach(btn => btn.addEventListener('click', toggleDolly));
+}
+function attachProfileHandlers() {
+  document.querySelectorAll('.scheme-card').forEach(card => {
+    card.addEventListener('click', () => {
+      setScheme(card.dataset.scheme);
+      renderAdminView();
+    });
+  });
+}
+function wireCloseLinks() {
+  document.querySelectorAll('.closeAdminLink').forEach(a => a.addEventListener('click', () => closeAdmin()));
+}
+function setScheme(s) {
+  adminState.scheme = s;
+  document.body.classList.remove(
+    'scheme-fresh','scheme-classic','scheme-blue','scheme-coffee',
+    'scheme-ectoplasm','scheme-midnight','scheme-ocean','scheme-sunrise'
+  );
+  document.body.classList.add('scheme-' + s);
+}
+function toggleDolly() {
+  adminState.hellodolly = !adminState.hellodolly;
+  if (adminState.hellodolly) startDolly();
+  else stopDolly();
+  renderAdminView();
+}
+
+/* ---------- Hello Dolly (paraphrased — WordPress-themed, not copyrighted lyrics) ---------- */
+const DOLLY_LINES = [
+  "♪ Code is poetry. ♪",
+  "♪ Howdy from the museum servers. ♪",
+  "♪ Another pingback arrives. ♪",
+  "♪ The cursor blinks patiently. ♪",
+  "♪ Kubrick, forever. ♪",
+  "♪ Publish! Publish! Publish! ♪",
+  "♪ Somewhere, a widget was dragged. ♪",
+  "♪ Auto-save just saved your bacon. ♪",
+  "♪ Pages, posts, and possibility. ♪",
+  "♪ Proudly powered by volunteers. ♪",
+  "♪ Trackback received with love. ♪",
+  "♪ The Codex smiles upon you. ♪",
+];
+let dollyTimer = null;
+function startDolly() {
+  const el = document.getElementById('dolly');
+  const show = () => {
+    const line = DOLLY_LINES[Math.floor(Math.random() * DOLLY_LINES.length)];
+    el.textContent = line;
+    el.classList.add('on');
+    setTimeout(() => el.classList.remove('on'), 4000);
+  };
+  show();
+  stopDolly();
+  dollyTimer = setInterval(show, 9000);
+}
+function stopDolly() {
+  if (dollyTimer) clearInterval(dollyTimer);
+  dollyTimer = null;
+  document.getElementById('dolly').classList.remove('on');
+}
+
+/* ---------- Akismet ticker ---------- */
+let akismetN = 14832;
+function tickAkismet() {
+  akismetN += Math.floor(Math.random() * 3);
+  document.getElementById('akismetCount').textContent = akismetN.toLocaleString();
+}
+
+/* ---------- sidebar drag-reorder ---------- */
+function wireSidebarDrag() {
+  const side = document.getElementById('sidebar');
+  let dragging = null;
+  side.querySelectorAll('.widget').forEach(w => {
+    w.setAttribute('draggable', 'true');
+    w.addEventListener('dragstart', (e) => {
+      dragging = w; w.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', w.dataset.key || '');
+    });
+    w.addEventListener('dragend', () => {
+      if (dragging) dragging.classList.remove('dragging');
+      dragging = null;
+    });
+    w.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!dragging || dragging === w) return;
+      const box = w.getBoundingClientRect();
+      const midY = box.top + box.height / 2;
+      if (e.clientY < midY) side.insertBefore(dragging, w);
+      else side.insertBefore(dragging, w.nextSibling);
+    });
+  });
+}
+
+/* ---------- admin dashboard drag-reorder ---------- */
+function wireAdminDrag() {
+  let dragging = null;
+  document.querySelectorAll('#adminMain .adminw').forEach(w => {
+    w.addEventListener('dragstart', (e) => {
+      dragging = w; w.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    w.addEventListener('dragend', () => {
+      if (dragging) dragging.classList.remove('dragging');
+      dragging = null;
+    });
+  });
+  document.querySelectorAll('#adminMain .col').forEach(col => {
+    col.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (!dragging) return;
+      const after = getDragAfterEl(col, e.clientY);
+      if (!after) col.appendChild(dragging);
+      else col.insertBefore(dragging, after);
+    });
+  });
+  function getDragAfterEl(container, y) {
+    const els = [...container.querySelectorAll('.adminw:not(.dragging)')];
+    return els.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) return { offset, el: child };
+      return closest;
+    }, { offset: -Infinity }).el;
+  }
+}
+
+/* ---------- wiring ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPosts();
+  renderCalendar();
+  renderCategories();
+  renderArchives();
+  wireSidebarDrag();
+
+  // admin bar
+  document.getElementById('openAdmin').addEventListener('click', (e) => { e.preventDefault(); openAdmin(); });
+  document.getElementById('openAdmin2').addEventListener('click', (e) => { e.preventDefault(); openAdmin(); });
+  document.getElementById('adminClose').addEventListener('click', (e) => { e.preventDefault(); closeAdmin(); });
+  document.getElementById('newpostAb').addEventListener('click', (e) => { e.preventDefault(); adminState.view = 'dashboard'; openAdmin(); setTimeout(() => { const t = document.getElementById('qp-title'); if (t) t.focus(); }, 500); });
+  document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); alert('You are about to log out. (Just kidding — this is a museum.)'); });
+  document.getElementById('metaLogin').addEventListener('click', (e) => { e.preventDefault(); openAdmin(); });
+
+  // admin nav
+  document.querySelectorAll('#wpadmin [data-adminview]').forEach(a => {
+    a.addEventListener('click', (e) => { e.preventDefault(); adminState.view = a.dataset.adminview; renderAdminView(); });
+  });
+
+  // calendar
+  document.getElementById('calPrev').addEventListener('click', () => calNav(-1));
+  document.getElementById('calNext').addEventListener('click', () => calNav(+1));
+  document.getElementById('calTable').addEventListener('click', (e) => {
+    const td = e.target.closest('td.has-release');
+    if (!td) return;
+    const v = td.dataset.v;
+    const el = document.getElementById(slug(v));
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.style.transition = 'box-shadow .3s'; el.style.boxShadow = '0 0 0 3px #FF4B33 inset'; setTimeout(() => el.style.boxShadow = '', 1200); }
+  });
+
+  // archives jump
+  document.getElementById('archList').addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-year]');
+    if (!a) return;
+    const y = a.dataset.year;
+    const first = RELEASES.find(r => r.date.startsWith(y));
+    if (first) {
+      e.preventDefault();
+      document.getElementById(slug(first.v)).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  // category cloud filter
+  document.getElementById('catCloud').addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-era]');
+    if (!a) return;
+    e.preventDefault();
+    const era = a.dataset.era;
+    document.querySelectorAll('article.post').forEach(p => {
+      const ev = eraOf(p.dataset.version);
+      p.classList.toggle('hide', ev !== era);
+    });
+    // Also scroll to first visible
+    const first = document.querySelector('article.post:not(.hide)');
+    if (first) first.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // search
+  const sb = document.getElementById('searchBox');
+  sb.addEventListener('input', () => applySearch(sb.value));
+  sb.addEventListener('focus', () => sb.select());
+
+  // posts delegation (click thumb, toggle comments, submit)
+  document.getElementById('posts').addEventListener('click', (e) => {
+    const thumb = e.target.closest('.thumbwrap');
+    if (thumb && !thumb.classList.contains('loaded')) {
+      activatePost(thumb);
+      return;
+    }
+    const tog = e.target.closest('.cmt-toggle');
+    if (tog) {
+      e.preventDefault();
+      const v = tog.dataset.v;
+      const rel = RELEASES.find(r => r.v === v);
+      const box = document.getElementById('cmt-' + slug(v));
+      if (box.classList.contains('open')) { box.classList.remove('open'); return; }
+      if (!box.dataset.built) { box.innerHTML = buildComments(rel); box.dataset.built = '1'; }
+      box.classList.add('open');
+      return;
+    }
+    const sub = e.target.closest('.submitcmt');
+    if (sub) {
+      e.preventDefault();
+      const box = sub.closest('.leave-reply');
+      const ok = box.querySelector('.ok');
+      ok.classList.add('show');
+      setTimeout(() => ok.classList.remove('show'), 2600);
+      box.querySelectorAll('input,textarea').forEach(f => f.value = '');
+      return;
+    }
+  });
+
+  // Akismet ticker
+  setInterval(tickAkismet, 2200);
+
+  // Deep-link via hash
+  if (location.hash) {
+    const el = document.querySelector(location.hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+  }
+
+  // Konami-code Easter egg to flip Hello Dolly on
+  const konami = [38,38,40,40,37,39,37,39,66,65];
+  let kidx = 0;
+  window.addEventListener('keydown', (e) => {
+    if (e.keyCode === konami[kidx]) {
+      kidx++;
+      if (kidx === konami.length) { toggleDolly(); kidx = 0; }
+    } else kidx = 0;
+  });
+});
+</script>
+</body>
+</html>
