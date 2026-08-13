@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WordPress Museum — Winamp Timeline</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%233858e9%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27Georgia%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EW%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=1400">
+<meta name="description" content="Play through WordPress release history in an interactive music-player timeline.">
+<link rel="canonical" href="https://wordpress.org/museum/winamp/">
+<style>
+@font-face {
+  font-family: "Press Start 2P";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/press-start-2p/PressStart2P-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "VT323";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/vt323/VT323-Regular.ttf") format("truetype");
+}
+/* ============================================================
+   WORDPRESS MUSEUM — WINAMP TIMELINE
+   Static Winamp 2.x / WMP homage.
+   ============================================================ */
+
+:root{
+  /* Classic (green) palette — the default skin */
+  --bg0:#0a0a0a;
+  --chrome-top:#4a4a4a;
+  --chrome-mid:#2b2b2b;
+  --chrome-bot:#111;
+  --chrome-hi:#8a8a8a;
+  --chrome-lo:#0a0a0a;
+  --lcd-bg:#071a0b;
+  --lcd-bg2:#0b2410;
+  --lcd-fg:#00ff66;
+  --lcd-dim:#1c6a30;
+  --accent:#00ff66;
+  --accent2:#00ffff;
+  --accent3:#ff00ff;
+  --pl-bg:#000;
+  --pl-row:#0a0a0a;
+  --pl-row-alt:#0f0f0f;
+  --pl-sel-bg:#0033aa;
+  --pl-sel-fg:#ffef5a;
+  --title-grad: linear-gradient(180deg,#4c4c4c 0%,#262626 40%,#0e0e0e 100%);
+  --title-text:#d9d9d9;
+  --btn-top:#555;
+  --btn-bot:#1b1b1b;
+  --ring:#00ff66;
+}
+
+/* ------------- Skin overrides ------------- */
+body[data-skin="bento"]{
+  --lcd-bg:#0a0a2a;
+  --lcd-bg2:#121246;
+  --lcd-fg:#7bb7ff;
+  --lcd-dim:#3a5ea0;
+  --accent:#6b8cff;
+  --accent2:#b388ff;
+  --accent3:#00d6ff;
+  --pl-sel-bg:#4b1fa8;
+  --pl-sel-fg:#b7f0ff;
+  --title-grad: linear-gradient(180deg,#3a3f6b,#1a1b3a,#0a0a1a);
+  --ring:#6b8cff;
+}
+body[data-skin="plasma"]{
+  --lcd-bg:#2a0618;
+  --lcd-bg2:#46081f;
+  --lcd-fg:#ff7bd6;
+  --lcd-dim:#a03a6e;
+  --accent:#ff2e8a;
+  --accent2:#ffae00;
+  --accent3:#ff00ff;
+  --pl-sel-bg:#a0128c;
+  --pl-sel-fg:#ffef5a;
+  --title-grad: linear-gradient(180deg,#5b1f3a,#2a0616,#0f0308);
+  --ring:#ff2e8a;
+}
+
+/* ------------- Base ------------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"VT323",ui-monospace,"Cascadia Mono",Menlo,monospace;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(60,20,80,.35), transparent 60%),
+    radial-gradient(900px 700px at 85% 80%, rgba(0,120,120,.25), transparent 60%),
+    #050505;
+  color:#cfd;
+  overflow:hidden;
+  user-select:none;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Starfield + vinyl grain */
+#stars, #grain, #milk{position:fixed;inset:0;pointer-events:none}
+#stars{z-index:0}
+#grain{
+  z-index:1;
+  opacity:.08;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px),
+    radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px);
+  background-size: 100% 3px, 3px 3px;
+  mix-blend-mode:overlay;
+}
+#milk{
+  z-index:0;
+  background:
+    conic-gradient(from 0deg at 30% 40%, rgba(0,255,102,.06), rgba(255,0,255,.06), rgba(0,255,255,.06), rgba(0,255,102,.06));
+  filter:blur(60px);
+  animation: milkspin 40s linear infinite;
+}
+@keyframes milkspin{to{transform:rotate(360deg)}}
+
+/* Scanlines */
+body::after{
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+
+/* ------------- Top bar ------------- */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:34px;z-index:1000;
+  display:flex;align-items:center;gap:10px;padding:0 14px;
+  background:linear-gradient(180deg,#1a1a1a,#050505);
+  border-bottom:1px solid #000;
+  box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 -1px 0 #000 inset;
+  font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:1px;color:#aaa;
+}
+#topbar .logo{color:var(--accent);text-shadow:0 0 8px var(--accent)}
+#topbar .spacer{flex:1}
+#topbar .skins{display:flex;gap:6px}
+.skinbtn{
+  font-family:inherit;font-size:8px;letter-spacing:1px;
+  padding:5px 9px;cursor:pointer;color:#ccc;background:#161616;border:1px solid #000;
+  box-shadow:0 1px 0 rgba(255,255,255,.1) inset, 0 -1px 0 rgba(0,0,0,.6) inset;
+}
+.skinbtn.active{color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset, 0 0 8px var(--accent)}
+.skinbtn:hover{color:#fff}
+
+/* ------------- Window shell ------------- */
+.win{
+  position:absolute;
+  background:linear-gradient(180deg,#2a2a2a,#141414 20%,#0d0d0d 80%,#050505);
+  border:1px solid #000;
+  box-shadow:
+    0 0 0 1px #2e2e2e inset,
+    0 1px 0 rgba(255,255,255,.08) inset,
+    0 -1px 0 rgba(0,0,0,.6) inset,
+    2px 2px 0 rgba(0,0,0,.35),
+    0 30px 60px -20px rgba(0,0,0,.9);
+  color:#cfd;
+  z-index:10;
+}
+.win.focused{box-shadow:
+    0 0 0 1px var(--ring) inset,
+    0 0 12px rgba(0,255,102,.15),
+    0 1px 0 rgba(255,255,255,.1) inset,
+    2px 2px 0 rgba(0,0,0,.35),
+    0 30px 60px -20px rgba(0,0,0,.9);
+}
+.titlebar{
+  height:18px;cursor:move;
+  background:var(--title-grad);
+  border-bottom:1px solid #000;
+  color:var(--title-text);
+  font-family:"Press Start 2P",monospace;font-size:7px;letter-spacing:1.3px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 7px;
+  text-shadow:0 1px 0 #000;
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset;
+}
+.titlebar .tb-left{display:flex;align-items:center;gap:7px}
+.titlebar .dot{width:8px;height:8px;border-radius:50%;background:#222;box-shadow:0 0 0 1px #000, 0 0 4px var(--accent) inset}
+.titlebar .tb-right{display:flex;gap:3px}
+.tbbtn{
+  width:11px;height:11px;background:linear-gradient(180deg,#5a5a5a,#1a1a1a);
+  border:1px solid #000;cursor:pointer;
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset;
+  font-family:monospace;font-size:8px;color:#111;line-height:9px;text-align:center;
+}
+
+/* Notched irregular window silhouette via clip-path for main & mini */
+.win.notched{
+  clip-path: polygon(
+    0 6px, 6px 6px, 6px 0,
+    calc(100% - 30px) 0, calc(100% - 24px) 6px, 100% 6px,
+    100% calc(100% - 8px), calc(100% - 8px) 100%,
+    8px 100%, 0 calc(100% - 8px)
+  );
+}
+
+/* ============================================================
+   MAIN PLAYER WINDOW
+   ============================================================ */
+#player{left:40px;top:58px;width:720px;height:300px}
+
+.lcd{
+  background:
+    linear-gradient(180deg, var(--lcd-bg2), var(--lcd-bg));
+  color:var(--lcd-fg);
+  border:1px solid #000;
+  box-shadow:
+    0 0 0 1px #1a1a1a inset,
+    0 1px 0 rgba(255,255,255,.05) inset,
+    0 0 10px rgba(0,255,102,.15) inset;
+  font-family:"VT323",monospace;
+  text-shadow:0 0 5px currentColor, 0 0 2px currentColor;
+  position:relative;
+  overflow:hidden;
+}
+.lcd::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom, rgba(0,0,0,.0) 0 2px, rgba(0,0,0,.25) 2px 3px);
+  mix-blend-mode:multiply;
+}
+
+.player-main{
+  padding:10px 12px 12px;display:grid;
+  grid-template-columns: 1fr 250px;
+  grid-template-rows: 22px 78px 42px 1fr;
+  gap:8px;
+  height:calc(100% - 18px);
+}
+
+/* Marquee LCD */
+.marquee{
+  grid-column:1/-1;
+  height:22px;overflow:hidden;position:relative;
+  padding:0 6px;
+}
+.marquee .track{
+  white-space:nowrap;display:inline-block;padding-left:100%;
+  animation: scroll-lcd 30s linear infinite;
+  font-size:22px;line-height:22px;letter-spacing:2px;
+}
+@keyframes scroll-lcd{from{transform:translateX(0)} to{transform:translateX(-100%)}}
+
+/* Now playing readout */
+.np{
+  grid-column:1/2;padding:6px 10px;position:relative;
+}
+.np .np-label{font-size:11px;letter-spacing:2px;color:var(--lcd-dim);font-family:"Press Start 2P",monospace}
+.np .np-ver{font-size:42px;line-height:44px;letter-spacing:3px}
+.np .np-sub{font-size:18px;letter-spacing:2px;color:var(--lcd-dim)}
+.np.wipe .np-ver,.np.wipe .np-sub{animation: glitchwipe .45s steps(4) 1}
+@keyframes glitchwipe{
+  0%{clip-path:inset(0 0 0 0);filter:hue-rotate(0) contrast(1)}
+  25%{clip-path:inset(0 70% 0 0);filter:hue-rotate(180deg) contrast(3)}
+  50%{clip-path:inset(40% 0 0 0);filter:hue-rotate(90deg)}
+  75%{clip-path:inset(0 0 60% 0);filter:hue-rotate(-90deg) contrast(2)}
+  100%{clip-path:inset(0);filter:none}
+}
+
+/* Spectrum analyzer */
+.spectrum{
+  grid-column:2/3;padding:6px 8px;display:flex;align-items:flex-end;gap:3px;height:78px;
+}
+.sp-bar{
+  flex:1;height:100%;display:flex;flex-direction:column-reverse;gap:1px;
+}
+.sp-cell{height:3px;background:var(--lcd-dim);opacity:.35}
+.sp-cell.on{background:var(--lcd-fg);opacity:1;box-shadow:0 0 3px currentColor}
+.sp-cell.peak{background:#fff;opacity:.9}
+
+/* Timeline ribbon */
+.tl-wrap{
+  grid-column:1/-1;height:42px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;
+}
+.tl-label{
+  display:flex;justify-content:space-between;font-family:"Press Start 2P",monospace;font-size:7px;color:var(--lcd-dim);letter-spacing:1px;
+}
+.tl-ribbon{height:18px;position:relative;border-top:1px solid var(--lcd-dim);border-bottom:1px solid var(--lcd-dim)}
+.tl-tick{position:absolute;top:2px;bottom:2px;width:2px;background:var(--lcd-fg);opacity:.5;cursor:pointer}
+.tl-tick.sig{background:var(--accent2);opacity:1;box-shadow:0 0 5px currentColor}
+.tl-tick.now{background:#fff;opacity:1;box-shadow:0 0 8px #fff, 0 0 12px var(--lcd-fg);width:3px}
+
+/* Transport */
+.transport{
+  grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 10px;
+}
+.btn{
+  width:44px;height:30px;
+  background:linear-gradient(180deg,var(--btn-top),var(--btn-bot));
+  border:1px solid #000;color:#ddd;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;cursor:pointer;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.25) inset,
+    0 -1px 0 rgba(0,0,0,.6) inset,
+    1px 1px 0 rgba(0,0,0,.5);
+}
+.btn:hover{color:#fff}
+.btn:active, .btn.active{
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.8) inset,
+    0 -1px 0 rgba(255,255,255,.05) inset;
+  transform:translate(1px,1px);
+}
+.btn.play{color:var(--accent);text-shadow:0 0 8px var(--accent)}
+.time-el{
+  font-family:"VT323",monospace;color:var(--lcd-fg);font-size:22px;letter-spacing:2px;
+  text-shadow:0 0 5px currentColor;margin-left:6px;min-width:92px;
+}
+.slider{
+  flex:1;height:12px;background:linear-gradient(180deg,#050505,#181818);
+  border:1px solid #000;box-shadow:0 1px 0 rgba(255,255,255,.1) inset;
+  position:relative;cursor:pointer;min-width:60px;
+}
+.slider .thumb{
+  position:absolute;top:-3px;width:10px;height:18px;
+  background:linear-gradient(180deg,#aaa,#444);border:1px solid #000;
+  box-shadow:0 0 6px var(--accent);
+}
+.slider.vol .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:.35}
+.tog{font-family:"Press Start 2P",monospace;font-size:8px;padding:6px 8px;background:#0a0a0a;border:1px solid #000;color:#888;cursor:pointer;letter-spacing:1px;
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset;}
+.tog.on{color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset, 0 0 8px var(--accent)}
+
+/* ============================================================
+   PLAYLIST WINDOW
+   ============================================================ */
+#playlist{right:40px;top:58px;width:420px;height:720px;display:flex;flex-direction:column}
+.pl-body{flex:1;overflow-y:auto;background:var(--pl-bg);border-top:1px solid #000;scrollbar-width:thin;scrollbar-color:#333 #000}
+.pl-body::-webkit-scrollbar{width:10px}
+.pl-body::-webkit-scrollbar-track{background:#000;border-left:1px solid #111}
+.pl-body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#4a4a4a,#1a1a1a);border:1px solid #000}
+.pl-row{
+  display:grid;grid-template-columns: 26px 58px 1fr 80px 18px;
+  gap:6px;align-items:center;
+  padding:3px 8px;font-family:"VT323",monospace;font-size:17px;letter-spacing:1px;
+  color:#b5d6b8;border-bottom:1px solid #050505;cursor:pointer;
+}
+.pl-row:nth-child(odd){background:var(--pl-row)}
+.pl-row:nth-child(even){background:var(--pl-row-alt)}
+.pl-row:hover{color:#fff}
+.pl-row.current{background:var(--pl-sel-bg);color:var(--pl-sel-fg);text-shadow:0 0 5px var(--pl-sel-fg)}
+.pl-row .idx{color:var(--lcd-dim);text-align:right}
+.pl-row .ver{color:var(--accent);font-weight:bold}
+.pl-row.current .ver{color:var(--pl-sel-fg)}
+.pl-row .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-row .date{color:#7a7a7a;font-size:14px;text-align:right}
+.pl-row .star{color:var(--accent2);text-align:center}
+.pl-row:not(.sig) .star{visibility:hidden}
+.pl-header{
+  display:grid;grid-template-columns: 26px 58px 1fr 80px 18px;gap:6px;
+  padding:5px 8px;font-family:"Press Start 2P",monospace;font-size:7px;color:#888;letter-spacing:1px;
+  background:linear-gradient(180deg,#1a1a1a,#0a0a0a);border-bottom:1px solid #000;
+}
+.pl-footer{
+  padding:4px 8px;font-family:"VT323",monospace;font-size:15px;color:var(--lcd-dim);
+  background:#000;border-top:1px solid #111;display:flex;justify-content:space-between;
+}
+
+/* ============================================================
+   EQUALIZER WINDOW
+   ============================================================ */
+#eq{left:40px;top:378px;width:420px;height:220px}
+.eq-body{padding:10px 12px;display:flex;flex-direction:column;gap:8px;height:calc(100% - 18px)}
+.eq-top{display:flex;justify-content:space-between;align-items:center}
+.eq-presets{display:flex;gap:4px}
+.eq-sliders{flex:1;display:grid;grid-template-columns: 40px repeat(10,1fr);gap:4px;align-items:end}
+.eq-preamp,.eq-band{
+  height:100%;display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.eq-track{
+  width:10px;flex:1;background:linear-gradient(180deg,#050505,#181818);
+  border:1px solid #000;position:relative;cursor:ns-resize;
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset;
+}
+.eq-cap{
+  position:absolute;left:-4px;width:18px;height:8px;
+  background:linear-gradient(180deg,#888,#333);border:1px solid #000;
+  box-shadow:0 0 6px var(--accent);
+}
+.eq-label{font-family:"Press Start 2P",monospace;font-size:6px;color:#888;letter-spacing:1px}
+
+/* ============================================================
+   SCREENSHOT / VISUALIZER WINDOW
+   ============================================================ */
+#screen{left:480px;top:378px;width:540px;height:360px}
+.screen-body{position:relative;height:calc(100% - 18px);background:#000;overflow:hidden}
+.mockup{position:absolute;inset:0;display:flex;flex-direction:column}
+.play-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at center, rgba(0,0,0,.15), rgba(0,0,0,.75));
+  cursor:pointer;z-index:2;transition:opacity .2s;
+}
+.play-overlay .ring{
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle, rgba(0,0,0,.4), rgba(0,0,0,.1));
+  border:3px solid var(--accent);
+  box-shadow:0 0 30px var(--accent), 0 0 0 6px rgba(0,255,102,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;color:var(--accent);text-shadow:0 0 15px var(--accent);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.play-overlay:hover .ring{background:radial-gradient(circle, rgba(0,255,102,.25), rgba(0,0,0,.1))}
+.play-overlay .caption{
+  position:absolute;bottom:22px;left:0;right:0;text-align:center;
+  font-family:"Press Start 2P",monospace;font-size:8px;letter-spacing:2px;color:#fff;
+  text-shadow:0 0 5px var(--accent);
+}
+.screen-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;z-index:3}
+
+/* Era-specific admin mockups */
+.mk-titlebar{height:22px;display:flex;align-items:center;padding:0 10px;font-family:Georgia,serif;font-size:12px;flex-shrink:0}
+.mk-menu{display:flex;height:26px;flex-shrink:0;font-family:"Lucida Grande",Verdana,sans-serif;font-size:10px}
+.mk-side{width:130px;flex-shrink:0;font-family:"Lucida Grande",Verdana,sans-serif;font-size:10px}
+.mk-main{flex:1;padding:10px;font-family:Georgia,serif;font-size:11px;overflow:hidden}
+.mk-row{padding:3px 10px;border-bottom:1px solid rgba(0,0,0,.05)}
+
+/* Era 0.7 (b2 style) */
+.era-0 .mockup{background:#f5f5dc;color:#333}
+.era-0 .mk-titlebar{background:#336;color:#fff;font-weight:bold}
+.era-0 .mk-menu{background:#ccc;border-bottom:1px solid #999;padding:4px 10px}
+.era-0 .mk-menu span{margin-right:14px;color:#006}
+.era-0 .mk-main{font-family:"Times New Roman",serif}
+
+/* Era 1.x (Dotorg blue) */
+.era-1 .mockup{background:#fff;color:#333}
+.era-1 .mk-titlebar{background:#2583ad;color:#fff;font-weight:bold}
+.era-1 .mk-menu{background:#e5eefa;border-bottom:1px solid #a7c7dc;padding:4px 10px}
+.era-1 .mk-menu span{margin-right:14px;color:#2583ad}
+.era-1 .mk-main{background:#fff}
+
+/* Era 2.0–2.6 (blue Shuttle) */
+.era-2a .mockup{background:#fff;color:#333}
+.era-2a .mk-titlebar{background:linear-gradient(180deg,#464646,#2a2a2a);color:#fff}
+.era-2a .mk-menu{background:linear-gradient(180deg,#4f5a68,#2e3947);color:#e0e8f0;padding:5px 10px;border-bottom:2px solid #1a2030}
+.era-2a .mk-menu span{margin-right:14px}
+
+/* Era 2.7–3.7 (Shuttle/MP6 lead-in, gray+blue) */
+.era-2b .mockup{background:#f1f1f1;color:#333}
+.era-2b .mk-titlebar{background:#222;color:#eee}
+.era-2b .mk-side{background:linear-gradient(180deg,#464646,#2a2a2a);color:#dcdcdc;padding:8px 0}
+.era-2b .mk-side div{padding:6px 12px;border-bottom:1px solid #333}
+.era-2b .mk-side div:first-child{color:#21a1d6}
+.era-2b .mk-main{background:#f1f1f1}
+
+/* Era 3.8+ (MP6 flat) */
+.era-38 .mockup{background:#f1f1f1;color:#222;flex-direction:row}
+.era-38 .mk-side{background:#23282d;color:#eee;width:150px;padding:8px 0}
+.era-38 .mk-side div{padding:7px 12px;font-size:11px}
+.era-38 .mk-side div.active{background:#0073aa;color:#fff}
+.era-38 .mk-col{flex:1;display:flex;flex-direction:column}
+.era-38 .mk-top{height:30px;background:#23282d;color:#eee;padding:8px 14px;font-size:11px}
+.era-38 .mk-main{background:#f1f1f1;font-family:"Helvetica Neue",sans-serif;font-size:12px}
+
+/* Era 5.0+ (Gutenberg) */
+.era-g .mockup{background:#fff;color:#1e1e1e;flex-direction:row}
+.era-g .mk-side{background:#1e1e1e;color:#fff;width:60px;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:16px}
+.era-g .mk-side .dot{width:30px;height:30px;background:#303030;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff}
+.era-g .mk-col{flex:1;display:flex;flex-direction:column;background:#fff}
+.era-g .mk-top{height:36px;background:#fff;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;padding:0 12px;gap:10px;font-size:11px;font-family:-apple-system,sans-serif;color:#1e1e1e}
+.era-g .mk-top .chip{padding:3px 8px;background:#f0f0f0;border-radius:3px;font-size:10px}
+.era-g .mk-canvas{flex:1;background:#fff;padding:30px;display:flex;flex-direction:column;gap:16px;font-family:-apple-system,sans-serif}
+.era-g .mk-block-title{font-size:28px;font-weight:bold;color:#1e1e1e}
+.era-g .mk-block-p{font-size:11px;color:#555;line-height:1.5}
+.era-g .mk-block-ph{height:80px;background:linear-gradient(135deg,#007cba,#0f1e4a);border-radius:4px;color:#fff;padding:14px;font-size:12px}
+
+/* Era 6.x+ (FSE) */
+.era-fse .mockup{background:#1e1e1e;color:#fff;flex-direction:row}
+.era-fse .mk-side{background:#1e1e1e;color:#fff;width:240px;padding:12px;display:flex;flex-direction:column;gap:10px;font-family:-apple-system,sans-serif;font-size:11px}
+.era-fse .mk-side .item{padding:6px 10px;background:#2a2a2a;border-radius:3px}
+.era-fse .mk-side .item.active{background:#007cba}
+.era-fse .mk-canvas{flex:1;background:#f0f0f0;padding:20px;display:flex;align-items:center;justify-content:center}
+.era-fse .mk-frame{background:#fff;color:#111;width:90%;height:90%;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:26px;font-family:-apple-system,sans-serif;display:flex;flex-direction:column;gap:14px}
+.era-fse .mk-frame h1{font-size:24px;font-weight:700}
+.era-fse .mk-frame p{font-size:12px;color:#444;line-height:1.5}
+.era-fse .mk-frame .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.era-fse .mk-frame .card{height:50px;background:linear-gradient(135deg,#eaeaea,#ccc);border-radius:3px}
+
+/* ============================================================
+   INFO / ABOUT WINDOW
+   ============================================================ */
+#info{left:480px;top:758px;width:540px;min-height:160px;display:none}
+.info-body{padding:12px;font-family:"VT323",monospace;font-size:18px;line-height:1.2;color:#cfd}
+.info-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.info-ver{font-family:"Press Start 2P",monospace;font-size:12px;letter-spacing:2px;color:var(--accent);text-shadow:0 0 6px var(--accent)}
+.info-date{color:#888;font-size:15px}
+.star-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:"Press Start 2P",monospace;font-size:8px;color:#000;
+  background:linear-gradient(180deg,var(--accent2),var(--accent3));
+  padding:4px 8px;letter-spacing:1px;
+  box-shadow:0 0 10px var(--accent2);
+}
+.info-trivia{color:#b9d9bc;margin-bottom:10px}
+.info-liner{margin-top:8px;border-top:1px dashed var(--lcd-dim);padding-top:8px}
+.info-liner .lnr-title{font-family:"Press Start 2P",monospace;font-size:7px;color:var(--lcd-dim);letter-spacing:2px;margin-bottom:4px}
+.info-liner ol{list-style:none;counter-reset:lnr}
+.info-liner li{counter-increment:lnr;padding:2px 0;color:var(--accent)}
+.info-liner li::before{content:"A" counter(lnr,decimal-leading-zero) "  ";color:var(--lcd-dim)}
+
+/* Siren flash */
+@keyframes siren{
+  0%,100%{background:#ff2e8a;box-shadow:0 0 20px #ff2e8a}
+  50%{background:#00ffff;box-shadow:0 0 20px #00ffff}
+}
+.siren-on{animation:siren .4s linear infinite}
+
+/* Responsive-ish */
+@media (max-width:1100px){
+  #player{width:640px}
+  #playlist{width:360px}
+  #eq{width:360px}
+  #screen{left:420px;width:520px}
+  #info{left:420px;width:520px}
+}
+
+/* Hint text */
+#hint{
+  position:fixed;bottom:10px;left:14px;z-index:999;
+  font-family:"Press Start 2P",monospace;font-size:7px;color:#555;letter-spacing:2px;
+}
+#hint b{color:var(--accent2);text-shadow:0 0 5px var(--accent2)}
+
+</style>
+</head>
+<body data-skin="classic">
+
+<canvas id="stars"></canvas>
+<div id="milk"></div>
+<div id="grain"></div>
+
+<div id="topbar">
+  <span class="logo">*** WP::MUSEUM.v2</span>
+  <span style="color:#555">WINAMP TIMELINE</span>
+  <span class="spacer"></span>
+  <span style="color:#666">SKIN:</span>
+  <div class="skins">
+    <button class="skinbtn active" data-skin="classic">CLASSIC</button>
+    <button class="skinbtn" data-skin="bento">BENTO</button>
+    <button class="skinbtn" data-skin="plasma">PLASMA</button>
+  </div>
+</div>
+
+<!-- ============= MAIN PLAYER ============= -->
+<div id="player" class="win notched focused">
+  <div class="titlebar">
+    <div class="tb-left"><span class="dot"></span><span>WORDPRESS MUSEUM — MAIN PLAYER</span></div>
+    <div class="tb-right"><div class="tbbtn">_</div><div class="tbbtn">x</div></div>
+  </div>
+  <div class="player-main lcd">
+    <div class="marquee">
+      <span class="track" id="marquee-track">*** LLAMADA AL PUBLICO *** WORDPRESS MUSEUM — A DISCOGRAPHY IN 53 ALBUMS — JAZZ CODENAMES, BLOCK EDITORS, AND TWO DECADES OF OPEN-SOURCE PUBLISHING *** DOUBLE-CLICK A TRACK TO LOAD *** HIT PLAY TO BOOT A LIVE SANDBOX IN THE BROWSER *** </span>
+    </div>
+
+    <div class="np" id="np">
+      <div class="np-label">NOW PLAYING</div>
+      <div class="np-ver" id="np-ver">1.0 MILES</div>
+      <div class="np-sub" id="np-sub">2004.01.03 &nbsp;&bull;&nbsp; TRACK 02/53</div>
+    </div>
+
+    <div class="spectrum" id="spectrum"></div>
+
+    <div class="tl-wrap">
+      <div class="tl-label"><span>RELEASE CADENCE 2003 — 2026</span><span id="tl-count"></span></div>
+      <div class="tl-ribbon" id="tl-ribbon"></div>
+    </div>
+
+    <div class="transport">
+      <button class="btn" title="Previous" data-act="prev">&#x23EE;</button>
+      <button class="btn" title="Rewind" data-act="rw">&#x25C0;</button>
+      <button class="btn play" title="Play (boot sandbox)" data-act="play">&#x25B6;</button>
+      <button class="btn" title="Pause" data-act="pause">&#x23F8;</button>
+      <button class="btn" title="Stop" data-act="stop">&#x25FC;</button>
+      <button class="btn" title="Next" data-act="next">&#x23ED;</button>
+      <div class="time-el" id="time-el">--:--</div>
+      <div class="slider vol" id="vol"><div class="fill" style="width:70%"></div><div class="thumb" style="left:70%"></div></div>
+      <div class="slider" id="bal" style="max-width:80px"><div class="thumb" style="left:50%"></div></div>
+      <button class="tog" data-tog="shuf">SHUF</button>
+      <button class="tog on" data-tog="rep">REP</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============= PLAYLIST ============= -->
+<div id="playlist" class="win">
+  <div class="titlebar">
+    <div class="tb-left"><span class="dot"></span><span>PLAYLIST</span></div>
+    <div class="tb-right"><div class="tbbtn">_</div><div class="tbbtn">x</div></div>
+  </div>
+  <div class="pl-header">
+    <span>#</span><span>VER</span><span>TITLE / NAME</span><span style="text-align:right">DATE</span><span></span>
+  </div>
+  <div class="pl-body" id="pl-body"></div>
+  <div class="pl-footer">
+    <span id="pl-total">Loading tracks…</span>
+    <span id="pl-dur">~23 years</span>
+  </div>
+</div>
+
+<!-- ============= EQ ============= -->
+<div id="eq" class="win">
+  <div class="titlebar">
+    <div class="tb-left"><span class="dot"></span><span>EQUALIZER</span></div>
+    <div class="tb-right"><div class="tbbtn">_</div><div class="tbbtn">x</div></div>
+  </div>
+  <div class="eq-body lcd">
+    <div class="eq-top">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--lcd-dim);letter-spacing:2px">10-BAND DSP</div>
+      <div class="eq-presets">
+        <button class="tog" data-eq="auto">AUTO</button>
+        <button class="tog" data-eq="preset">PRESET</button>
+        <button class="tog" id="siren-btn">KILL BILL SIRENS</button>
+      </div>
+    </div>
+    <div class="eq-sliders" id="eq-sliders"></div>
+  </div>
+</div>
+
+<!-- ============= SCREEN / VISUALIZER ============= -->
+<div id="screen" class="win notched">
+  <div class="titlebar">
+    <div class="tb-left"><span class="dot"></span><span id="screen-title">SCREENSHOT — 1.0 MILES</span></div>
+    <div class="tb-right"><div class="tbbtn">_</div><div class="tbbtn">x</div></div>
+  </div>
+  <div class="screen-body" id="screen-body">
+    <!-- mockup + overlay injected by JS -->
+  </div>
+</div>
+
+<!-- ============= INFO / ABOUT ============= -->
+<div id="info" class="win" style="display:block">
+  <div class="titlebar">
+    <div class="tb-left"><span class="dot"></span><span>ABOUT / LINER NOTES</span></div>
+    <div class="tb-right"><div class="tbbtn">_</div><div class="tbbtn">x</div></div>
+  </div>
+  <div class="info-body">
+    <div class="info-head">
+      <div>
+        <div class="info-ver" id="info-ver">1.0 MILES</div>
+        <div class="info-date" id="info-date">January 3, 2004</div>
+      </div>
+      <div id="info-badge"></div>
+    </div>
+    <div class="info-trivia" id="info-trivia"></div>
+    <div class="info-liner">
+      <div class="lnr-title">A-SIDE / LINER NOTES</div>
+      <ol id="info-liner-list"></ol>
+    </div>
+  </div>
+</div>
+
+<div id="hint">DRAG TITLEBARS TO MOVE &nbsp;|&nbsp; CLICK A <b>TRACK</b> &nbsp;|&nbsp; HIT <b>PLAY</b> FOR A LIVE SANDBOX</div>
+
+<script src="../data/releases.js"></script>
+<script>
+/* ============================================================
+   DATA — every WordPress release 0.70 → 7.0
+   ============================================================ */
+const RELEASES = window.WP_MUSEUM_RELEASES;
+
+/* ============================================================
+   State
+   ============================================================ */
+let currentIdx = 1; // 1.0 Miles
+let shuf = false, rep = true;
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const pad = (n,w=2)=>String(n).padStart(w,'0');
+const fmtDateDot = iso => iso.replace(/-/g,'.');
+const fmtDateLong = iso => {
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const [y,m,d] = iso.split('-').map(Number);
+  return `${months[m-1]} ${d}, ${y}`;
+};
+
+/* Era tag per release */
+function era(v){
+  const [maj,min]=v.split('.').map(Number);
+  if(maj===0) return 'era-0';
+  if(maj===1) return 'era-1';
+  if(maj===2 && min<7) return 'era-2a';
+  if(maj===2 || (maj===3 && min<8)) return 'era-2b';
+  if(maj===3 || maj===4) return 'era-38';
+  if(maj===5) return 'era-g';
+  return 'era-fse';
+}
+
+/* ============================================================
+   Build playlist
+   ============================================================ */
+function buildPlaylist(){
+  const body = $('#pl-body');
+  body.innerHTML = RELEASES.map((r,i)=>`
+    <div class="pl-row ${r.significant?'sig':''}" data-idx="${i}">
+      <span class="idx">${pad(i+1)}.</span>
+      <span class="ver">${r.v}</span>
+      <span class="name">${r.name==='—'?'<i style="color:#666">untitled</i>':r.name}</span>
+      <span class="date">${fmtDateDot(r.date)}</span>
+      <span class="star">*</span>
+    </div>
+  `).join('');
+  body.addEventListener('click', e=>{
+    const row = e.target.closest('.pl-row');
+    if(!row) return;
+    selectRelease(+row.dataset.idx, true);
+  });
+  $('#pl-total').textContent = `${RELEASES.length} tracks`;
+  const span = (new Date(RELEASES[RELEASES.length-1].date) - new Date(RELEASES[0].date))/(365.25*24*3600*1000);
+  $('#pl-dur').textContent = `${span.toFixed(1)} years`;
+}
+
+/* ============================================================
+   Timeline ribbon
+   ============================================================ */
+function buildTimeline(){
+  const rib = $('#tl-ribbon');
+  const first = new Date(RELEASES[0].date).getTime();
+  const last = new Date(RELEASES[RELEASES.length-1].date).getTime();
+  rib.innerHTML = RELEASES.map((r,i)=>{
+    const t = new Date(r.date).getTime();
+    const pct = ((t-first)/(last-first))*100;
+    return `<div class="tl-tick ${r.significant?'sig':''}" data-idx="${i}" style="left:${pct}%" title="${r.v} ${r.name}"></div>`;
+  }).join('');
+  rib.addEventListener('click', e=>{
+    const t = e.target.closest('.tl-tick');
+    if(t) selectRelease(+t.dataset.idx, true);
+  });
+  $('#tl-count').textContent = `${RELEASES.length} RELEASES`;
+}
+function updateTimelineNow(){
+  $$('.tl-tick').forEach(t=>t.classList.toggle('now', +t.dataset.idx===currentIdx));
+}
+
+/* ============================================================
+   Select / load a release
+   ============================================================ */
+function selectRelease(idx, animate){
+  if(idx<0) idx = RELEASES.length-1;
+  if(idx>=RELEASES.length) idx = 0;
+  currentIdx = idx;
+  const r = RELEASES[idx];
+
+  // LCD
+  const np = $('#np');
+  if(animate){ np.classList.remove('wipe'); void np.offsetWidth; np.classList.add('wipe'); }
+  const nameUp = (r.name==='—'?'':r.name.toUpperCase());
+  $('#np-ver').textContent = `${r.v}${nameUp? ' '+nameUp:''}`;
+  $('#np-sub').textContent = `${fmtDateDot(r.date)}  \u2022  TRACK ${pad(idx+1)}/${RELEASES.length}`;
+
+  // Elapsed time (release date → today)
+  const rel = new Date(r.date);
+  const diffDays = Math.floor((Date.now()-rel)/(24*3600*1000));
+  const hh = Math.floor(Math.abs(diffDays)/60), mm = Math.abs(diffDays)%60;
+  $('#time-el').textContent = (diffDays<0?'-':'') + pad(hh) + ':' + pad(mm);
+
+  // Playlist highlight
+  $$('#pl-body .pl-row').forEach(el=>el.classList.toggle('current', +el.dataset.idx===idx));
+  const cur = $('#pl-body .pl-row.current');
+  if(cur) cur.scrollIntoView({block:'nearest'});
+
+  updateTimelineNow();
+
+  // Screen
+  renderScreen(r);
+
+  // Info
+  renderInfo(r);
+
+  // Title
+  $('#screen-title').textContent = `SCREENSHOT — ${r.v}${nameUp?' '+nameUp:''}`;
+}
+
+/* ============================================================
+   Era-appropriate mockups
+   ============================================================ */
+function renderScreen(r){
+  const body = $('#screen-body');
+  const e = era(r.v);
+  let html = '';
+  if(e==='era-0'){
+    html = `<div class="mockup era-0">
+      <div class="mk-titlebar">b2 ~ WordPress :: Dashboard</div>
+      <div class="mk-menu"><span>Write</span><span>Edit</span><span>Import</span><span>Options</span><span>Profile</span></div>
+      <div class="mk-main">
+        <h3 style="font-family:Times,serif">Write Post</h3>
+        <p style="margin:6px 0">Title: <input style="width:60%;border:1px solid #999;padding:2px" value="Hello world!"></p>
+        <p style="margin:6px 0">Post: <textarea style="width:90%;height:60px;border:1px solid #999;padding:2px">Welcome to WordPress. This is your first post.</textarea></p>
+        <button style="background:#336;color:#fff;border:1px solid #000;padding:3px 10px">Publish</button>
+      </div>
+    </div>`;
+  } else if(e==='era-1'){
+    html = `<div class="mockup era-1">
+      <div class="mk-titlebar">WordPress &raquo; ${r.v} ${r.name==='—'?'':r.name}</div>
+      <div class="mk-menu"><span>Write</span><span>Manage</span><span>Links</span><span>Presentation</span><span>Plugins</span><span>Users</span><span>Options</span></div>
+      <div class="mk-main" style="padding:12px">
+        <h2 style="font-family:Georgia,serif;color:#2583ad">Dashboard</h2>
+        <p style="font-size:11px;color:#555;margin:8px 0">Welcome to WordPress. This is your blogging software, and you've never had it so easy.</p>
+        <div style="border:1px solid #cfcfcf;background:#f7f9fc;padding:8px;font-size:11px"><b>Latest activity</b> — your blog is looking good.</div>
+      </div>
+    </div>`;
+  } else if(e==='era-2a'){
+    html = `<div class="mockup era-2a">
+      <div class="mk-titlebar" style="padding-left:12px;font-size:11px">WordPress ${r.v} ${r.name}</div>
+      <div class="mk-menu"><span>Dashboard</span><span>Write</span><span>Manage</span><span>Design</span><span>Comments</span><span>Plugins</span><span>Users</span><span>Settings</span></div>
+      <div class="mk-main" style="padding:16px;background:#fff">
+        <h2 style="font-family:'Lucida Grande',sans-serif;font-size:18px;color:#464646">Dashboard</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div style="border:1px solid #dfdfdf;padding:10px"><b style="color:#2583ad">Right Now</b><div style="font-size:10px;color:#555;margin-top:4px">1 post · 1 page · 1 category</div></div>
+          <div style="border:1px solid #dfdfdf;padding:10px"><b style="color:#2583ad">Recent Comments</b><div style="font-size:10px;color:#555;margin-top:4px">Mr WordPress on Hello world!</div></div>
+        </div>
+      </div>
+    </div>`;
+  } else if(e==='era-2b'){
+    html = `<div class="mockup era-2b" style="flex-direction:row">
+      <div class="mk-side">
+        <div>Dashboard</div><div>Posts</div><div>Media</div><div>Links</div>
+        <div>Pages</div><div>Comments</div><div>Appearance</div><div>Plugins</div>
+        <div>Users</div><div>Tools</div><div>Settings</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column">
+        <div class="mk-titlebar" style="padding-left:12px;font-size:11px">WordPress ${r.v} ${r.name}</div>
+        <div class="mk-main" style="padding:14px">
+          <h2 style="font-family:'Helvetica Neue',sans-serif;font-size:20px;color:#222">Dashboard</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+            <div style="background:#fff;border:1px solid #dfdfdf;padding:10px"><b style="color:#21a1d6">QuickPress</b><input style="width:100%;margin-top:6px;padding:4px;border:1px solid #ccc" value="Title"></div>
+            <div style="background:#fff;border:1px solid #dfdfdf;padding:10px"><b style="color:#21a1d6">Right Now</b><div style="font-size:10px;margin-top:4px">You are using WordPress ${r.v}.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  } else if(e==='era-38'){
+    html = `<div class="mockup era-38">
+      <div class="mk-side">
+        <div>Dashboard</div><div class="active">Posts</div><div>Media</div><div>Pages</div>
+        <div>Comments</div><div>Appearance</div><div>Plugins</div><div>Users</div>
+        <div>Tools</div><div>Settings</div>
+      </div>
+      <div class="mk-col">
+        <div class="mk-top">WordPress ${r.v} &ldquo;${r.name}&rdquo; · Howdy, admin</div>
+        <div class="mk-main" style="padding:18px">
+          <h1 style="font-size:22px;font-weight:400;color:#23282d">Posts <a style="font-size:12px;color:#0073aa;text-decoration:none;margin-left:6px">Add New</a></h1>
+          <div style="margin-top:12px;background:#fff;border:1px solid #e5e5e5">
+            <div style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #e5e5e5;font-size:11px;color:#555">Title · Author · Categories · Date</div>
+            <div style="padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:12px"><b style="color:#0073aa">Hello world!</b> · admin · Uncategorized · Published</div>
+            <div style="padding:8px 12px;font-size:12px"><b style="color:#0073aa">Sample Page</b> · admin · &mdash; · Draft</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  } else if(e==='era-g'){
+    html = `<div class="mockup era-g">
+      <div class="mk-side">
+        <div class="dot">W</div><div class="dot">+</div><div class="dot">&#x21A9;</div><div class="dot">i</div>
+      </div>
+      <div class="mk-col">
+        <div class="mk-top">
+          <span>&larr;</span><span class="chip">Add title</span>
+          <span style="margin-left:auto" class="chip">Save draft</span>
+          <span class="chip" style="background:#007cba;color:#fff">Publish</span>
+        </div>
+        <div class="mk-canvas">
+          <div class="mk-block-title">Hello, Gutenberg.</div>
+          <div class="mk-block-p">The block editor changed everything in 2018. Every paragraph, every heading, every image is a block you can rearrange, transform, and style individually.</div>
+          <div class="mk-block-ph">&#x25A0; Cover Block &mdash; drop a background image here</div>
+          <div class="mk-block-p" style="color:#888">Version ${r.v} &ldquo;${r.name}&rdquo; &mdash; ${fmtDateLong(r.date)}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    html = `<div class="mockup era-fse">
+      <div class="mk-side">
+        <div class="item">Site</div>
+        <div class="item active">Templates</div>
+        <div class="item">Patterns</div>
+        <div class="item">Styles</div>
+        <div class="item">Pages</div>
+        <div class="item">Navigation</div>
+        <div style="margin-top:auto;font-size:9px;color:#888">${r.v} &ldquo;${r.name}&rdquo;</div>
+      </div>
+      <div class="mk-canvas">
+        <div class="mk-frame">
+          <h1>Full Site Editing</h1>
+          <p>Design every part of your site visually. Templates, headers, footers &mdash; all blocks, all editable.</p>
+          <div class="grid">
+            <div class="card"></div><div class="card"></div><div class="card"></div>
+            <div class="card"></div><div class="card"></div><div class="card"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const versionForUrl = encodeURIComponent(r.v);
+  body.innerHTML = html + `
+    <div class="play-overlay" id="play-overlay">
+      <div class="ring">&#x25B6;</div>
+      <div class="caption">&#x25BC; CLICK TO BOOT WP ${r.v} IN YOUR BROWSER &#x25BC;</div>
+    </div>`;
+  $('#play-overlay').addEventListener('click', ()=>bootSandbox(r.v));
+}
+
+function bootSandbox(ver){
+  const body = $('#screen-body');
+  // preserve mockup as fallback
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://playground.wordpress.net/?wp=${encodeURIComponent(ver)}`;
+  iframe.setAttribute('allow','clipboard-read; clipboard-write; fullscreen');
+  // remove old iframe
+  $$('iframe',body).forEach(f=>f.remove());
+  // hide overlay
+  const ov = $('#play-overlay'); if(ov) ov.style.opacity='0';
+  body.appendChild(iframe);
+}
+
+/* ============================================================
+   Info panel
+   ============================================================ */
+function renderInfo(r){
+  $('#info-ver').textContent = `${r.v}${r.name==='—'?'':' — '+r.name}`;
+  $('#info-date').textContent = fmtDateLong(r.date);
+  $('#info-badge').innerHTML = r.significant ? `<span class="star-badge">&#x2605; SIGNIFICANT RELEASE</span>` : '';
+  $('#info-trivia').textContent = r.trivia;
+  // liner notes: split trivia into sentences, take up to 5, strip empties
+  const sentences = r.trivia
+    .split(/(?<=[.!?])\s+/)
+    .map(s=>s.trim())
+    .filter(s=>s.length>3)
+    .slice(0,6);
+  $('#info-liner-list').innerHTML = sentences.map(s=>`<li>${s}</li>`).join('');
+}
+
+/* ============================================================
+   Spectrum analyzer (faux)
+   ============================================================ */
+function buildSpectrum(){
+  const sp = $('#spectrum');
+  const BARS=20, CELLS=16;
+  const bars=[];
+  for(let b=0;b<BARS;b++){
+    const bar=document.createElement('div');bar.className='sp-bar';
+    const cells=[];
+    for(let c=0;c<CELLS;c++){
+      const cel=document.createElement('div');cel.className='sp-cell';
+      bar.appendChild(cel);cells.push(cel);
+    }
+    sp.appendChild(bar);bars.push({cells,val:Math.random()*CELLS*0.6,peak:0,peakHold:0});
+  }
+  let t=0;
+  setInterval(()=>{
+    t++;
+    bars.forEach((bar,i)=>{
+      // musical random walk with bass/treble envelope
+      const env = 0.5+0.5*Math.sin(t*0.05 + i*0.3)*Math.cos(t*0.02);
+      const jitter = (Math.random()-0.5)*3;
+      bar.val = Math.max(0, Math.min(CELLS, bar.val*0.85 + env*CELLS*0.6 + jitter));
+      const lit = Math.round(bar.val);
+      if(lit>bar.peak){bar.peak=lit;bar.peakHold=10}
+      else{bar.peakHold--; if(bar.peakHold<0){bar.peak=Math.max(0,bar.peak-0.5)}}
+      bar.cells.forEach((c,idx)=>{
+        c.classList.toggle('on', idx<lit);
+        c.classList.toggle('peak', idx===Math.round(bar.peak) && idx>0);
+      });
+    });
+  },70);
+}
+
+/* ============================================================
+   Equalizer
+   ============================================================ */
+function buildEQ(){
+  const freqs = ['PRE','60','170','310','600','1K','3K','6K','12K','14K','16K'];
+  const host = $('#eq-sliders');
+  host.innerHTML = freqs.map((f,i)=>`
+    <div class="${i===0?'eq-preamp':'eq-band'}">
+      <div class="eq-track" data-band="${i}"><div class="eq-cap" style="top:50%"></div></div>
+      <div class="eq-label">${f}</div>
+    </div>
+  `).join('');
+  // drag
+  $$('#eq-sliders .eq-track').forEach(track=>{
+    const cap = $('.eq-cap',track);
+    let dragging=false;
+    const move = e=>{
+      if(!dragging) return;
+      const r = track.getBoundingClientRect();
+      const y = ((e.clientY||e.touches?.[0]?.clientY) - r.top)/r.height;
+      const clamp = Math.max(0,Math.min(1,y));
+      cap.style.top = (clamp*100)+'%';
+    };
+    track.addEventListener('mousedown',e=>{dragging=true;move(e)});
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',()=>dragging=false);
+  });
+  // preset buttons toggle
+  $$('.tog[data-eq]').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('on')));
+  // siren preset
+  $('#siren-btn').addEventListener('click', ()=>{
+    const caps = $$('#eq-sliders .eq-cap');
+    const body = document.body;
+    body.classList.add('siren-on');
+    // V-shape sirens
+    caps.forEach((c,i)=>{
+      const n = caps.length-1;
+      const v = Math.abs(i-n/2)/(n/2); // 0 center, 1 edges
+      c.style.top = (50 - v*45) + '%';
+    });
+    setTimeout(()=>body.classList.remove('siren-on'),1600);
+  });
+}
+
+/* ============================================================
+   Transport
+   ============================================================ */
+function wireTransport(){
+  $$('#player .btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const act = b.dataset.act;
+      if(act==='next') selectRelease(currentIdx+1,true);
+      else if(act==='prev') selectRelease(currentIdx-1,true);
+      else if(act==='rw') selectRelease(Math.max(0,currentIdx-5),true);
+      else if(act==='play'){
+        bootSandbox(RELEASES[currentIdx].v);
+      } else if(act==='stop'){
+        // restore mockup
+        renderScreen(RELEASES[currentIdx]);
+      } else if(act==='pause'){
+        b.classList.toggle('active');
+      }
+    });
+  });
+  $$('.tog[data-tog]').forEach(b=>{
+    b.addEventListener('click',()=>b.classList.toggle('on'));
+  });
+  // vol slider
+  const vol = $('#vol');
+  vol.addEventListener('click', e=>{
+    const r = vol.getBoundingClientRect();
+    const p = ((e.clientX-r.left)/r.width)*100;
+    $('.thumb',vol).style.left = p+'%';
+    $('.fill',vol).style.width = p+'%';
+  });
+  const bal = $('#bal');
+  bal.addEventListener('click', e=>{
+    const r = bal.getBoundingClientRect();
+    const p = ((e.clientX-r.left)/r.width)*100;
+    $('.thumb',bal).style.left = p+'%';
+  });
+}
+
+/* ============================================================
+   Draggable windows
+   ============================================================ */
+let zTop = 10;
+function makeDraggable(el){
+  const bar = $('.titlebar',el);
+  let sx,sy,ox,oy,drag=false;
+  bar.addEventListener('mousedown',e=>{
+    drag=true;sx=e.clientX;sy=e.clientY;
+    const r = el.getBoundingClientRect();
+    ox=r.left;oy=r.top;
+    el.style.zIndex = (++zTop);
+    $$('.win').forEach(w=>w.classList.remove('focused'));
+    el.classList.add('focused');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!drag) return;
+    const nx = ox + (e.clientX-sx);
+    const ny = Math.max(34, oy + (e.clientY-sy));
+    el.style.left = nx+'px';
+    el.style.top = ny+'px';
+    el.style.right='auto';el.style.bottom='auto';
+  });
+  window.addEventListener('mouseup',()=>drag=false);
+  el.addEventListener('mousedown',()=>{
+    el.style.zIndex=(++zTop);
+    $$('.win').forEach(w=>w.classList.remove('focused'));
+    el.classList.add('focused');
+  });
+}
+
+/* ============================================================
+   Skins
+   ============================================================ */
+function wireSkins(){
+  $$('.skinbtn').forEach(b=>b.addEventListener('click',()=>{
+    document.body.dataset.skin = b.dataset.skin;
+    $$('.skinbtn').forEach(x=>x.classList.toggle('active',x===b));
+  }));
+}
+
+/* ============================================================
+   Starfield canvas
+   ============================================================ */
+function starfield(){
+  const c = $('#stars');
+  const ctx = c.getContext('2d');
+  let w,h,stars=[];
+  function resize(){
+    w = c.width = innerWidth;
+    h = c.height = innerHeight;
+    stars = [];
+    const N = Math.floor(w*h/9000);
+    for(let i=0;i<N;i++){
+      stars.push({
+        x:Math.random()*w,y:Math.random()*h,
+        z:Math.random()*2+0.3,
+        hue:Math.random()<0.1 ? (Math.random()<0.5?140:280) : 180+Math.random()*40,
+        tw:Math.random()*Math.PI*2
+      });
+    }
+  }
+  resize();
+  addEventListener('resize',resize);
+  function loop(t){
+    ctx.fillStyle='rgba(5,5,5,.3)';
+    ctx.fillRect(0,0,w,h);
+    for(const s of stars){
+      s.tw += 0.03;
+      const a = 0.3 + 0.7*Math.abs(Math.sin(s.tw));
+      ctx.fillStyle = `hsla(${s.hue},80%,70%,${a})`;
+      ctx.fillRect(s.x,s.y,s.z,s.z);
+      s.x -= s.z*0.1;
+      if(s.x<0) s.x = w;
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* ============================================================
+   Boot
+   ============================================================ */
+function boot(){
+  buildPlaylist();
+  buildTimeline();
+  buildSpectrum();
+  buildEQ();
+  wireTransport();
+  wireSkins();
+  starfield();
+  $$('.win').forEach(makeDraggable);
+  selectRelease(1, false); // 1.0 Miles
+
+  // small periodic LCD twitch on the sub text
+  setInterval(()=>{
+    const r = RELEASES[currentIdx];
+    const rel = new Date(r.date);
+    const diffDays = Math.floor((Date.now()-rel)/(24*3600*1000));
+    const hh = Math.floor(Math.abs(diffDays)/60), mm = Math.abs(diffDays)%60, ss = (Date.now()/1000|0)%60;
+    $('#time-el').textContent = (diffDays<0?'-':'') + pad(hh)+':'+pad(mm)+':'+pad(ss);
+  },1000);
+}
+document.addEventListener('DOMContentLoaded',boot);
+</script>
+</body>
+</html>

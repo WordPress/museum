@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Desktop Museum — WordPress XP Edition</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%233858e9%27/%3E%3Ctext x=%2732%27 y=%2743%27 text-anchor=%27middle%27 font-family=%27Georgia%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EW%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Explore WordPress release history as a working desktop inspired by the early 2000s.">
+<link rel="canonical" href="https://wordpress.org/museum/desktop/">
+<style>
+/* =========================================================
+   Desktop Museum — a Windows XP Luna emulation featuring
+   every WordPress release as a desktop shortcut.
+   ========================================================= */
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; height:100%; overflow:hidden;
+  font-family: "Trebuchet MS", Tahoma, "Segoe UI", sans-serif;
+  font-size: 11px; color: #000; user-select: none; -webkit-user-select:none;
+}
+
+/* -------- Bliss wallpaper: synthesized with pure CSS --------
+   A rolling green hill under a blue sky with clouds. No images. */
+#desktop {
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 75% 78%, rgba(120,180,60,.55), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 20% 85%, rgba(70,140,40,.45), transparent 70%),
+    radial-gradient(ellipse 120% 60% at 50% 70%, #4d9a2a 0%, #3d8020 40%, #2f6318 60%, transparent 61%),
+    radial-gradient(circle at 85% 18%, rgba(255,255,255,.55), transparent 14%),
+    radial-gradient(circle at 78% 22%, rgba(255,255,255,.35), transparent 10%),
+    radial-gradient(circle at 22% 14%, rgba(255,255,255,.45), transparent 12%),
+    radial-gradient(circle at 16% 18%, rgba(255,255,255,.3), transparent 9%),
+    linear-gradient(#4a9be5 0%, #7ac4f4 45%, #bfe1f6 68%, #e9f4c9 72%, #78b740 73%, #3c7e1d 100%);
+  overflow: hidden;
+}
+
+/* faint CRT scanlines */
+#desktop::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.04) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply; opacity:.5; z-index: 99999;
+}
+
+/* -------- Desktop icon grid -------- */
+#icons {
+  position:absolute; top:12px; left:12px; right:12px; bottom:42px;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, 88px);
+  grid-auto-rows: 96px;
+  grid-auto-flow: column;
+  gap: 4px 6px;
+  align-content:start;
+}
+.icon {
+  width:84px; text-align:center; cursor:pointer; padding:6px 2px 4px; border-radius:3px;
+  color:#fff; text-shadow: 1px 1px 2px rgba(0,0,0,.85);
+  outline:none;
+}
+.icon:focus, .icon.active { background: rgba(50,85,170,.45); box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+.icon .art {
+  width:48px; height:48px; margin:0 auto 4px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  filter: drop-shadow(1px 2px 1px rgba(0,0,0,.5));
+}
+.icon.big .art { width:64px; height:64px; }
+.icon.big { width:96px; }
+.icon .label { font-size:11px; line-height:1.15; word-wrap:break-word; }
+.icon .v { font-weight:bold; }
+.icon .codename { font-style:italic; opacity:.95; }
+.icon.big .label { font-size:12px; }
+
+/* Generic "WP" document icon, drawn in CSS */
+.wp-doc {
+  width:100%; height:100%;
+  background: linear-gradient(180deg, #fff 0%, #f0f0f0 90%);
+  border: 1px solid #888; border-radius:3px;
+  position:relative; overflow:hidden;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+.wp-doc::before { /* folded corner */
+  content:""; position:absolute; top:0; right:0;
+  border-width: 0 10px 10px 0; border-style: solid;
+  border-color: transparent #c8c8c8 transparent transparent;
+  filter: drop-shadow(-1px 1px 0 #999);
+}
+.wp-doc .wp {
+  position:absolute; inset:10px 4px 4px 4px;
+  display:flex; align-items:center; justify-content:center;
+  color:#21759b; font-family: Georgia, serif; font-weight:bold; font-size:22px;
+  letter-spacing:-2px;
+}
+.icon.big .wp-doc .wp { font-size: 30px; }
+.wp-doc .ribbon {
+  position:absolute; bottom:3px; left:2px; right:2px;
+  background: linear-gradient(#2a8bbf, #1e6b92);
+  color:#fff; font-size:8px; text-align:center; padding:1px 0;
+  border-radius:1px;
+  font-family: Tahoma, sans-serif; letter-spacing:.5px;
+}
+
+/* Star burst for significant versions */
+.icon.big .art::before {
+  content:""; position:absolute; inset:-6px;
+  background:
+    conic-gradient(from 0deg,
+      rgba(255,220,80,0) 0deg,
+      rgba(255,220,80,.55) 20deg,
+      rgba(255,220,80,0) 40deg,
+      rgba(255,220,80,.55) 60deg,
+      rgba(255,220,80,0) 80deg,
+      rgba(255,220,80,.55) 100deg,
+      rgba(255,220,80,0) 120deg,
+      rgba(255,220,80,.55) 140deg,
+      rgba(255,220,80,0) 160deg,
+      rgba(255,220,80,.55) 180deg,
+      rgba(255,220,80,0) 200deg,
+      rgba(255,220,80,.55) 220deg,
+      rgba(255,220,80,0) 240deg,
+      rgba(255,220,80,.55) 260deg,
+      rgba(255,220,80,0) 280deg,
+      rgba(255,220,80,.55) 300deg,
+      rgba(255,220,80,0) 320deg,
+      rgba(255,220,80,.55) 340deg,
+      rgba(255,220,80,0) 360deg);
+  filter: blur(3px);
+  animation: sparkle 8s linear infinite;
+  border-radius:50%;
+  z-index:-1;
+}
+@keyframes sparkle { to { transform: rotate(360deg); } }
+
+/* -------- Folder icon (My Versions) -------- */
+.folder-icon {
+  width:48px; height:38px; margin-top:6px;
+  background: linear-gradient(180deg, #ffd87a, #e8a634);
+  border-radius: 2px 6px 3px 3px; position:relative;
+  border: 1px solid #a17218;
+  box-shadow: inset 0 1px 0 #fff5c0;
+}
+.folder-icon::before {
+  content:""; position:absolute; left:2px; top:-5px; width:18px; height:6px;
+  background: linear-gradient(180deg, #ffd87a, #e0a030);
+  border: 1px solid #a17218; border-bottom:none;
+  border-radius: 2px 2px 0 0;
+}
+.folder-icon::after { /* front flap */
+  content:""; position:absolute; left:1px; right:1px; top:3px; bottom:1px;
+  background: linear-gradient(180deg, #ffe89e, #f0b23e);
+  border-radius: 1px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+/* -------- Recycle bin -------- */
+.bin-icon {
+  width:40px; height:44px; margin: 2px auto 0; position:relative;
+  background: linear-gradient(180deg,#c8c8d0,#8890a0);
+  border: 1px solid #4a5060; border-radius: 4px 4px 2px 2px;
+}
+.bin-icon::before {
+  content:""; position:absolute; left:-3px; right:-3px; top:-4px; height:6px;
+  background: linear-gradient(180deg,#d0d0d8,#909aa8);
+  border:1px solid #4a5060; border-radius:2px;
+}
+.bin-icon::after {
+  content:""; position:absolute; inset:3px 4px 2px 4px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 4px, rgba(0,0,0,.15) 4px 5px),
+    linear-gradient(180deg, #e0e4ec, #9ca4b4);
+  border-radius:2px;
+}
+
+/* -------- Taskbar -------- */
+#taskbar {
+  position:absolute; left:0; right:0; bottom:0; height:30px;
+  background: linear-gradient(180deg, #245EDB 0%, #3A81F3 8%, #2462E5 18%, #1941A5 85%, #245EDB 100%);
+  border-top: 1px solid #0b2e7a;
+  display:flex; align-items:center; z-index: 10000;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+}
+#start {
+  display:flex; align-items:center; gap:6px; padding: 0 24px 0 10px;
+  height: 28px; margin: 1px 0 1px 0;
+  background: radial-gradient(ellipse at 30% 30%, #67c355 0%, #3aa33a 45%, #1d7d20 95%);
+  color:#fff; font-weight:bold; font-size:14px; font-style:italic;
+  border-radius: 0 14px 14px 0;
+  border-right: 1px solid #0a3c0a;
+  cursor:pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset -2px 0 0 rgba(0,0,0,.15);
+  text-shadow: 1px 1px 2px rgba(0,0,0,.4);
+  font-family: "Trebuchet MS", Tahoma, sans-serif;
+}
+#start:hover { filter: brightness(1.08); }
+#start.active { filter: brightness(.92) saturate(1.2); }
+#start .flag {
+  width:22px; height:22px; position:relative;
+  background:
+    radial-gradient(circle at 35% 40%, #fff 20%, #ddd 40%, #fff 60%);
+  clip-path: polygon(0 0, 55% 0, 50% 15%, 100% 15%, 95% 50%, 100% 85%, 50% 85%, 55% 100%, 0 100%);
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.4));
+}
+#start .flag::before { content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg,
+    #e33 0 25%, #4a4 25% 50%, #48f 50% 75%, #fb3 75% 100%);
+  clip-path: inherit; opacity:.9;
+}
+
+#tasks { flex:1; display:flex; gap:3px; padding: 0 6px; overflow:hidden; }
+.task {
+  height: 22px; min-width: 140px; max-width: 180px;
+  display:flex; align-items:center; gap:6px; padding: 0 10px;
+  background: linear-gradient(180deg, #3c82f2, #1d52c3);
+  border: 1px solid #0f3898; border-radius: 3px;
+  color:#fff; font-size: 11px; cursor:pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+  white-space:nowrap; overflow:hidden; text-overflow: ellipsis;
+}
+.task.focused { background: linear-gradient(180deg, #1a3d9c, #2a60d0); box-shadow: inset 1px 1px 2px rgba(0,0,0,.35); }
+.task .mini {
+  width:14px; height:14px; background:#fff; border-radius:2px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  color:#21759b; font-family:Georgia, serif; font-weight:bold; font-size:10px;
+}
+
+#tray {
+  display:flex; align-items:center; gap:8px; height:28px; padding: 0 10px 0 14px;
+  margin-right: 2px;
+  background: linear-gradient(180deg, #1270d4, #1a54be);
+  border-left: 1px solid #0b3a8f;
+  box-shadow: inset 1px 0 0 #3d9ef4;
+  color:#fff;
+}
+#tray .tray-ico {
+  width:14px; height:14px; opacity:.92;
+}
+#clock { font-family: Tahoma, sans-serif; font-size:11px; color:#fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,.25); transition: transform .4s ease; min-width: 46px; text-align:center;}
+#clock.pulse { transform: scale(1.18); }
+
+/* ---------- Start menu ---------- */
+#startmenu {
+  position:absolute; bottom:30px; left:0; width:380px;
+  background:#fff; border-radius: 8px 8px 0 0;
+  border: 1px solid #0b2e7a;
+  box-shadow: 3px -3px 12px rgba(0,0,0,.35);
+  overflow:hidden; display:none;
+  transform-origin: bottom left;
+  animation: slideup .18s ease-out;
+  z-index: 10001;
+}
+@keyframes slideup { from { transform: translateY(20px) scaleY(.8); opacity:0;} to { transform:none; opacity:1;} }
+#startmenu.open { display:block; }
+#startmenu .sm-header {
+  height: 54px; background: linear-gradient(180deg, #1c68dc 0%, #2a7ae0 50%, #1f5fd0 100%);
+  display:flex; align-items:center; gap:10px; padding: 0 10px;
+  border-bottom: 3px solid #ffb03a;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.2);
+}
+#startmenu .sm-header .avatar {
+  width:40px; height:40px; border-radius:4px;
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  border: 2px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,.4);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:bold; font-family: Georgia, serif; font-size: 20px;
+}
+#startmenu .sm-header .user { color:#fff; font-size: 14px; font-weight:bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.5);}
+#startmenu .sm-body { display:flex; background: linear-gradient(90deg, #fff 0 60%, #d3e5fa 60% 100%); }
+#startmenu .sm-col { flex:1; padding: 6px 4px; max-height: 420px; overflow-y: auto; }
+#startmenu .sm-col.left { border-right: 1px solid #ccdcf2; }
+#startmenu .sm-item {
+  display:flex; align-items:center; gap:8px; padding: 5px 10px; cursor:pointer;
+  border-radius:2px; font-size:11px;
+}
+#startmenu .sm-item:hover { background: #2a7ae0; color:#fff; }
+#startmenu .sm-item .ic { width:22px; height:22px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(#fff,#e8e8e8); border:1px solid #888; border-radius:2px;
+  color:#21759b; font-family:Georgia,serif; font-weight:bold; font-size:12px;
+}
+#startmenu .sm-year {
+  font-weight:bold; padding: 6px 10px 2px; color:#0a3c9c; font-size:11px;
+  border-bottom: 1px dotted #ccdcf2;
+}
+#startmenu .sm-footer {
+  height: 42px; background: linear-gradient(180deg, #d3e5fa, #9cc0ef);
+  border-top: 1px solid #ccdcf2;
+  display:flex; justify-content:flex-end; align-items:center; gap:14px; padding: 0 14px;
+}
+#startmenu .sm-foot-btn { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:11px; }
+#startmenu .sm-foot-btn .power {
+  width:22px; height:22px; border-radius:50%;
+  background: radial-gradient(circle at 40% 40%, #ff8a5c, #c3392a);
+  border:1px solid #6a1a10; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:bold;
+}
+
+/* ---------- Windows ---------- */
+.win {
+  position:absolute; background:#ece9d8; min-width:300px; min-height:180px;
+  border:1px solid #003dc8; border-radius:8px 8px 0 0;
+  box-shadow: 4px 4px 16px rgba(0,0,0,.45), inset 0 0 0 1px #3e8cff;
+  display:flex; flex-direction:column;
+  transform-origin: var(--ox, 50%) var(--oy, 50%);
+  animation: winopen .2s ease-out;
+}
+@keyframes winopen {
+  from { transform: scale(.05); opacity:.1; }
+  to { transform: scale(1); opacity:1; }
+}
+.win.closing { animation: winclose .18s ease-in forwards; }
+@keyframes winclose { to { transform: scale(.05); opacity:0; } }
+.win.minimized { display:none; }
+.win .titlebar {
+  height: 26px; cursor:move;
+  background: linear-gradient(180deg, #0853e0 0%, #3c81f3 8%, #1960e0 40%, #0f46c4 85%, #1f66e6 100%);
+  border-radius: 7px 7px 0 0;
+  display:flex; align-items:center; padding: 0 4px 0 8px;
+  color:#fff; font-weight:bold; font-size:12px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.55);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -1px 0 rgba(0,0,0,.25);
+}
+.win.blurred .titlebar { background: linear-gradient(180deg, #7da2d9, #6389c3); }
+.win .titlebar .tb-ico { width:16px; height:16px; margin-right:6px;
+  background:#fff; border-radius:2px; display:flex; align-items:center; justify-content:center;
+  color:#21759b; font-family:Georgia,serif; font-weight:bold; font-size:11px;}
+.win .titlebar .title { flex:1; white-space:nowrap; overflow:hidden; text-overflow: ellipsis;}
+.win .titlebar .tb-btns { display:flex; gap:2px; }
+.win .titlebar .tb-btn {
+  width:21px; height:20px; border-radius:3px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-family: "Marlett", Tahoma, sans-serif; font-size:10px; font-weight:bold;
+  border:1px solid rgba(0,0,0,.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+}
+.win .titlebar .tb-btn.min { background: radial-gradient(circle at 35% 30%, #6aa8ff, #1049c4); }
+.win .titlebar .tb-btn.max { background: radial-gradient(circle at 35% 30%, #6aa8ff, #1049c4); }
+.win .titlebar .tb-btn.close { background: radial-gradient(circle at 35% 30%, #ff8a6a, #c13010); }
+.win .titlebar .tb-btn:hover { filter: brightness(1.15); }
+
+.win .menubar {
+  height:22px; background: linear-gradient(180deg,#f7f5ea,#e4dfc6);
+  border-bottom:1px solid #aca899;
+  display:flex; align-items:center; padding:0 6px; gap:10px; font-size:11px;
+}
+.win .menubar span { padding: 2px 6px; cursor:default; }
+.win .menubar span:hover { background:#316ac5; color:#fff; }
+
+.win .body { flex:1; overflow:auto; background:#ece9d8; padding: 0; }
+.win .statusbar {
+  height:20px; background: linear-gradient(180deg,#f7f5ea,#e4dfc6);
+  border-top:1px solid #aca899; font-size:11px; padding: 3px 8px; color:#555;
+}
+.win .grip {
+  position:absolute; width:14px; height:14px; right:0; bottom:0; cursor: nwse-resize;
+  background:
+    linear-gradient(135deg, transparent 50%, #aca899 50% 55%, transparent 55% 65%, #aca899 65% 70%, transparent 70% 80%, #aca899 80% 85%, transparent 85%);
+}
+
+/* ------ Version Window content ------ */
+.verwin .body { padding: 0; display:flex; flex-direction:column; }
+.verwin .header {
+  padding: 14px 18px 10px; background: linear-gradient(180deg, #f5f3e6, #e4dfc6);
+  border-bottom: 1px solid #aca899;
+}
+.verwin h1 { margin:0; font-size: 22px; color: #21759b; font-family: Georgia, serif;}
+.verwin h1 .codename { color:#444; font-style:italic; font-size:16px; font-weight:normal;}
+.verwin .date { color:#666; font-size:11px; margin-top:4px; }
+.verwin .trivia { padding: 10px 18px; font-size: 12px; line-height: 1.55; color:#222; background:#fff; border-top:1px solid #d6d2bd;}
+.verwin .shotwrap {
+  margin: 8px 18px; border:1px solid #666; background: #333;
+  height: 260px; position:relative; overflow:hidden; cursor: zoom-in;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+}
+.verwin .shotwrap::after {
+  content:"Click to Launch in Playground"; position:absolute; left:50%; top:50%;
+  transform: translate(-50%, -50%); color:#fff; background: rgba(0,0,0,.7);
+  padding: 6px 12px; border-radius: 14px; font-size:11px;
+  pointer-events:none; opacity: 0; transition: opacity .15s;
+}
+.verwin .shotwrap:hover::after { opacity:1; }
+.verwin .shotwrap iframe { display:block; }
+.verwin .buttons {
+  display:flex; gap:8px; padding: 10px 18px 14px; justify-content:flex-end;
+  background: #ece9d8;
+}
+.xp-btn {
+  min-width: 86px; padding: 5px 14px; font-size: 11px;
+  background: linear-gradient(180deg, #fdfdfd 0%, #ececdd 48%, #d6d1bb 52%, #ece9d8 100%);
+  border: 1px solid #707070; border-radius: 3px; cursor:pointer;
+  box-shadow: inset 0 0 0 1px #fff;
+  font-family: Tahoma, sans-serif;
+}
+.xp-btn:hover { border-color:#0054e3; background: linear-gradient(180deg, #fff 0%, #f3f3e0 48%, #d6d1bb 52%, #e6e3cf 100%); }
+.xp-btn:active { box-shadow: inset 1px 1px 2px rgba(0,0,0,.25); }
+.xp-btn.primary { font-weight:bold; }
+
+/* --- Stylized WP screenshots, era-themed --- */
+.shot { width:100%; height:100%; position:relative; overflow:hidden; }
+.shot .adminbar { position:absolute; left:0; right:0; top:0; height:22px; display:flex; align-items:center;
+  padding: 0 10px; color:#fff; font-size:11px; gap:14px; z-index:3;}
+.shot .logo { font-family: Georgia, serif; font-weight:bold;}
+.shot .vnum { margin-left:auto; font-size:10px; opacity:.8; }
+.shot .sidebar { position:absolute; left:0; top:22px; bottom:0; width:150px; z-index:2;}
+.shot .main { position:absolute; left:150px; right:0; top:22px; bottom:0; overflow:hidden;}
+.shot .main h2 { margin:10px 14px 6px; font-size:14px; }
+.shot .row { height:26px; margin:2px 14px; border-bottom:1px solid rgba(0,0,0,.06); display:flex; align-items:center; padding:0 8px; font-size:10px;}
+.shot .row .t { flex:1; }
+.shot .row .d { opacity:.6; font-size:9px;}
+.shot .sidebar .item { padding:6px 12px; font-size:10px; opacity:.9;}
+.shot .sidebar .item.active { font-weight:bold; }
+
+/* Era palettes */
+.era-classic { background:#f0eee4;}
+.era-classic .adminbar { background:#333; border-bottom:1px solid #000;}
+.era-classic .sidebar { background:#e0ddd0; border-right:1px solid #b8b49c;}
+.era-classic .sidebar .item { color:#333;}
+.era-classic .sidebar .item.active { background:#c9c4a8;}
+.era-classic .main { background:#fff;}
+
+.era-blue { background:#eaf3f9;}
+.era-blue .adminbar { background: linear-gradient(180deg,#2c6fa0,#1a4e76);}
+.era-blue .sidebar { background: linear-gradient(180deg,#dce9f2,#bcd3e1); border-right:1px solid #80a3bd;}
+.era-blue .sidebar .item.active { background: linear-gradient(180deg,#3a7eb4,#2c6fa0); color:#fff;}
+.era-blue .main { background:#fff;}
+
+.era-flat { background:#f1f1f1;}
+.era-flat .adminbar { background:#222;}
+.era-flat .sidebar { background:#32373c; color:#eee;}
+.era-flat .sidebar .item { color:#eee;}
+.era-flat .sidebar .item.active { background:#0073aa; color:#fff; border-left:3px solid #00a0d2;}
+.era-flat .main { background:#fff;}
+
+.era-guten { background:#fff;}
+.era-guten .adminbar { background:#1e1e1e;}
+.era-guten .sidebar { background:#fff; border-right:1px solid #e0e0e0;}
+.era-guten .sidebar .item.active { background:#f0f0f1; color:#2271b1; font-weight:bold;}
+.era-guten .main { background:#fff;}
+.era-guten .main::after {
+  content:""; position:absolute; left:20px; right:20px; top:50px; bottom:16px;
+  background:
+    linear-gradient(90deg, #f0f0f1 40px, transparent 40px) 0 0/100% 40px,
+    linear-gradient(180deg, #e0e0e0 1px, transparent 1px) 0 0/100% 40px,
+    #fff;
+  border:1px solid #e0e0e0;
+}
+.era-guten .main .block {
+  position:absolute; border:1px dashed #2271b1; padding: 6px 10px; background:#fff;
+  font-size:11px; font-family: Georgia, serif;
+}
+
+.era-modern { background:#fff;}
+.era-modern .adminbar { background:#1e1e1e;}
+.era-modern .sidebar { background:#fff; border-right:1px solid #ddd;}
+.era-modern .sidebar .item.active { background:#f6f7f7; color:#2271b1; border-left:3px solid #3858e9;}
+.era-modern .main { background: linear-gradient(180deg,#fff,#f6f7f7);}
+
+/* Explorer-style list window */
+.explorer .body { background:#fff; padding:0;}
+.explorer .toolbar {
+  height: 34px; display:flex; align-items:center; gap:6px; padding: 0 8px;
+  background: linear-gradient(180deg, #f7f5ea, #e4dfc6);
+  border-bottom: 1px solid #aca899;
+}
+.explorer .toolbar .tb-btn-s {
+  padding: 3px 8px; font-size:11px; border-radius:3px; cursor:pointer;
+}
+.explorer .toolbar .tb-btn-s:hover { background:#fff; border:1px solid #0054e3; padding: 2px 7px;}
+.explorer .addressbar {
+  height: 26px; display:flex; align-items:center; gap:6px; padding: 0 8px;
+  background: #ece9d8; border-bottom:1px solid #aca899; font-size:11px;
+}
+.explorer .addressbar input {
+  flex:1; height: 20px; font-size:11px; padding:0 6px;
+  border:1px solid #7f9db9; background:#fff;
+}
+.explorer table { width:100%; border-collapse: collapse; font-size:11px;}
+.explorer thead th {
+  background: linear-gradient(180deg, #fff, #d8d4bf);
+  border: 1px solid #aca899; border-left:none; text-align:left; padding: 3px 8px;
+  font-weight:normal; position: sticky; top:0; z-index: 2;
+}
+.explorer tbody td { padding: 3px 8px; border-bottom:1px solid #eee;}
+.explorer tbody tr { cursor: pointer; }
+.explorer tbody tr:hover { background: #e8f0fa; }
+.explorer tbody tr.selected { background: #316ac5; color:#fff;}
+.explorer .ico-mini {
+  display:inline-block; width:16px; height:16px; vertical-align: middle; margin-right:6px;
+  background: linear-gradient(#fff,#eee); border:1px solid #888;
+  color:#21759b; font-family:Georgia,serif; font-weight:bold; font-size:10px;
+  text-align:center; line-height:14px;
+}
+.explorer .ico-mini.big-v { background: linear-gradient(#fff7d0,#ffd37a); border-color:#a17218; }
+
+/* ---------- Boot splash ---------- */
+#boot {
+  position: fixed; inset:0; background:#000; z-index: 999999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:#fff; font-family: "Franklin Gothic Medium", Tahoma, sans-serif;
+  transition: opacity .5s;
+}
+#boot .xplogo {
+  font-size: 42px; font-family: Georgia, serif; letter-spacing:-1px;
+  background: linear-gradient(180deg,#fff, #9acbff);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow: 0 0 22px rgba(100,160,255,.3);
+}
+#boot .sub { opacity:.7; margin-top: 4px; font-size: 12px; letter-spacing:2px; }
+#boot .loader {
+  margin-top: 44px; width: 200px; height: 20px;
+  border: 1px solid #406aaa; background:#000; padding: 2px; border-radius: 2px;
+  overflow:hidden; display:flex; gap:3px;
+  box-shadow: 0 0 16px rgba(80,140,255,.35);
+}
+#boot .loader::before {
+  content:""; width: 48px; height:100%;
+  background: linear-gradient(90deg, #1b3f9a, #5b9dff, #1b3f9a);
+  animation: scan 1.3s linear infinite;
+}
+@keyframes scan {
+  0% { transform: translateX(-20px); }
+  100% { transform: translateX(200px); }
+}
+#boot .copy { position:absolute; bottom: 30px; opacity:.5; font-size: 10px;}
+
+/* ---------- Balloon tray notification ---------- */
+#balloon {
+  position:absolute; right: 12px; bottom: 38px; max-width: 280px;
+  background: #fffbcf; border: 1px solid #a08a00; border-radius: 6px;
+  padding: 10px 12px 10px 14px; font-size: 11px; color:#222;
+  box-shadow: 3px 3px 10px rgba(0,0,0,.3);
+  z-index: 10002; display: none; animation: balloonin .4s ease-out;
+}
+#balloon::before {
+  content:""; position:absolute; right: 34px; bottom: -8px;
+  border: 8px solid transparent; border-top-color: #fffbcf; border-bottom:0;
+}
+#balloon::after {
+  content:""; position:absolute; right: 33px; bottom: -10px;
+  border: 9px solid transparent; border-top-color: #a08a00; border-bottom:0; z-index:-1;
+}
+#balloon.open { display:block; }
+#balloon h3 { margin:0 0 4px 0; font-size: 12px; display:flex; align-items:center; gap:6px;}
+#balloon h3 .dot { width:14px; height:14px; border-radius:50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #ffb03a 60%, #c17010); flex-shrink:0;}
+#balloon .x { position:absolute; top:4px; right:6px; cursor:pointer; color:#666; font-weight:bold; font-size:11px;}
+@keyframes balloonin {
+  from { transform: translateY(10px) scale(.95); opacity:0;}
+  to { transform: none; opacity:1;}
+}
+
+/* ---------- Screensaver ---------- */
+#saver {
+  position:fixed; inset:0; background:#000; z-index: 1000000;
+  display:none; cursor: pointer;
+}
+#saver.on { display:block; }
+
+/* ---------- Small dialog (Properties, Install) ---------- */
+.dialog .body { padding: 16px 16px 10px; font-size: 11px; background:#ece9d8;}
+.dialog .body p { margin: 4px 0 12px; }
+.dialog .icon-big { font-size: 34px; font-family: Georgia, serif; color:#21759b; float:left; margin: 0 14px 10px 0;}
+
+/* scrollbar */
+::-webkit-scrollbar { width:16px; height:16px; }
+::-webkit-scrollbar-track { background: linear-gradient(90deg, #ece9d8, #f7f5ea);}
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#fff,#ccc); border:1px solid #888; border-radius:2px;}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg,#fff,#bbd7f5);}
+
+/* tiny tray icons */
+.tray-ico.vol {
+  background: radial-gradient(circle at 40% 50%, transparent 3px, #fff 3.5px, transparent 5px),
+              linear-gradient(45deg, transparent 50%, #fff 50%);
+  clip-path: polygon(0 35%, 30% 35%, 55% 15%, 55% 85%, 30% 65%, 0 65%);
+}
+.tray-ico.net {
+  background:
+    radial-gradient(circle at 50% 100%, #fff 2px, transparent 2.5px),
+    conic-gradient(from 225deg at 50% 100%, transparent 0 90deg, #fff 90deg 180deg, transparent 180deg);
+}
+.tray-ico.shield {
+  background: linear-gradient(180deg, #f9c74f, #f3722c);
+  clip-path: polygon(50% 0, 100% 20%, 100% 60%, 50% 100%, 0 60%, 0 20%);
+}
+
+</style>
+</head>
+<body>
+
+<!-- ========== BOOT SPLASH ========== -->
+<div id="boot">
+  <div class="xplogo">Microsoft<sup style="font-size:14px;">®</sup></div>
+  <div class="xplogo" style="font-size:64px; margin-top:-6px;">WordPress<span style="color:#ffd37a;">·</span>XP</div>
+  <div class="sub">DESKTOP MUSEUM EDITION</div>
+  <div class="loader"></div>
+  <div class="copy">Copyright © 2003–2026 · Built on the b2/cafelog foundation</div>
+</div>
+
+<!-- ========== DESKTOP ========== -->
+<div id="desktop">
+  <div id="icons" role="list"></div>
+
+  <!-- Taskbar -->
+  <div id="taskbar">
+    <div id="start" tabindex="0">
+      <div class="flag"></div>
+      <span>start</span>
+    </div>
+    <div id="tasks"></div>
+    <div id="tray">
+      <div class="tray-ico shield" title="Security Center"></div>
+      <div class="tray-ico net" title="Network"></div>
+      <div class="tray-ico vol" title="Volume"></div>
+      <div id="clock">12:00</div>
+    </div>
+  </div>
+
+  <!-- Start menu -->
+  <div id="startmenu">
+    <div class="sm-header">
+      <div class="avatar">W</div>
+      <div class="user">WordPress User</div>
+    </div>
+    <div class="sm-body">
+      <div class="sm-col left" id="sm-left">
+        <div class="sm-item" data-action="open-folder"><div class="ic">▤</div>My Versions</div>
+        <div class="sm-item" data-action="open-about"><div class="ic">i</div>About this Museum</div>
+        <div class="sm-item" data-action="open-saver"><div class="ic">✦</div>Screen Saver</div>
+        <div class="sm-item" data-action="open-playground"><div class="ic">P</div>Open Playground…</div>
+        <div style="margin:6px 8px; border-top:1px solid #ccdcf2;"></div>
+        <div class="sm-item" data-action="shutdown"><div class="ic" style="color:#c13010;">⏻</div>Shut Down…</div>
+      </div>
+      <div class="sm-col" id="sm-right"></div>
+    </div>
+    <div class="sm-footer">
+      <div class="sm-foot-btn" data-action="shutdown"><div class="power">⏻</div>Turn Off Computer</div>
+    </div>
+  </div>
+
+  <!-- Tray balloon -->
+  <div id="balloon">
+    <span class="x" onclick="document.getElementById('balloon').classList.remove('open');">✕</span>
+    <h3><span class="dot"></span>Updates are ready for your computer</h3>
+    <div>New updates available: <b>WordPress 7.0 "Armstrong"</b>. Click here to review and install.</div>
+  </div>
+
+  <!-- Screensaver -->
+  <canvas id="saver"></canvas>
+</div>
+
+<script src="../data/releases.js"></script>
+<script>
+/* ============================================================
+   Shared WordPress release dataset.
+   Loaded as a classic script so these static files work both on
+   wordpress.org and directly from a local filesystem.
+   ============================================================ */
+const RELEASES = window.WP_MUSEUM_RELEASES;
+
+/* ============== Utilities ============== */
+const $ = (sel, p=document) => p.querySelector(sel);
+const $$ = (sel, p=document) => Array.from(p.querySelectorAll(sel));
+
+function eraFor(dateStr) {
+  const y = parseInt(dateStr.slice(0,4),10);
+  if (y <= 2005) return {cls:'era-classic', label:'Classic'};
+  if (y <= 2010) return {cls:'era-blue', label:'Blueprint'};
+  if (y <= 2013) return {cls:'era-blue', label:'Shiny Blue'};
+  if (y <= 2017) return {cls:'era-flat', label:'MP6 Flat'};
+  if (y <= 2021) return {cls:'era-guten', label:'Gutenberg'};
+  return {cls:'era-modern', label:'Modern FSE'};
+}
+
+function humanDate(d) {
+  const date = new Date(d + 'T12:00:00Z');
+  return date.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', timeZone:'UTC' });
+}
+
+function fakeSize(v) {
+  const n = parseFloat(v) * 7.3 + (v.length * 137) + 2300;
+  return (n/1024).toFixed(1) + ' MB';
+}
+
+/* ============== Desktop icons ============== */
+const iconsEl = $('#icons');
+
+// Folder — My Versions
+{
+  const el = document.createElement('div');
+  el.className = 'icon';
+  el.tabIndex = 0;
+  el.dataset.action = 'open-folder';
+  el.innerHTML = `<div class="art"><div class="folder-icon"></div></div>
+    <div class="label">My Versions</div>`;
+  iconsEl.appendChild(el);
+}
+// About
+{
+  const el = document.createElement('div');
+  el.className = 'icon';
+  el.tabIndex = 0;
+  el.dataset.action = 'open-about';
+  el.innerHTML = `<div class="art"><div class="wp-doc"><div class="wp">i</div><div class="ribbon">README</div></div></div>
+    <div class="label">About the Museum</div>`;
+  iconsEl.appendChild(el);
+}
+
+// Each release
+RELEASES.forEach(r => {
+  const el = document.createElement('div');
+  el.className = 'icon' + (r.significant ? ' big' : '');
+  el.tabIndex = 0;
+  el.dataset.action = 'open-version';
+  el.dataset.v = r.v;
+  el.innerHTML = `
+    <div class="art">
+      <div class="wp-doc">
+        <div class="wp">W</div>
+        <div class="ribbon">v${r.v}</div>
+      </div>
+    </div>
+    <div class="label">
+      <div class="v">WordPress ${r.v}</div>
+      <div class="codename">${r.name === '—' ? 'Genesis' : r.name}</div>
+    </div>`;
+  iconsEl.appendChild(el);
+});
+
+// Recycle bin, last
+{
+  const el = document.createElement('div');
+  el.className = 'icon';
+  el.tabIndex = 0;
+  el.dataset.action = 'open-bin';
+  el.innerHTML = `<div class="art"><div class="bin-icon"></div></div>
+    <div class="label">Recycle Bin</div>`;
+  iconsEl.appendChild(el);
+}
+
+/* Click and keyboard handling on icons */
+let activeIcon = null;
+iconsEl.addEventListener('click', e => {
+  const ic = e.target.closest('.icon'); if (!ic) return;
+  if (activeIcon) activeIcon.classList.remove('active');
+  ic.classList.add('active'); activeIcon = ic;
+});
+iconsEl.addEventListener('dblclick', e => {
+  const ic = e.target.closest('.icon'); if (!ic) return;
+  handleAction(ic.dataset.action, ic);
+});
+iconsEl.addEventListener('keydown', e => {
+  const ic = e.target.closest('.icon'); if (!ic) return;
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAction(ic.dataset.action, ic); }
+});
+
+function handleAction(action, el) {
+  if (action === 'open-version') openVersion(el.dataset.v, el);
+  else if (action === 'open-folder') openFolder();
+  else if (action === 'open-about') openAbout();
+  else if (action === 'open-bin') openDialog('Recycle Bin', 'Are you sure you want to empty 0 items from the Recycle Bin?', '🗑');
+  else if (action === 'open-saver') runSaver();
+  else if (action === 'open-playground') window.open('https://playground.wordpress.net/', '_blank', 'noopener,noreferrer');
+  else if (action === 'shutdown') shutdown();
+}
+
+/* ============== Start menu ============== */
+const startBtn = $('#start');
+const startMenu = $('#startmenu');
+startBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  startMenu.classList.toggle('open');
+  startBtn.classList.toggle('active', startMenu.classList.contains('open'));
+});
+document.addEventListener('click', e => {
+  if (!startMenu.contains(e.target) && !startBtn.contains(e.target)) {
+    startMenu.classList.remove('open');
+    startBtn.classList.remove('active');
+  }
+});
+startMenu.addEventListener('click', e => {
+  const itm = e.target.closest('[data-action]'); if (!itm) return;
+  const a = itm.dataset.action;
+  startMenu.classList.remove('open');
+  startBtn.classList.remove('active');
+  handleAction(a, itm);
+});
+
+// Right panel: grouped by year
+const smRight = $('#sm-right');
+{
+  const byYear = {};
+  RELEASES.forEach(r => { const y = r.date.slice(0,4); (byYear[y] = byYear[y] || []).push(r); });
+  Object.keys(byYear).sort().forEach(y => {
+    const head = document.createElement('div');
+    head.className = 'sm-year'; head.textContent = y;
+    smRight.appendChild(head);
+    byYear[y].forEach(r => {
+      const it = document.createElement('div');
+      it.className = 'sm-item'; it.dataset.v = r.v;
+      it.innerHTML = `<div class="ic">W</div>WordPress ${r.v}${r.name !== '—' ? ' — ' + r.name : ''}`;
+      it.addEventListener('click', () => openVersion(r.v));
+      smRight.appendChild(it);
+    });
+  });
+}
+
+/* ============== Windows manager ============== */
+let zTop = 100;
+const windows = new Map(); // id -> {el, task}
+let focusedWin = null;
+
+function bringToFront(win) {
+  zTop += 1; win.style.zIndex = zTop;
+  windows.forEach(({el, task}) => { el.classList.add('blurred'); if (task) task.classList.remove('focused'); });
+  win.classList.remove('blurred');
+  const rec = windows.get(win.dataset.id);
+  if (rec && rec.task) rec.task.classList.add('focused');
+  focusedWin = win;
+}
+
+function createWindow({id, title, icon='W', body, width=640, height=460, x, y, originEl}) {
+  if (windows.has(id)) {
+    const rec = windows.get(id);
+    rec.el.classList.remove('minimized');
+    bringToFront(rec.el);
+    return rec.el;
+  }
+  const w = document.createElement('div');
+  w.className = 'win'; w.dataset.id = id;
+  w.style.width = width+'px'; w.style.height = height+'px';
+  const off = windows.size * 24;
+  w.style.left = (x ?? (80 + off)) + 'px';
+  w.style.top  = (y ?? (60 + off)) + 'px';
+
+  // origin for zoom-open animation
+  if (originEl) {
+    const r = originEl.getBoundingClientRect();
+    const wx = (r.left + r.width/2) - (x ?? (80 + off));
+    const wy = (r.top + r.height/2) - (y ?? (60 + off));
+    w.style.setProperty('--ox', wx + 'px');
+    w.style.setProperty('--oy', wy + 'px');
+  }
+
+  w.innerHTML = `
+    <div class="titlebar">
+      <div class="tb-ico">${icon}</div>
+      <div class="title">${title}</div>
+      <div class="tb-btns">
+        <div class="tb-btn min" data-btn="min" title="Minimize">_</div>
+        <div class="tb-btn max" data-btn="max" title="Maximize">▢</div>
+        <div class="tb-btn close" data-btn="close" title="Close">✕</div>
+      </div>
+    </div>
+    <div class="body"></div>
+    <div class="grip"></div>
+  `;
+  w.querySelector('.body').appendChild(body);
+  document.querySelector('#desktop').appendChild(w);
+
+  // Taskbar entry
+  const task = document.createElement('div');
+  task.className = 'task focused';
+  task.innerHTML = `<div class="mini">W</div><span>${title}</span>`;
+  task.addEventListener('click', () => {
+    if (w.classList.contains('minimized')) { w.classList.remove('minimized'); bringToFront(w); }
+    else if (focusedWin === w) { w.classList.add('minimized'); task.classList.remove('focused'); }
+    else bringToFront(w);
+  });
+  $('#tasks').appendChild(task);
+
+  // Drag
+  makeDraggable(w);
+  // Resize
+  makeResizable(w);
+
+  // Buttons
+  w.querySelector('.titlebar').addEventListener('mousedown', () => bringToFront(w));
+  w.addEventListener('mousedown', () => bringToFront(w));
+  w.querySelector('.tb-btns').addEventListener('click', e => {
+    const b = e.target.dataset.btn; if (!b) return;
+    if (b === 'close') closeWindow(w);
+    else if (b === 'min') { w.classList.add('minimized'); task.classList.remove('focused'); focusedWin = null; }
+    else if (b === 'max') toggleMax(w);
+  });
+
+  windows.set(id, {el: w, task});
+  bringToFront(w);
+  return w;
+}
+
+function closeWindow(w) {
+  const rec = windows.get(w.dataset.id); if (!rec) return;
+  w.classList.add('closing');
+  setTimeout(() => {
+    w.remove(); rec.task.remove(); windows.delete(w.dataset.id);
+  }, 180);
+}
+
+function toggleMax(w) {
+  if (w.dataset.premax) {
+    const s = JSON.parse(w.dataset.premax);
+    w.style.left = s.l; w.style.top = s.t; w.style.width = s.w; w.style.height = s.h;
+    delete w.dataset.premax;
+  } else {
+    w.dataset.premax = JSON.stringify({l:w.style.left,t:w.style.top,w:w.style.width,h:w.style.height});
+    w.style.left = '0px'; w.style.top = '0px';
+    w.style.width = window.innerWidth + 'px';
+    w.style.height = (window.innerHeight - 30) + 'px';
+  }
+}
+
+function makeDraggable(w) {
+  const tb = w.querySelector('.titlebar');
+  tb.addEventListener('mousedown', e => {
+    if (e.target.closest('.tb-btn')) return;
+    const sx = e.clientX, sy = e.clientY;
+    const ox = parseInt(w.style.left), oy = parseInt(w.style.top);
+    function move(ev) {
+      w.style.left = (ox + ev.clientX - sx) + 'px';
+      w.style.top  = Math.max(0, (oy + ev.clientY - sy)) + 'px';
+    }
+    function up() {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    }
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  });
+}
+
+function makeResizable(w) {
+  const grip = w.querySelector('.grip');
+  grip.addEventListener('mousedown', e => {
+    e.stopPropagation();
+    const sx = e.clientX, sy = e.clientY;
+    const ow = w.offsetWidth, oh = w.offsetHeight;
+    function move(ev) {
+      w.style.width = Math.max(280, ow + ev.clientX - sx) + 'px';
+      w.style.height = Math.max(180, oh + ev.clientY - sy) + 'px';
+    }
+    function up() {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    }
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  });
+}
+
+/* ============== Stylized WP screenshot builder ============== */
+function buildScreenshot(r) {
+  const era = eraFor(r.date);
+  const div = document.createElement('div');
+  div.className = 'shot ' + era.cls;
+
+  const year = r.date.slice(0,4);
+  const posts = [
+    {t:'Hello World', d:'Published · 1 comment'},
+    {t:`Announcing WordPress ${r.v}`, d:humanDate(r.date)},
+    {t:'A tour of the new features', d:'Draft'},
+    {t:`Codename: ${r.name === '—' ? 'Genesis' : r.name}`, d:'Scheduled'},
+    {t:'Welcome to the Museum', d:'Pending Review'}
+  ];
+
+  const sidebarItems = era.cls === 'era-guten' || era.cls === 'era-modern'
+    ? ['Dashboard','Posts','Media','Pages','Appearance','Plugins','Users','Settings','Site Editor']
+    : era.cls === 'era-flat'
+    ? ['Dashboard','Posts','Media','Pages','Comments','Appearance','Plugins','Users','Tools','Settings']
+    : ['Dashboard','Write','Manage','Links','Presentation','Plugins','Users','Options'];
+
+  let sidebarHTML = sidebarItems.map((n,i) =>
+    `<div class="item${i===1?' active':''}">${era.cls === 'era-flat' ? '▸ ' : ''}${n}</div>`
+  ).join('');
+
+  let mainHTML = '';
+  if (era.cls === 'era-guten' || (era.cls === 'era-modern' && parseFloat(r.v) >= 5.0)) {
+    mainHTML = `
+      <h2 style="margin:12px 20px 6px; font-family:Georgia,serif;">Announcing WordPress ${r.v}</h2>
+      <div class="block" style="left:20px; right:20px; top:56px; height:34px;">Paragraph — ${r.name !== '—' ? 'Named after ' + r.name : 'The first release'}.</div>
+      <div class="block" style="left:20px; right:20px; top:96px; height:28px;">Heading — What's new in ${r.v}</div>
+      <div class="block" style="left:20px; right:20px; top:130px; height:50px;">Image placeholder</div>
+      <div class="block" style="left:20px; right:20px; top:186px; height:28px;">Buttons / Cover block</div>
+    `;
+  } else {
+    mainHTML = `<h2>Edit Posts <small style="font-size:10px;opacity:.6;">(${year})</small></h2>`
+      + posts.map(p => `<div class="row"><span class="t">${p.t}</span><span class="d">${p.d}</span></div>`).join('');
+  }
+
+  div.innerHTML = `
+    <div class="adminbar">
+      <span class="logo">ⓦ WordPress</span>
+      <span>Dashboard</span>
+      <span>New Post</span>
+      <span class="vnum">v${r.v} · ${era.label}</span>
+    </div>
+    <div class="sidebar">${sidebarHTML}</div>
+    <div class="main">${mainHTML}</div>
+  `;
+  return div;
+}
+
+/* ============== Version window ============== */
+function openVersion(v, originEl) {
+  const r = RELEASES.find(x => x.v === v); if (!r) return;
+  const id = 'v-' + v;
+  const body = document.createElement('div');
+  body.className = 'verwin';
+  body.innerHTML = `
+    <div class="body" style="padding:0;">
+      <div class="header">
+        <h1>WordPress ${r.v} ${r.name !== '—' ? `<span class="codename">— ${r.name}</span>` : ''}</h1>
+        <div class="date">Released ${humanDate(r.date)}${r.significant ? ' · Major release' : ''}</div>
+      </div>
+      <div class="trivia">${r.trivia}</div>
+      <div class="shotwrap" data-v="${r.v}"></div>
+      <div class="buttons">
+        <button class="xp-btn" data-act="install">Install</button>
+        <button class="xp-btn primary" data-act="launch">Launch</button>
+        <button class="xp-btn" data-act="properties">Properties</button>
+      </div>
+    </div>`;
+  // mount into a wrapper for window.body
+  const wrapper = document.createElement('div');
+  wrapper.className = 'verwin';
+  wrapper.style.cssText = 'display:flex;flex-direction:column;height:100%;';
+  wrapper.innerHTML = body.innerHTML;
+  wrapper.querySelector('.shotwrap').appendChild(buildScreenshot(r));
+  wrapper.querySelector('.shotwrap').addEventListener('click', () => {
+    const sw = wrapper.querySelector('.shotwrap');
+    sw.innerHTML = '';
+    sw.style.cursor = 'default';
+    const f = document.createElement('iframe');
+    f.src = 'https://playground.wordpress.net/?wp=' + r.v;
+    f.style.cssText = 'width:100%;height:100%;border:0;';
+    sw.appendChild(f);
+  });
+  wrapper.querySelectorAll('.xp-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const act = b.dataset.act;
+      if (act === 'launch') wrapper.querySelector('.shotwrap').click();
+      else if (act === 'install') openDialog('Install WordPress ' + r.v,
+        `Do you want to install <b>WordPress ${r.v}</b> (${fakeSize(r.v)})?<br><br>This action is purely ceremonial in the Museum.`, 'W');
+      else if (act === 'properties') openProperties(r);
+    });
+  });
+
+  createWindow({
+    id, title: `WordPress ${r.v}${r.name !== '—' ? ' — ' + r.name : ''}`,
+    icon: 'W',
+    body: wrapper,
+    width: 620, height: 560,
+    originEl
+  });
+}
+
+function openProperties(r) {
+  const body = document.createElement('div');
+  body.className = 'dialog';
+  const era = eraFor(r.date);
+  body.innerHTML = `
+    <div class="body">
+      <div class="icon-big">W</div>
+      <p><b>WordPress ${r.v}</b>${r.name !== '—' ? ' — ' + r.name : ''}</p>
+      <table style="font-size:11px; border-collapse:collapse; margin-bottom:10px;">
+        <tr><td style="padding:2px 14px 2px 0; color:#555;">Type:</td><td>Application</td></tr>
+        <tr><td style="padding:2px 14px 2px 0; color:#555;">Release:</td><td>${humanDate(r.date)}</td></tr>
+        <tr><td style="padding:2px 14px 2px 0; color:#555;">Era:</td><td>${era.label}</td></tr>
+        <tr><td style="padding:2px 14px 2px 0; color:#555;">Size:</td><td>${fakeSize(r.v)}</td></tr>
+        <tr><td style="padding:2px 14px 2px 0; color:#555;">Class:</td><td>${r.significant ? 'Milestone' : 'Point release'}</td></tr>
+      </table>
+      <p style="border-top:1px solid #ccc; padding-top:8px; clear:both;">${r.trivia}</p>
+      <div style="text-align:right; margin-top:10px;">
+        <button class="xp-btn primary" onclick="this.closest('.win').querySelector('[data-btn=close]').click()">OK</button>
+      </div>
+    </div>`;
+  createWindow({
+    id: 'props-' + r.v,
+    title: 'WordPress ' + r.v + ' Properties',
+    body, width: 380, height: 340
+  });
+}
+
+function openDialog(title, html, icon='i') {
+  const body = document.createElement('div');
+  body.className = 'dialog';
+  body.innerHTML = `
+    <div class="body">
+      <div class="icon-big">${icon}</div>
+      <p>${html}</p>
+      <div style="text-align:right; margin-top:10px; clear:both;">
+        <button class="xp-btn primary" onclick="this.closest('.win').querySelector('[data-btn=close]').click()">OK</button>
+        <button class="xp-btn" onclick="this.closest('.win').querySelector('[data-btn=close]').click()">Cancel</button>
+      </div>
+    </div>`;
+  createWindow({ id: 'dlg-' + Math.random().toString(36).slice(2,7), title, body, width: 360, height: 200 });
+}
+
+/* ============== My Versions folder ============== */
+function openFolder() {
+  const body = document.createElement('div');
+  body.className = 'explorer';
+  body.style.cssText = 'display:flex; flex-direction:column; height:100%;';
+  body.innerHTML = `
+    <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div>
+    <div class="toolbar">
+      <div class="tb-btn-s">← Back</div>
+      <div class="tb-btn-s">→ Forward</div>
+      <div class="tb-btn-s">↑ Up</div>
+      <div style="border-left:1px solid #aca899; height:22px; margin: 0 4px;"></div>
+      <div class="tb-btn-s">Search</div>
+      <div class="tb-btn-s">Folders</div>
+      <div class="tb-btn-s">Views ▾</div>
+    </div>
+    <div class="addressbar">
+      <span>Address</span>
+      <input value="C:\\Documents and Settings\\WordPress User\\My Versions" readonly>
+      <div class="tb-btn-s">Go</div>
+    </div>
+    <div style="flex:1; overflow:auto;">
+      <table>
+        <thead><tr>
+          <th style="width:42%;">Name</th>
+          <th style="width:18%;">Size</th>
+          <th style="width:22%;">Type</th>
+          <th>Date Released</th>
+        </tr></thead>
+        <tbody id="folder-rows"></tbody>
+      </table>
+    </div>
+    <div class="statusbar">${RELEASES.length} objects</div>
+  `;
+
+  const sorted = [...RELEASES].sort((a,b)=> a.date.localeCompare(b.date));
+  const tbody = body.querySelector('#folder-rows');
+  sorted.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="ico-mini ${r.significant?'big-v':''}">W</span>WordPress ${r.v}${r.name !== '—' ? ' — ' + r.name : ''}</td>
+      <td>${fakeSize(r.v)}</td>
+      <td>${r.significant ? 'Milestone Release' : 'Point Release'}</td>
+      <td>${humanDate(r.date)}</td>
+    `;
+    tr.addEventListener('click', () => {
+      tbody.querySelectorAll('tr.selected').forEach(x=>x.classList.remove('selected'));
+      tr.classList.add('selected');
+    });
+    tr.addEventListener('dblclick', () => openVersion(r.v, tr));
+    tbody.appendChild(tr);
+  });
+
+  createWindow({
+    id: 'folder-myversions',
+    title: 'My Versions',
+    icon: '▤',
+    body, width: 720, height: 520,
+    x: window.innerWidth - 760, y: 40
+  });
+}
+
+/* ============== About window ============== */
+function openAbout() {
+  const body = document.createElement('div');
+  body.style.cssText = 'padding:0; height:100%; display:flex; flex-direction:column; background:#fff;';
+  body.innerHTML = `
+    <div style="background: linear-gradient(180deg,#2a7ae0,#1a5bc4); color:#fff; padding:16px 18px;">
+      <div style="font-family:Georgia,serif; font-size:24px;">Desktop Museum</div>
+      <div style="opacity:.85; font-size:11px;">Windows XP × WordPress — Release Timeline Edition</div>
+    </div>
+    <div style="padding:16px 20px; font-size:12px; line-height:1.6; flex:1; overflow:auto;">
+      <p>Welcome, WordPress User. This museum is a playful re-imagining of the Windows XP Luna desktop,
+      where every icon on the wallpaper represents a moment in WordPress history — from the humble
+      0.70 release in May 2003 all the way to 7.0 "Armstrong".</p>
+      <p><b>Double-click</b> any icon to inspect a release: read its trivia, peek at a stylized screenshot
+      of how its admin felt at the time, and then click the screenshot to <b>Launch</b> that exact
+      version in <a href="https://playground.wordpress.net" target="_blank" rel="noopener">WordPress Playground</a>.</p>
+      <p>Open <b>My Versions</b> for an Explorer-style list. Try the <b>Start menu</b> for a year-by-year
+      cascade. Leave the mouse alone for 30 seconds and the flying-W screensaver takes over.</p>
+      <p style="color:#666; font-style:italic;">Built with inline CSS and JavaScript. No frameworks,
+      no build step, no images. Just nostalgia.</p>
+    </div>
+    <div style="text-align:right; padding: 10px 14px; background:#ece9d8; border-top:1px solid #aca899;">
+      <button class="xp-btn primary" onclick="this.closest('.win').querySelector('[data-btn=close]').click()">OK</button>
+    </div>
+  `;
+  createWindow({ id:'about', title:'About the Museum', body, width:500, height:400 });
+}
+
+/* ============== Clock ============== */
+const clockEl = $('#clock');
+let lastMin = -1;
+function tick() {
+  const d = new Date();
+  const h = d.getHours(), m = d.getMinutes();
+  clockEl.textContent = ((h%12)||12) + ':' + String(m).padStart(2,'0') + ' ' + (h<12?'AM':'PM');
+  if (m !== lastMin) {
+    clockEl.classList.add('pulse');
+    setTimeout(() => clockEl.classList.remove('pulse'), 400);
+    lastMin = m;
+  }
+}
+setInterval(tick, 1000); tick();
+
+/* ============== Screensaver ============== */
+const saver = $('#saver');
+let idleTimer;
+function resetIdle() {
+  clearTimeout(idleTimer);
+  if (saver.classList.contains('on')) return;
+  idleTimer = setTimeout(runSaver, 30000);
+}
+['mousemove','keydown','mousedown','touchstart'].forEach(ev =>
+  document.addEventListener(ev, () => { if (!saver.classList.contains('on')) resetIdle(); })
+);
+
+let saverAnim;
+function runSaver() {
+  saver.classList.add('on');
+  saver.width = window.innerWidth; saver.height = window.innerHeight;
+  const ctx = saver.getContext('2d');
+  const logos = [];
+  for (let i=0; i<18; i++) {
+    logos.push({
+      x: Math.random()*saver.width, y: Math.random()*saver.height,
+      vx: (Math.random()*2 - 1) * 1.8, vy: (Math.random()*2 - 1) * 1.8,
+      r: 28 + Math.random()*36,
+      hue: Math.random()*360
+    });
+  }
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(0,0,saver.width,saver.height);
+    logos.forEach(l => {
+      l.x += l.vx; l.y += l.vy;
+      if (l.x < l.r || l.x > saver.width - l.r) l.vx *= -1;
+      if (l.y < l.r || l.y > saver.height - l.r) l.vy *= -1;
+      l.hue = (l.hue + .5) % 360;
+      const g = ctx.createRadialGradient(l.x, l.y, 2, l.x, l.y, l.r);
+      g.addColorStop(0, `hsl(${l.hue}, 90%, 70%)`);
+      g.addColorStop(1, `hsl(${l.hue}, 90%, 30%)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(l.x, l.y, l.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${l.r*1.1}px Georgia, serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('W', l.x, l.y + 2);
+    });
+    saverAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+saver.addEventListener('click', () => {
+  saver.classList.remove('on');
+  cancelAnimationFrame(saverAnim);
+  resetIdle();
+});
+window.addEventListener('resize', () => {
+  if (saver.classList.contains('on')) { saver.width = window.innerWidth; saver.height = window.innerHeight; }
+});
+
+/* ============== Shutdown ============== */
+function shutdown() {
+  const o = document.createElement('div');
+  o.style.cssText = 'position:fixed; inset:0; background:rgba(15,35,90,.85); z-index:9999999; display:flex; align-items:center; justify-content:center; color:#fff; font-family:Georgia,serif; flex-direction:column; gap:20px;';
+  o.innerHTML = `<div style="font-size:28px;">It is now safe to turn off your computer.</div>
+    <button class="xp-btn" style="padding:8px 20px;" id="rb">Resume Museum</button>`;
+  document.body.appendChild(o);
+  o.querySelector('#rb').addEventListener('click', () => o.remove());
+}
+
+/* ============== Boot sequence ============== */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const b = $('#boot');
+    b.style.opacity = '0';
+    setTimeout(() => { b.remove();
+      // Open folder by default
+      openFolder();
+      // Balloon notification
+      setTimeout(() => {
+        $('#balloon').classList.add('open');
+        setTimeout(() => $('#balloon').classList.remove('open'), 9000);
+      }, 1800);
+      resetIdle();
+    }, 500);
+  }, 2100);
+});
+</script>
+</body>
+</html>
