@@ -14,7 +14,7 @@ sfw npm start
 sfw npm --prefix museums/3d run check
 ```
 
-Open <http://127.0.0.1:4173/museums/3d/>. `sfw npm run dev` from this directory
+Open <http://127.0.0.1:4173/3d/>. `sfw npm run dev` from this directory
 starts the same shared server. No dependency installation or build is needed.
 
 The root `sfw npm run check` includes this experience's checks. After editing
@@ -44,8 +44,8 @@ the other experiences.
 ## Deployment
 
 The root publishing tools include this experience automatically through its
-manifest. Preview it at `/museum/museums/3d/` on GitHub Pages, or `/museum/3d/`
-on the WordPress Museum site after the plugin is deployed. Both paths support
+manifest. Preview it at `/museum/3d/` on GitHub Pages or on the WordPress Museum
+site after the plugin is deployed. Both deployments support
 `?variant=` and `?release=` links. The design gallery is `explorations.html`.
 
 Blueprints are fetched from this experience, then embedded into Playground's URL

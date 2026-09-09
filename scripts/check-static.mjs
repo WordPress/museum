@@ -5,9 +5,9 @@ import { loadMuseums } from './museums.mjs';
 import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
-const { experiences, files } = await loadMuseums();
-const pages = [...files].filter((file) => file.endsWith('.html'));
-const sharedPages = new Set(experiences.filter((experience) => experience.sharedReleases).map((experience) => `museums/${experience.slug}/index.html`));
+const { experiences, files, publicFiles } = await loadMuseums();
+const pages = [...publicFiles.keys()].filter((file) => file.endsWith('.html'));
+const sharedPages = new Set(experiences.filter((experience) => experience.sharedReleases).map((experience) => `${experience.slug}/index.html`));
 const errors = [];
 
 await checkReleaseData();
@@ -74,7 +74,7 @@ async function checkReleaseData() {
 }
 
 async function checkPage(relativePath) {
-  const html = await read(relativePath);
+  const html = await read(publicFiles.get(relativePath));
   const required = [
     /<!doctype html>/i,
     /<html\s+lang="en">/i,
@@ -111,15 +111,9 @@ async function checkPage(relativePath) {
   }
 
   for (const reference of localReferences(html)) {
-    const target = path.resolve(root, path.dirname(relativePath), reference);
-    try {
-      const details = await stat(target);
-      const resolved = details.isDirectory() ? path.join(target, 'index.html') : target;
-      if (!files.has(path.relative(root, resolved))) {
-        errors.push(`${relativePath} references an unpublished file: ${reference}.`);
-      }
-    } catch {
-      errors.push(`${relativePath} points to missing local file ${reference}.`);
+    const target = path.posix.join(path.posix.dirname(relativePath), reference);
+    if (!publicFiles.has(target) && !publicFiles.has(path.posix.join(target, 'index.html'))) {
+      errors.push(`${relativePath} references an unpublished file: ${reference}.`);
     }
   }
 }

@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { contentTypes, loadMuseums, root } from './museums.mjs';
 
 export async function createPreviewServer({ directory = root, basePath = '/' } = {}) {
-  const { files } = await loadMuseums();
+  const { publicFiles, redirects } = await loadMuseums(directory);
   return createServer((request, response) => {
     response.setHeader('Access-Control-Allow-Origin', '*');
     response.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
@@ -30,12 +30,18 @@ export async function createPreviewServer({ directory = root, basePath = '/' } =
       return;
     }
     const relative = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : null;
-    if (relative !== null && files.has(`${relative}/index.html`)) {
+    const publicPath = relative === '' || relative?.endsWith('/') ? `${relative}index.html` : relative;
+    const redirect = redirects.get(publicPath) ?? (relative !== null ? redirects.get(`${relative}/index.html`) : undefined);
+    if (redirect) {
+      response.writeHead(301, { Location: `${basePath}${redirect}${url.search}` }).end();
+      return;
+    }
+    if (relative !== null && publicFiles.has(`${relative}/index.html`)) {
       response.writeHead(301, { Location: `${url.pathname}/${url.search}` }).end();
       return;
     }
-    const file = relative === '' || relative?.endsWith('/') ? `${relative}index.html` : relative;
-    if (!files.has(file)) {
+    const file = publicFiles.get(publicPath);
+    if (!file) {
       response.writeHead(404).end();
       return;
     }

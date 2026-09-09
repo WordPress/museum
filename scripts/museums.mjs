@@ -21,6 +21,7 @@ export async function loadMuseums(directory = root) {
   const registry = JSON.parse(await readFile(path.join(directory, 'museums.json'), 'utf8'));
   const experiences = [];
   const files = new Set(['index.html', 'LICENSE', 'CREDITS.md']);
+  const publicFiles = new Map([...files].map((file) => [file, file]));
   const slugs = new Set();
 
   for (const slug of registry.experiences) {
@@ -49,16 +50,27 @@ export async function loadMuseums(directory = root) {
       throw new Error(`Public file must be a regular file inside the repository: ${file}`);
     }
   }
-  return { experiences, files };
+  const redirects = new Map();
+  for (const [publicPath, file] of publicFiles) {
+    if (file !== publicPath && file.endsWith('.html')) {
+      if (publicFiles.has(file)) {
+        throw new Error(`Public file conflicts with a legacy redirect: ${file}`);
+      }
+      redirects.set(file, publicPath.replace(/\/index\.html$/, '/'));
+    }
+  }
+  return { experiences, files, publicFiles, redirects };
 
   function addFile(prefix, file) {
     if (typeof file !== 'string' || !/^[\w./-]+$/.test(file) || file.split('/').some((part) => !part || part.startsWith('.')) || !contentTypes[path.extname(file)]) {
       throw new Error(`Invalid public file: ${file}`);
     }
     const relative = prefix + file;
-    if (files.has(relative)) {
+    const publicPath = relative.slice('museums/'.length);
+    if (publicFiles.has(publicPath)) {
       throw new Error(`Duplicate public file: ${relative}`);
     }
     files.add(relative);
+    publicFiles.set(publicPath, relative);
   }
 }

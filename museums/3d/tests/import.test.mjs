@@ -74,8 +74,8 @@ test('every Blueprint returns to the current deployment and retains valid PHP', 
       const original = JSON.parse(await readFile(path.join(root, release.blueprint), 'utf8'));
       const snapshot = JSON.stringify(original);
       for (const url of [
-        'http://127.0.0.1:4173/museums/3d/?variant=permalink-pinball-palace',
-        'https://wordpress.github.io/museum/museums/3d/index.html?release=6.2',
+        'http://127.0.0.1:4173/3d/?variant=permalink-pinball-palace',
+        'https://wordpress.github.io/museum/3d/index.html?release=6.2',
         'https://wordpress.org/museum/3d/?release=6.2',
       ]) {
         const prepared = prepareBlueprint(original, url);
