@@ -6,7 +6,7 @@
   "license": "GPL-2.0-only",
   "scripts": {
     "start": "node scripts/dev-server.mjs",
-    "check": "node scripts/check-static.mjs && node --test tests/*.test.mjs",
+    "check": "node scripts/check-static.mjs && node --test tests/*.test.mjs && node museums/3d/scripts/check-wapuus.mjs && node --test museums/3d/tests/*.test.mjs",
     "package": "node scripts/package-site.mjs"
   },
   "engines": {

@@ -3,7 +3,9 @@
 Generated Blueprints for the legacy WordPress versions supported by Playground.
 Each Blueprint opens to a version-specific time-capsule post.
 
-Regenerate with:
+These are imported snapshots. The generator belongs to the upstream Playground
+project and is not included in this repository. In a checkout containing that
+generator, its original command was:
 
 ```sh
 node packages/playground/website/scripts/generate-wordpress-museum-blueprints.mjs

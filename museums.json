@@ -1,7 +1,8 @@
 {
   "experiences": [
     "desktop",
-    "winamp"
+    "winamp",
+    "3d"
   ],
   "shared": [
     "data/releases.js",

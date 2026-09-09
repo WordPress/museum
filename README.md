@@ -8,6 +8,7 @@ preview, checks, static packaging, and a thin WordPress routing adapter.
 | --- | --- | --- |
 | [Desktop](museums/desktop/) | `/museums/desktop/` | Release history as an early-2000s desktop. |
 | [Winamp](museums/winamp/) | `/museums/winamp/` | Release history as a music-player timeline. |
+| [3D Museum](museums/3d/) | `/museums/3d/` | A walkable museum of WordPress’s first 20 years, with design explorations. |
 
 ![Desktop and Winamp museum experiences](docs/experiences.webp)
 

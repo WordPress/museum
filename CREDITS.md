@@ -43,3 +43,8 @@ third-party license files and per-asset source records; see
 [`museums/3d/ASSET_SOURCES.md`](museums/3d/ASSET_SOURCES.md) and the manifests under
 [`museums/3d/assets/`](museums/3d/assets/). Those asset licenses remain distinct
 from this repository's GPL-2.0 code license.
+
+Integration changes add the public file manifest, shared preview tooling,
+metadata, and checks; update local documentation and cache versions; and adapt
+Playground return links to the current deployment. The release dataset, asset
+binaries, and Blueprint JSON snapshots are unchanged.

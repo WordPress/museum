@@ -1,3 +1,4 @@
+import { prepareBlueprint } from './playground.js';
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.min.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/loaders/GLTFLoader.js';
 
@@ -18030,13 +18031,7 @@ async function playgroundModalUrlForRelease(release) {
 		if (!response.ok) {
 			throw new Error(`HTTP ${response.status}`);
 		}
-		const blueprint = await response.json();
-		// Playground supports only PHP 7.4+, but the generated Blueprints pin the
-		// historical 5.2. Drop the pin so Playground auto-selects the compatible
-		// PHP it already uses for a bare ?wp= boot; keep the WordPress version.
-		if (blueprint.preferredVersions) {
-			delete blueprint.preferredVersions.php;
-		}
+		const blueprint = prepareBlueprint(await response.json(), window.location.href);
 		const url = new URL('https://playground.wordpress.net/');
 		url.searchParams.set('mode', 'seamless');
 		// Encode the minified Blueprint JSON once and append it after '#'.
