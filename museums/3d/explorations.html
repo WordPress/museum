@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Explore alternative designs for the 3D WordPress Museum." />
+		<title>WordPress Museum - Design Explorations</title>
+		<link rel="stylesheet" href="./explorations.css" />
+	</head>
+	<body>
+		<header class="hero">
+			<p>WordPress Museum</p>
+			<h1>50 Design Explorations</h1>
+			<div class="hero-actions">
+				<a href="./">Current museum</a>
+			</div>
+		</header>
+
+		<main>
+			<section class="intro">
+				<p>
+					Each card opens the same static Three.js museum with a different
+					visual system, lighting rig, mural treatment, frame language, UI
+					style, open-license model props, and stranger museum set pieces.
+				</p>
+				<p>
+					The current design remains the default. Explorations are served from
+					GitHub Pages as query-param variants: <code>?variant=&lt;slug&gt;</code>.
+				</p>
+			</section>
+			<section id="variant-grid" class="variant-grid" aria-label="Design explorations"></section>
+		</main>
+
+		<script src="./museum-variants.js"></script>
+		<script src="./explorations.js"></script>
+	</body>
+</html>

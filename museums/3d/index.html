@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Explore the first 20 years of WordPress in an interactive 3D museum." />
+		<title>WordPress Museum - Three.js Gallery</title>
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111827'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23ffd166'/%3E%3Cpath fill='%23111827' d='M18 20h7l4 18 5-18h6l5 18 4-18h7l-8 28h-6l-5-17-5 17h-6z'/%3E%3C/svg%3E"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Special+Elite&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="./style.css?v=a18da3a7" />
+	</head>
+	<body data-variant="current" data-ui="glass">
+		<div id="museum-loader" role="status" aria-live="polite">
+			<div class="loader-inner">
+				<div class="loader-mark">
+					<canvas
+						id="loader-logo"
+						class="loader-logo"
+						width="26"
+						height="26"
+						aria-hidden="true"
+					></canvas>
+					<span class="loader-ring" aria-hidden="true"></span>
+				</div>
+				<p class="loader-title">WordPress<br />Museum</p>
+				<div class="loader-bar" aria-hidden="true"><span></span></div>
+				<p class="loader-caption">Unlocking the doors…</p>
+				<p class="loader-kicker">Est. 2003 · Free Admission</p>
+			</div>
+		</div>
+		<div class="museum-stage">
+			<canvas
+				id="museum-canvas"
+				aria-label="Interactive 3D WordPress Museum"
+			></canvas>
+			<div class="reticle" aria-hidden="true"></div>
+		</div>
+		<div class="walk-hint" aria-hidden="true">
+			<strong>ESC</strong> to free the mouse
+		</div>
+
+		<header class="hud top-hud">
+			<div class="title-block">
+				<p class="kicker">— Now Open · Est. 2003 · Free Admission —</p>
+				<h1>
+					<span class="title-word">WordPress</span>
+					<span class="title-stamp" aria-hidden="true">est. 2003</span>
+					<span class="title-word title-museum">Museum</span>
+				</h1>
+				<p class="subhead">The first 20 years · 2003–2023</p>
+			</div>
+			<div class="hud-actions">
+				<button type="button" id="walk-button">▶ Walk</button>
+				<button type="button" id="tour-button">⛬ Guided tour</button>
+			</div>
+		</header>
+
+		<aside class="release-panel" aria-live="polite">
+			<button
+				type="button"
+				id="panel-toggle"
+				class="panel-toggle"
+				aria-label="Collapse ticket"
+			>
+				<span class="panel-toggle-open">›</span>
+				<span class="panel-toggle-tab">🎟 TICKET</span>
+			</button>
+			<div class="ticket-stub" aria-hidden="true">
+				<span class="ticket-stub-line">ADMIT</span>
+				<span class="ticket-stub-line">ONE</span>
+			</div>
+			<div class="panel-corner panel-corner-tl" aria-hidden="true"></div>
+			<div class="panel-corner panel-corner-tr" aria-hidden="true"></div>
+			<div class="panel-corner panel-corner-bl" aria-hidden="true"></div>
+			<div class="panel-corner panel-corner-br" aria-hidden="true"></div>
+			<p class="panel-kicker" id="release-era">Blogging Roots</p>
+			<h2 id="release-title">WordPress 0.7</h2>
+			<p class="panel-date" id="release-date">May 27, 2003</p>
+			<p class="panel-tagline" id="release-known-for">The first WordPress</p>
+			<p id="release-detail"></p>
+			<div class="panel-links">
+				<a id="open-playground" href="#">▶ Boot in Playground</a>
+			</div>
+		</aside>
+
+		<nav class="tour-controls" aria-label="Release tour controls">
+			<button type="button" id="previous-release">Previous</button>
+			<button
+				type="button"
+				id="release-counter"
+				title="Go to this release"
+				aria-label="Go to this release"
+			>
+				WP 0.7
+			</button>
+			<button type="button" id="next-release">Next</button>
+		</nav>
+
+		<nav class="release-rail" aria-label="WordPress navigation">
+			<button
+				type="button"
+				id="center-button"
+				class="rail-center-button"
+				aria-label="Back to center"
+			>
+				Center
+			</button>
+			<div id="release-rail-track"></div>
+		</nav>
+
+		<div class="mobile-pad" aria-label="Movement controls">
+			<button type="button" data-mobile-move="forward" aria-label="Forward">↑</button>
+			<div>
+				<button type="button" data-mobile-turn="left" aria-label="Turn left">←</button>
+				<button type="button" data-mobile-turn="right" aria-label="Turn right">→</button>
+			</div>
+			<button type="button" data-mobile-move="back" aria-label="Back">↓</button>
+		</div>
+
+		<div id="debug-panel" class="debug-panel" aria-hidden="true"></div>
+
+		<div class="help-card">
+			<span class="help-stamp" aria-hidden="true">Visitors' Guide</span>
+			<strong>Walk this way</strong>
+			<ul>
+				<li>Arrows / WASD to move</li>
+				<li>Click the scene to look around</li>
+				<li>ESC to free the mouse</li>
+				<li>Click on objects for interaction</li>
+			</ul>
+		</div>
+
+		<dialog id="playground-modal" class="playground-modal" aria-labelledby="playground-modal-title">
+			<button
+				type="button"
+				id="playground-modal-close"
+				class="playground-modal-backdrop"
+				aria-label="Close Playground"
+				tabindex="-1"
+			></button>
+			<div class="playground-modal-dialog">
+				<div class="playground-modal-bar">
+					<span id="playground-modal-title">WordPress Playground</span>
+					<button type="button" id="playground-modal-x" aria-label="Close" autofocus>✕</button>
+				</div>
+				<iframe
+					id="playground-modal-iframe"
+					class="playground-modal-iframe"
+					title="WordPress Playground"
+					allow="clipboard-write"
+				></iframe>
+			</div>
+		</dialog>
+
+		<script src="./museum-variants.js?v=c22a4b87"></script>
+		<script src="./museum-data.js?v=35eb2d7e"></script>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.min.js"
+				}
+			}
+		</script>
+		<script>
+			// Draw the official WordPress logo small, then CSS upscales the canvas
+			// with nearest-neighbour (image-rendering: pixelated) for a retro,
+			// pixel-art mark that matches the loader's pixel-font title.
+			(function () {
+				var canvas = document.getElementById('loader-logo');
+				if (!canvas) return;
+				var logo =
+					"data:image/svg+xml," +
+					encodeURIComponent(
+						"<svg viewBox='0 0 122.52 122.523' xmlns='http://www.w3.org/2000/svg'><g fill='#ffd166'>" +
+							"<path d='m8.708 61.26c0 20.802 12.089 38.779 29.619 47.298l-25.069-68.686c-2.916 6.536-4.55 13.769-4.55 21.388z'/>" +
+							"<path d='m96.74 58.608c0-6.495-2.333-10.993-4.334-14.494-2.664-4.329-5.161-7.995-5.161-12.324 0-4.831 3.664-9.328 8.825-9.328.233 0 .454.029.681.042-9.35-8.566-21.807-13.796-35.489-13.796-18.36 0-34.513 9.42-43.91 23.688 1.233.037 2.395.063 3.382.063 5.497 0 14.006-.667 14.006-.667 2.833-.167 3.167 3.994.337 4.329 0 0-2.847.335-6.015.501l19.138 56.925 11.501-34.493-8.188-22.434c-2.83-.166-5.511-.501-5.511-.501-2.832-.166-2.5-4.496.332-4.329 0 0 8.679.667 13.843.667 5.496 0 14.006-.667 14.006-.667 2.835-.167 3.168 3.994.337 4.329 0 0-2.853.335-6.015.501l18.992 56.494 5.242-17.517c2.272-7.269 4.001-12.49 4.001-16.989z'/>" +
+							"<path d='m62.184 65.857-15.768 45.819c4.708 1.384 9.687 2.141 14.846 2.141 6.12 0 11.989-1.058 17.452-2.979-.141-.225-.269-.464-.374-.724z'/>" +
+							"<path d='m107.376 36.046c.226 1.674.354 3.471.354 5.404 0 5.333-.996 11.328-3.996 18.824l-16.053 46.413c15.624-9.111 26.133-26.038 26.133-45.426.001-9.137-2.333-17.729-6.438-25.215z'/>" +
+							"<path d='m61.262 0c-33.779 0-61.262 27.481-61.262 61.26 0 33.783 27.483 61.263 61.262 61.263 33.778 0 61.265-27.48 61.265-61.263-.001-33.779-27.487-61.26-61.265-61.26zm0 119.715c-32.23 0-58.453-26.223-58.453-58.455 0-32.23 26.222-58.451 58.453-58.451 32.229 0 58.45 26.221 58.45 58.451 0 32.232-26.221 58.455-58.45 58.455z'/>" +
+							"</g></svg>"
+					);
+				var img = new Image();
+				img.onload = function () {
+					var ctx = canvas.getContext('2d');
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				};
+				img.src = logo;
+			})();
+
+			// Safety net: reveal the museum even if the 3D module fails to load
+			// (e.g. the CDN import never resolves) so the loader can't trap a visitor.
+			window.setTimeout(function () {
+				document.body.classList.add('museum-ready');
+			}, 12000);
+		</script>
+		<script type="module" src="./museum.js?v=93129ced"></script>
+	</body>
+</html>

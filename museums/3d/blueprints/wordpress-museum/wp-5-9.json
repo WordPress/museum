@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 5.9 (Josephine)",
+		"description": "A time-capsule post for WordPress 5.9, released January 25, 2022.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "7.4",
+		"wp": "5.9"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n\n$wordpress_museum_post_id = wp_insert_post(array(\n\t'post_author' => 1,\n\t'post_title' => base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgNS45IChKb3NlcGhpbmUp'),\n\t'post_name' => 'wordpress-museum-5-9',\n\t'post_content' => base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBKYW51YXJ5IDI1LCAyMDIyLjwvaDI+CjxwPllvdSBhcmUgc3RhbmRpbmcgaW4gdGhlIFdvcmRQcmVzcyA1LjkgIkpvc2VwaGluZSIgZ2FsbGVyeSwgd2hlcmUgZnVsbCBzaXRlIGVkaXRpbmcgZW50ZXJlZCB0aGUgbG9iYnkuPC9wPgo8cD5UaGUgZmlyc3QgZGVmYXVsdCBibG9jayB0aGVtZSwgVHdlbnR5IFR3ZW50eS1Ud28sIGFycml2ZWQgd2l0aCB0ZW1wbGF0ZSBwYXJ0cyBhbmQgYSBjb25maWRlbnQgbGl0dGxlIGJpcmQuPC9wPgo8cD48c3Ryb25nPk11c2V1bSBub3RlOjwvc3Ryb25nPiBXZWxjb21lIHRvIHRoZSBmdXR1cmUsIHdoZXJlIGV2ZW4gdGhlIGhlYWRlciBhc2tzIHdoZXRoZXIgaXQgaXMgY29udGVudCBub3cuPC9wPgo8cD48ZW0+VGhpcyBwb3N0IHdhcyBwbGFudGVkIGJ5IGEgQmx1ZXByaW50IHNvIHRoZSBwYXN0IGhhcyBzb21ldGhpbmcgdG8gc2F5IHdoZW4gdGhlIHNpdGUgb3BlbnMuPC9lbT48L3A+CjxwPjxhIGhyZWY9Imh0dHBzOi8vamFuamFrZXMuZ2l0aHViLmlvL3dvcmRwcmVzcy1tdXNldW0vP3JlbGVhc2U9NS45IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+JiM4NjE3OyBGaW5kIFdvcmRQcmVzcyA1LjkgaW4gdGhlIFdvcmRQcmVzcyBNdXNldW08L2E+PC9wPg=='),\n\t'post_status' => 'publish',\n\t'post_type' => 'post',\n\t'post_date' => '2022-01-25 10:00:00',\n\t'post_date_gmt' => '2022-01-25 10:00:00',\n\t'comment_status' => 'open',\n\t'ping_status' => 'closed',\n\t'post_category' => array(1),\n));\n\nif ($wordpress_museum_post_id) {\n\t$wpdb->update(\n\t\t$wpdb->posts,\n\t\tarray(\n\t\t\t'post_date' => '2022-01-25 10:00:00',\n\t\t\t'post_date_gmt' => '2022-01-25 10:00:00',\n\t\t\t'post_modified' => '2022-01-25 10:00:00',\n\t\t\t'post_modified_gmt' => '2022-01-25 10:00:00'\n\t\t),\n\t\tarray('ID' => $wordpress_museum_post_id)\n\t);\n}\n"
+		}
+	]
+}

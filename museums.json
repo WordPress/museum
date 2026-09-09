@@ -1,0 +1,14 @@
+{
+  "experiences": [
+    "desktop",
+    "winamp",
+    "3d"
+  ],
+  "shared": [
+    "data/releases.js",
+    "assets/fonts/press-start-2p/PressStart2P-Regular.ttf",
+    "assets/fonts/press-start-2p/OFL.txt",
+    "assets/fonts/vt323/VT323-Regular.ttf",
+    "assets/fonts/vt323/OFL.txt"
+  ]
+}

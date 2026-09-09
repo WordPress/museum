@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 2.0 (Duke)",
+		"description": "A time-capsule post for WordPress 2.0, released December 31, 2005.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "5.2",
+		"wp": "2.0"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n\nfunction wordpress_museum_sql_escape($value) {\n\treturn str_replace(\"'\", \"''\", $value);\n}\n\n$title = wordpress_museum_sql_escape(base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgMi4wIChEdWtlKQ=='));\n$content = wordpress_museum_sql_escape(base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBEZWNlbWJlciAzMSwgMjAwNS48L2gyPgo8cD5Zb3UgYXJlIHN0YW5kaW5nIGluIHRoZSBXb3JkUHJlc3MgMi4wICJEdWtlIiBnYWxsZXJ5LCB3aGVyZSB0aGUgcmljaCBlZGl0b3IgYXJyaXZlZCBmb3IgTmV3IFllYXJzIEV2ZS48L3A+CjxwPkFraXNtZXQgYnVuZGxlZCBpbiwgcm9sZXMgYXBwZWFyZWQsIGFuZCB0aGUgYWRtaW4gZ3JldyBlbm91Z2ggcG9saXNoIHRvIHNlZSBpdHMgcmVmbGVjdGlvbi48L3A+CjxwPjxzdHJvbmc+TXVzZXVtIG5vdGU6PC9zdHJvbmc+IFRpbnlNQ0UgaXMgaGVyZS4gVGhlIHRleHRhcmVhIGhhcyBvcGluaW9ucyBidXQgbm8gbWljcm9waG9uZS48L3A+CjxwPjxlbT5UaGlzIHBvc3Qgd2FzIHBsYW50ZWQgYnkgYSBCbHVlcHJpbnQgc28gdGhlIHBhc3QgaGFzIHNvbWV0aGluZyB0byBzYXkgd2hlbiB0aGUgc2l0ZSBvcGVucy48L2VtPjwvcD4KPHA+PGEgaHJlZj0iaHR0cHM6Ly9qYW5qYWtlcy5naXRodWIuaW8vd29yZHByZXNzLW11c2V1bS8/cmVsZWFzZT0yLjAiIHRhcmdldD0iX2JsYW5rIiByZWw9Im5vb3BlbmVyIj4mIzg2MTc7IEZpbmQgV29yZFByZXNzIDIuMCBpbiB0aGUgV29yZFByZXNzIE11c2V1bTwvYT48L3A+'));\n$slug = 'wordpress-museum-2-0';\n$now = '2005-12-31 10:00:00';\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n$wpdb->query(\n\t\"INSERT INTO \" . $wpdb->posts . \" \" .\n\t\"(post_author, post_date, post_date_gmt, post_content, post_title, \" .\n\t\"post_category, post_excerpt, post_status, comment_status, ping_status, \" .\n\t\"post_password, post_name, to_ping, pinged, post_modified, \" .\n\t\"post_modified_gmt, post_content_filtered, post_parent, menu_order, \" .\n\t\"post_mime_type, comment_count) \" .\n\t\"VALUES (1, '$now', '$now', '$content', '$title', 1, '', 'publish', \" .\n\t\"'open', 'closed', '', '$slug', '', '', '$now', '$now', '', 0, 0, '', 0)\"\n);\n"
+		}
+	]
+}

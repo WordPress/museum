@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 5.3 (Kirk)",
+		"description": "A time-capsule post for WordPress 5.3, released November 12, 2019.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "7.4",
+		"wp": "5.3"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n\n$wordpress_museum_post_id = wp_insert_post(array(\n\t'post_author' => 1,\n\t'post_title' => base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgNS4zIChLaXJrKQ=='),\n\t'post_name' => 'wordpress-museum-5-3',\n\t'post_content' => base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBOb3ZlbWJlciAxMiwgMjAxOS48L2gyPgo8cD5Zb3UgYXJlIHN0YW5kaW5nIGluIHRoZSBXb3JkUHJlc3MgNS4zICJLaXJrIiBnYWxsZXJ5LCB3aGVyZSBsYXJnZSBpbWFnZXMgZ290IGZyaWVuZGxpZXIgaGFuZGxpbmcuPC9wPgo8cD5Ud2VudHkgVHdlbnR5LCB0aGUgR3JvdXAgYmxvY2ssIGFuZCBhZG1pbiBlbWFpbCBjaGVja3MgbWFkZSBsYXRlIDIwMTkgZmVlbCB0aWRpZXIgYW5kIG1vcmUgdHlwb2dyYXBoaWMuPC9wPgo8cD48c3Ryb25nPk11c2V1bSBub3RlOjwvc3Ryb25nPiBQbGVhc2UgcmV0dXJuIG92ZXJzaXplZCBKUEVHcyB0byB0aGUgY29hdCBjaGVjay4gVGhleSB3aWxsIGJlIHNjYWxlZCBiZWZvcmUgZW50ZXJpbmcuPC9wPgo8cD48ZW0+VGhpcyBwb3N0IHdhcyBwbGFudGVkIGJ5IGEgQmx1ZXByaW50IHNvIHRoZSBwYXN0IGhhcyBzb21ldGhpbmcgdG8gc2F5IHdoZW4gdGhlIHNpdGUgb3BlbnMuPC9lbT48L3A+CjxwPjxhIGhyZWY9Imh0dHBzOi8vamFuamFrZXMuZ2l0aHViLmlvL3dvcmRwcmVzcy1tdXNldW0vP3JlbGVhc2U9NS4zIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+JiM4NjE3OyBGaW5kIFdvcmRQcmVzcyA1LjMgaW4gdGhlIFdvcmRQcmVzcyBNdXNldW08L2E+PC9wPg=='),\n\t'post_status' => 'publish',\n\t'post_type' => 'post',\n\t'post_date' => '2019-11-12 10:00:00',\n\t'post_date_gmt' => '2019-11-12 10:00:00',\n\t'comment_status' => 'open',\n\t'ping_status' => 'closed',\n\t'post_category' => array(1),\n));\n\nif ($wordpress_museum_post_id) {\n\t$wpdb->update(\n\t\t$wpdb->posts,\n\t\tarray(\n\t\t\t'post_date' => '2019-11-12 10:00:00',\n\t\t\t'post_date_gmt' => '2019-11-12 10:00:00',\n\t\t\t'post_modified' => '2019-11-12 10:00:00',\n\t\t\t'post_modified_gmt' => '2019-11-12 10:00:00'\n\t\t),\n\t\tarray('ID' => $wordpress_museum_post_id)\n\t);\n}\n"
+		}
+	]
+}

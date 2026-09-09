@@ -29,11 +29,24 @@ announcements.
 
 The license text for each font is stored beside the font file.
 
-## Jan Jakeš prototype
+## 3D Museum
 
 [`JanJakes/wordpress-museum`](https://github.com/JanJakes/wordpress-museum) was
-reviewed for its Three.js museum, Playground Blueprints, and detailed asset
-manifests. No code or assets from that repository are included here. At the
-reviewed commit (`1eebdb6d138e661453a1c9eb965671a259061a6f`), the repository did
-not include a top-level project license. Settle the project license and retain
-its per-asset credits before importing any part of it.
+imported at Jan's request into `museums/3d/` from the current `trunk` snapshot,
+commit [`1eebdb6d138e661453a1c9eb965671a259061a6f`](https://github.com/JanJakes/wordpress-museum/commit/1eebdb6d138e661453a1c9eb965671a259061a6f),
+on 2026-09-09. The import copies the tracked files without their Git history.
+
+The snapshot contains the Three.js museum, design explorations, its 2003–2023
+release dataset, Playground Blueprints, and local image and model assets. It
+has no top-level project license file. The import retains all supplied
+third-party license files and per-asset source records; see
+[`museums/3d/ASSET_SOURCES.md`](museums/3d/ASSET_SOURCES.md) and the manifests under
+[`museums/3d/assets/`](museums/3d/assets/). Those asset licenses remain distinct
+from this repository's GPL-2.0 code license.
+
+Integration changes add the public file manifest, shared preview tooling,
+metadata, and checks; update local documentation and cache versions; and adapt
+Playground return links to the current deployment. The release dataset, asset
+binaries, and Blueprint JSON snapshots are unchanged.
+The Kenney license files retain their text with normalized line endings and
+trailing whitespace.
