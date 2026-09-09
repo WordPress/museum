@@ -2,15 +2,14 @@
 
 ## Imported experiences
 
-The three initial experiences were adapted by their author from
+The two experiences were adapted by their author from
 [`adamziel/wordpress-museum`](https://github.com/adamziel/wordpress-museum) at
 commit `6af761633a59996d4a1f11019debe26e444e0344`:
 
 | Destination | Source path | Source SHA-256 |
 | --- | --- | --- |
-| `desktop/index.html` | `v1-desktop/index.html` | `7cad91c74f9b6a813d69f9a16ce6056951a93beeea0f13d11b4a8d65e0de738f` |
-| `winamp/index.html` | `v2-winamp/index.html` | `2af45926de86232a14498e5b7b57f36fa1137f3256507f102c9dc351c33ef6eb` |
-| `kubrick/index.html` | `v4-kubrick/index.html` | `acc363a44772fa3c3df50906256237c49ae0443b6ec5a53e0940bf45df2b153d` |
+| `museums/desktop/index.html` | `v1-desktop/index.html` | `7cad91c74f9b6a813d69f9a16ce6056951a93beeea0f13d11b4a8d65e0de738f` |
+| `museums/winamp/index.html` | `v2-winamp/index.html` | `2af45926de86232a14498e5b7b57f36fa1137f3256507f102c9dc351c33ef6eb` |
 
 The imported copies now use one release dataset, locally hosted fonts, and the
 correct WordPress 6.9 and 7.0 release records.

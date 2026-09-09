@@ -5,9 +5,8 @@ import vm from 'node:vm';
 const root = path.resolve(import.meta.dirname, '..');
 const pages = [
   'index.html',
-  'desktop/index.html',
-  'winamp/index.html',
-  'kubrick/index.html',
+  'museums/desktop/index.html',
+  'museums/winamp/index.html',
 ];
 const errors = [];
 
@@ -16,6 +15,7 @@ for (const page of pages) {
   await checkPage(page);
 }
 await checkWordPressRoutes();
+await checkRemovedExperience();
 
 if (errors.length) {
   for (const error of errors) {
@@ -27,19 +27,19 @@ if (errors.length) {
 }
 
 async function checkReleaseData() {
-  const source = await read('data/releases.js');
+  const source = await read('museums/data/releases.js');
   const context = vm.createContext({ window: {} });
 
   try {
-    vm.runInContext(source, context, { filename: 'data/releases.js' });
+    vm.runInContext(source, context, { filename: 'museums/data/releases.js' });
   } catch (error) {
-    errors.push(`data/releases.js does not parse: ${error.message}`);
+    errors.push(`museums/data/releases.js does not parse: ${error.message}`);
     return;
   }
 
   const releases = context.window.WP_MUSEUM_RELEASES;
   if (!Array.isArray(releases) || releases.length === 0) {
-    errors.push('data/releases.js must assign a non-empty release array.');
+    errors.push('museums/data/releases.js must assign a non-empty release array.');
     return;
   }
 
@@ -122,16 +122,29 @@ async function checkPage(relativePath) {
 async function checkWordPressRoutes() {
   const plugin = await read('museum.php');
   const expected = [
-    'desktop/index.html',
-    'winamp/index.html',
-    'kubrick/index.html',
-    'data/releases.js',
-    'assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
-    'assets/fonts/vt323/VT323-Regular.ttf',
+    'museums/desktop/index.html',
+    'museums/winamp/index.html',
+    'museums/data/releases.js',
+    'museums/assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
+    'museums/assets/fonts/vt323/VT323-Regular.ttf',
   ];
   for (const file of expected) {
     if (!plugin.includes(`'file'  => '${file}'`)) {
       errors.push(`museum.php does not expose ${file}.`);
+    }
+  }
+  if (plugin.includes("'kubrick'")) {
+    errors.push('museum.php still registers the removed Kubrick route.');
+  }
+}
+
+async function checkRemovedExperience() {
+  for (const relativePath of ['kubrick/index.html', 'museums/kubrick/index.html']) {
+    try {
+      await stat(path.join(root, relativePath));
+      errors.push(`${relativePath} still exists.`);
+    } catch {
+      // The removed experience must stay absent.
     }
   }
 }

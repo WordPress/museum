@@ -1,23 +1,22 @@
 # WordPress Museum
 
-Three interactive views of WordPress release history:
+Two interactive views of WordPress release history:
 
 - **Desktop** — releases as shortcuts in an early-2000s desktop.
 - **Winamp** — releases as tracks in a music-player timeline.
-- **Kubrick** — releases as posts in a classic WordPress weblog.
 
-![Desktop, Winamp, and Kubrick museum experiences](docs/experiences.webp)
+![Desktop and Winamp museum experiences](docs/experiences.webp)
 
 ## Structure
 
 ```text
 .
 ├── index.html                 # Static preview index; not the production landing page.
-├── desktop/index.html
-├── winamp/index.html
-├── kubrick/index.html
-├── data/releases.js           # Shared release history.
-├── assets/fonts/              # Locally served fonts and their licenses.
+├── museums/
+│   ├── desktop/index.html
+│   ├── winamp/index.html
+│   ├── data/releases.js       # Shared release history.
+│   └── assets/fonts/          # Locally served fonts and their licenses.
 ├── museum.php                 # Thin WordPress routing adapter.
 └── scripts/check-static.mjs   # Dependency-free repository checks.
 ```
@@ -46,6 +45,12 @@ php -l museum.php
 
 Opening an individual HTML file directly also works.
 
+## GitHub Pages preview
+
+Every push to `trunk` publishes the preview index and `museums/` directory to
+<https://wordpress.github.io/museum/>. The deployment workflow packages the
+committed static files without compiling or transforming them.
+
 ## wordpress.org deployment
 
 `https://wordpress.org/museum/` is already a separate WordPress site. Its
@@ -54,16 +59,15 @@ introduction and navigation without shipping code.
 
 The full-screen experiences should not be pasted into Custom HTML blocks. They
 own the entire viewport, and their styles and scripts should not share a page
-with a WordPress theme. GitHub Pages is useful for previews, but it cannot claim
-only the `/museum` path on `wordpress.org`.
+with a WordPress theme. The GitHub Pages site is a preview; it cannot claim only
+the `/museum` path on `wordpress.org`.
 
 `museum.php` provides the small integration layer:
 
 | URL | File |
 | --- | --- |
-| `/museum/desktop/` | `desktop/index.html` |
-| `/museum/winamp/` | `winamp/index.html` |
-| `/museum/kubrick/` | `kubrick/index.html` |
+| `/museum/desktop/` | `museums/desktop/index.html` |
+| `/museum/winamp/` | `museums/winamp/index.html` |
 
 It also serves the shared release data and local fonts at stable same-origin
 URLs. The route map is explicit; a newly committed file is not public until its
@@ -80,7 +84,7 @@ Pages. WordPress continues to render the production `/museum/` landing page.
 
 ## Adding an experience
 
-1. Add a directory containing an `index.html` entry point.
+1. Add a `museums/<slug>/` directory containing an `index.html` entry point.
 2. Keep its assets inside that directory, or use an existing shared asset.
 3. Add its public route to `assets()` in `museum.php`.
 4. Add it to the preview index.
