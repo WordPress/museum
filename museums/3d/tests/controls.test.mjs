@@ -5,6 +5,10 @@ import vm from 'node:vm';
 
 const source = await readFile(new URL('../museum.js', import.meta.url), 'utf8');
 const controls = source.slice(source.indexOf('function bindControls() {'), source.indexOf('function initDebugApi() {'));
+const ticket = source.slice(source.indexOf('function updatePanel(release) {'), source.indexOf('function updateRail('));
+const focusRelease = source.slice(source.indexOf('function focusRelease('), source.indexOf('function createGuidedFlight('));
+const focusRoom = source.slice(source.indexOf('function focusRoom('), source.indexOf('function shouldIgnoreMuseumWheel('));
+const playgroundUrl = source.slice(source.indexOf('function playgroundUrlForRelease('), source.indexOf('function openPlaygroundModal('));
 
 test('Enter opens Playground once from the museum canvas or page background', () => {
   for (const selector of ['body', '#museum-canvas']) {
@@ -38,6 +42,45 @@ test('Enter does not reopen Playground while its modal is visible', () => {
   assert.deepEqual(clicks, []);
   assert.equal(event.defaultPrevented, false);
 });
+
+test('the Mercantile ticket keeps its native external link action', () => {
+  const museum = bindControls();
+  museum.setMercantileTicket(true);
+  const link = museum.element('#open-playground');
+  assert.equal(link.textContent, '▶ Open the Mercantile');
+  assert.equal(link.href, 'https://mercantile.wordpress.org/');
+  assert.equal(link.target, '_blank');
+  assert.equal(link.rel, 'noopener noreferrer');
+  assert.equal(museum.dispatch('#open-playground:click').defaultPrevented, false);
+  assert.deepEqual(museum.opened, []);
+});
+
+for (const destination of ['#next-release', '#previous-release', 'gallery']) {
+  test(`leaving the shop via ${destination} immediately opens the displayed release in the modal`, () => {
+    const museum = bindControls();
+    museum.setMercantileTicket(true);
+    if (destination === 'gallery') {
+      museum.focusRoom('Modern');
+    } else {
+      museum.dispatch(`${destination}:click`);
+    }
+    const link = museum.element('#open-playground');
+    assert.equal(link.textContent, '▶ Boot in Playground');
+    assert.equal(new URL(link.href).searchParams.get('wp'), '6.2');
+    assert.equal(link.target, undefined);
+    assert.equal(link.rel, undefined);
+    // The camera has not advanced, so its location still reports the shop.
+    museum.setMercantileTicket(true);
+    assert.equal(museum.dispatch('#open-playground:click').defaultPrevented, true);
+    assert.deepEqual(museum.opened, [1]);
+    museum.setMercantileTicket(false);
+    assert.equal(museum.dispatch('#open-playground:click').defaultPrevented, true);
+    assert.deepEqual(museum.opened, [1, 1]);
+    museum.setMercantileTicket(true);
+    assert.equal(museum.dispatch('#open-playground:click').defaultPrevented, false);
+    assert.deepEqual(museum.opened, [1, 1]);
+  });
+}
 
 test('modal keys and wheel events do not control the museum', () => {
   const { press, dispatch, keys } = bindControls({ modalOpen: true });
@@ -130,6 +173,7 @@ function bindControls({ modalOpen = false, requestPointerLock } = {}) {
   const elements = new Map();
   const clicks = [];
   const turns = [];
+  const opened = [];
   const document = {
     querySelector: element,
     querySelectorAll: (selector) => selector === '[data-mobile-move]' ? [element('forward')] : [],
@@ -142,6 +186,23 @@ function bindControls({ modalOpen = false, requestPointerLock } = {}) {
     window: { matchMedia: () => ({ matches: false }), addEventListener: (type, handler) => handlers.set(`window:${type}`, handler), location: { search: '' } },
     canvas: element('#museum-canvas'),
     keys: new Set(),
+    inMercantileShop: false,
+    mercantileUrl: 'https://mercantile.wordpress.org/',
+    activeIndex: 0,
+    atCenter: true,
+    releases: [{ version: '1.0', era: 'Early' }, { version: '6.2', era: 'Modern' }],
+    wrapIndex: (index) => (index + 2) % 2,
+    exhibitPositions: Array.from({ length: 2 }, () => ({ stand: { clone: () => ({}) }, card: { clone: () => ({}) } })),
+    roomLayout: new Map([['Modern', {}]]),
+    roomDepth: 10,
+    getEraReleaseItems: () => [{ index: 1 }],
+    THREE: { Vector3: class {} },
+    roomLocalToWorld: (_room, point) => point,
+    getViewAngles: () => ({}),
+    createGuidedFlight: () => ({}),
+    updateRail() {},
+    updateActiveExhibitMarker() {},
+    openPlaygroundModal: (index) => opened.push(index),
     isMovementKey: (code) => ['KeyW', 'ArrowLeft', 'Space'].includes(code),
     closePlaygroundModal() { clicks.push('close'); },
     stopGuidedTour() {},
@@ -153,12 +214,16 @@ function bindControls({ modalOpen = false, requestPointerLock } = {}) {
     turnCamera: (x, y) => turns.push([x, y]),
     pickFromPointerEvent: () => false,
     URLSearchParams,
+    URL,
   });
   // Bind the actual event handlers without constructing the WebGL scene.
-  vm.runInContext(`${controls}\nbindControls();`, context);
+  vm.runInContext(`${controls}\n${ticket}\n${focusRelease}\n${focusRoom}\n${playgroundUrl}\nbindControls();\nupdatePanel(releases[activeIndex]);`, context);
   return {
     clicks,
     turns,
+    opened,
+    setMercantileTicket: context.setMercantileTicket,
+    focusRoom: context.focusRoom,
     document,
     element,
     mobileMotion: context.mobileMotion,
@@ -185,6 +250,7 @@ function bindControls({ modalOpen = false, requestPointerLock } = {}) {
         dataset: { mobileMove: selector },
         open: selector === '#playground-modal' && modalOpen,
         addEventListener: (type, handler) => handlers.set(`${selector}:${type}`, handler),
+        removeAttribute(name) { delete this[name]; },
         classList: {
           add() {},
           toggle() {},

@@ -16843,7 +16843,7 @@ function bindControls() {
 	const openPlayground = document.querySelector('#open-playground');
 	if (openPlayground) {
 		openPlayground.addEventListener('click', (event) => {
-			if (inMercantileShop) {
+			if (openPlayground.dataset.action === 'mercantile') {
 				return; // the link is a plain <a target="_blank"> to the Mercantile
 			}
 			event.preventDefault();
@@ -18094,6 +18094,7 @@ function updatePanel(release) {
 		`WP ${release.version}`;
 
 	const link = document.querySelector('#open-playground');
+	link.dataset.action = 'playground';
 	link.textContent = '▶ Boot in Playground';
 	link.href = playgroundUrlForRelease(release);
 	link.removeAttribute('target');
@@ -18125,6 +18126,7 @@ function updateMercantilePanel() {
 		'Tees, stickers and Wapuu plushies — every purchase supports the ' +
 		'WordPress open source project.';
 	const link = document.querySelector('#open-playground');
+	link.dataset.action = 'mercantile';
 	link.textContent = '▶ Open the Mercantile';
 	link.href = mercantileUrl;
 	link.target = '_blank';
