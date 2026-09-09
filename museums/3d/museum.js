@@ -16888,8 +16888,17 @@ function bindControls() {
 			stopGuidedTour();
 			guidedTarget = null;
 		}
-		if (event.code === 'Enter') {
-			document.querySelector('#open-playground').click();
+		if (
+			event.code === 'Enter' &&
+			!event.defaultPrevented &&
+			!event.repeat &&
+			!event.isComposing &&
+			!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey &&
+			(event.target === canvas || event.target === document.body) &&
+			!pgModal?.classList.contains('is-open')
+		) {
+			event.preventDefault();
+			openPlayground?.click();
 		}
 	});
 	document.addEventListener('keyup', (event) => {
