@@ -4,15 +4,38 @@ import { pathToFileURL } from 'node:url';
 import { loadMuseums, root } from './museums.mjs';
 
 export async function packageSite(destination, directory = root) {
-  const { files } = await loadMuseums(directory);
+  const { publicFiles, redirects } = await loadMuseums(directory);
   await mkdir(destination, { recursive: true });
-  for (const file of files) {
-    const target = path.join(destination, file);
+  for (const [publicPath, file] of publicFiles) {
+    const target = path.join(destination, publicPath);
     await mkdir(path.dirname(target), { recursive: true });
     await cp(path.join(directory, file), target);
   }
+  for (const [file, publicPath] of redirects) {
+    const target = path.join(destination, file);
+    const relative = path.posix.relative(path.posix.dirname(file), publicPath) + (publicPath.endsWith('/') ? '/' : '');
+    await mkdir(path.dirname(target), { recursive: true });
+    await writeFile(target, redirectPage(relative));
+  }
   await writeFile(path.join(destination, '.nojekyll'), '');
-  return files.size;
+  return publicFiles.size + redirects.size;
+}
+
+function redirectPage(target) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Museum moved</title>
+  <script>location.replace(${JSON.stringify(target)} + location.search + location.hash);</script>
+  <noscript><meta http-equiv="refresh" content="0; url=${target}"></noscript>
+</head>
+<body>
+  <p>This experience has moved. <a href="${target}">Continue to the museum.</a></p>
+</body>
+</html>
+`;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

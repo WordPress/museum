@@ -6,9 +6,9 @@ preview, checks, static packaging, and a thin WordPress routing adapter.
 
 | Experience | Local preview | Description |
 | --- | --- | --- |
-| [Desktop](museums/desktop/) | `/museums/desktop/` | Release history as an early-2000s desktop. |
-| [Winamp](museums/winamp/) | `/museums/winamp/` | Release history as a music-player timeline. |
-| [3D Museum](museums/3d/) | `/museums/3d/` | A walkable museum of WordPress’s first 20 years, with design explorations. |
+| [Desktop](museums/desktop/) | `/desktop/` | Release history as an early-2000s desktop. |
+| [Winamp](museums/winamp/) | `/winamp/` | Release history as a music-player timeline. |
+| [3D Museum](museums/3d/) | `/3d/` | A walkable museum of WordPress’s first 20 years, with design explorations. |
 
 ![Desktop and Winamp museum experiences](docs/experiences.webp)
 
@@ -37,8 +37,9 @@ experience-specific scripts and dependencies inside its directory. A package
 manager workspace is not required for these dependency-free projects.
 
 There is no frontend compilation step. Packaging copies the published files
-unchanged into `_site/`. If an experience later needs compilation, keep that build
-inside the experience and integrate its output with the public file contract.
+unchanged into `_site/`, with the `museums/` source directory omitted from public
+paths. If an experience later needs compilation, keep that build inside the
+experience and integrate its output with the public file contract.
 
 ## Local development
 
@@ -67,9 +68,15 @@ Include required credits and asset licenses in the public file list.
 
 | Environment | Experience URL | Shared data URL |
 | --- | --- | --- |
-| Local preview | `/museums/<slug>/` | `/museums/data/releases.js` |
-| GitHub Pages | `/museum/museums/<slug>/` | `/museum/museums/data/releases.js` |
+| Local preview | `/<slug>/` | `/data/releases.js` |
+| GitHub Pages | `/museum/<slug>/` | `/museum/data/releases.js` |
 | WordPress Museum site | `/museum/<slug>/` | `/museum/data/releases.js` |
+
+The `museums/` directory organizes source files only; it is not part of the public
+URL. Old experience links redirect to the shorter URLs: `/museums/<slug>/` in
+local preview and `/museum/museums/<slug>/` on GitHub Pages. GitHub Pages uses
+HTML redirect pages that preserve query parameters and fragments when JavaScript
+is enabled.
 
 Use relative asset references so all three deployments work. Directory entry
 points redirect to a trailing slash and preserve query parameters. WordPress
