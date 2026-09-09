@@ -48,3 +48,5 @@ Integration changes add the public file manifest, shared preview tooling,
 metadata, and checks; update local documentation and cache versions; and adapt
 Playground return links to the current deployment. The release dataset, asset
 binaries, and Blueprint JSON snapshots are unchanged.
+The Kenney license files retain their text with normalized line endings and
+trailing whitespace.
