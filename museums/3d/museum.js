@@ -16815,7 +16815,9 @@ function fillFittedCanvasText(
 }
 
 function bindControls() {
-	document.querySelector('#walk-button').addEventListener('click', () => {
+	const walkButton = document.querySelector('#walk-button');
+	walkButton.hidden = typeof canvas.requestPointerLock !== 'function';
+	walkButton.addEventListener('click', () => {
 		enterWalkMode();
 	});
 	document.querySelector('#tour-button').addEventListener('click', () => {
@@ -17002,7 +17004,7 @@ function bindControls() {
 }
 
 function enterWalkMode() {
-	if (document.pointerLockElement === canvas) {
+	if (typeof canvas.requestPointerLock !== 'function' || document.pointerLockElement === canvas) {
 		return;
 	}
 	// Browsers reject (and may warn about) a lock requested during the brief
