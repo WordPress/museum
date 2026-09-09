@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 6.0 (Arturo)",
+		"description": "A time-capsule post for WordPress 6.0, released May 24, 2022.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "7.4",
+		"wp": "6.0"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n\n$wordpress_museum_post_id = wp_insert_post(array(\n\t'post_author' => 1,\n\t'post_title' => base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgNi4wIChBcnR1cm8p'),\n\t'post_name' => 'wordpress-museum-6-0',\n\t'post_content' => base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBNYXkgMjQsIDIwMjIuPC9oMj4KPHA+WW91IGFyZSBzdGFuZGluZyBpbiB0aGUgV29yZFByZXNzIDYuMCAiQXJ0dXJvIiBnYWxsZXJ5LCB3aGVyZSBmdWxsIHNpdGUgZWRpdGluZyBncmV3IHVwIGEgbGl0dGxlLjwvcD4KPHA+QmxvY2sgbG9ja2luZywgc3R5bGUgc3dpdGNoaW5nLCBzdHVyZGllciB3cml0aW5nIHRvb2xzLCBhbmQgbW9yZSB0ZW1wbGF0ZSBjb250cm9sIG1hZGUgdGhlIFNpdGUgRWRpdG9yIGZlZWwgbGVzcyBsaWtlIGEgcHJvdG90eXBlIGFuZCBtb3JlIGxpa2UgYSB3b3Jrc2hvcC48L3A+CjxwPjxzdHJvbmc+TXVzZXVtIG5vdGU6PC9zdHJvbmc+IFRoZSBibG9ja3MgYXJlIGxvY2tlZCBiZWNhdXNlIHNvbWVvbmUgaW4gMjAyMiBmaW5hbGx5IGxhYmVsZWQgdGhlIGdvb2QgZHJhd2VycyBhbmQgbWVhbnQgaXQuPC9wPgo8cD48ZW0+VGhpcyBwb3N0IHdhcyBwbGFudGVkIGJ5IGEgQmx1ZXByaW50IHNvIHRoZSBwYXN0IGhhcyBzb21ldGhpbmcgdG8gc2F5IHdoZW4gdGhlIHNpdGUgb3BlbnMuPC9lbT48L3A+CjxwPjxhIGhyZWY9Imh0dHBzOi8vamFuamFrZXMuZ2l0aHViLmlvL3dvcmRwcmVzcy1tdXNldW0vP3JlbGVhc2U9Ni4wIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+JiM4NjE3OyBGaW5kIFdvcmRQcmVzcyA2LjAgaW4gdGhlIFdvcmRQcmVzcyBNdXNldW08L2E+PC9wPg=='),\n\t'post_status' => 'publish',\n\t'post_type' => 'post',\n\t'post_date' => '2022-05-24 10:00:00',\n\t'post_date_gmt' => '2022-05-24 10:00:00',\n\t'comment_status' => 'open',\n\t'ping_status' => 'closed',\n\t'post_category' => array(1),\n));\n\nif ($wordpress_museum_post_id) {\n\t$wpdb->update(\n\t\t$wpdb->posts,\n\t\tarray(\n\t\t\t'post_date' => '2022-05-24 10:00:00',\n\t\t\t'post_date_gmt' => '2022-05-24 10:00:00',\n\t\t\t'post_modified' => '2022-05-24 10:00:00',\n\t\t\t'post_modified_gmt' => '2022-05-24 10:00:00'\n\t\t),\n\t\tarray('ID' => $wordpress_museum_post_id)\n\t);\n}\n"
+		}
+	]
+}

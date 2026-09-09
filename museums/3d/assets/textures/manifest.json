@@ -1,0 +1,30 @@
+{
+  "license": "CC0 1.0 Universal",
+  "licenseUrl": "https://ambientcg.com/license",
+  "sources": [
+    {
+      "role": "walls",
+      "assetId": "Marble012",
+      "name": "Marble 012",
+      "source": "https://ambientcg.com/a/Marble012",
+      "download": "https://ambientCG.com/get?file=Marble012_1K-JPG.zip",
+      "file": "wall-marble.jpg"
+    },
+    {
+      "role": "floors",
+      "assetId": "PavingStones128",
+      "name": "Paving Stones 128",
+      "source": "https://ambientcg.com/a/PavingStones128",
+      "download": "https://ambientCG.com/get?file=PavingStones128_1K-JPG.zip",
+      "file": "floor-paving-stones.jpg"
+    },
+    {
+      "role": "ceiling",
+      "assetId": "Tiles107",
+      "name": "Tiles 107",
+      "source": "https://ambientcg.com/a/Tiles107",
+      "download": "https://ambientCG.com/get?file=Tiles107_1K-JPG.zip",
+      "file": "ceiling-tiles.jpg"
+    }
+  ]
+}

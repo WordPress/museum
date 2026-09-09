@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 1.5 (Strayhorn)",
+		"description": "A time-capsule post for WordPress 1.5, released February 17, 2005.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "5.2",
+		"wp": "1.5"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n\nfunction wordpress_museum_sql_escape($value) {\n\treturn str_replace(\"'\", \"''\", $value);\n}\n\n$title = wordpress_museum_sql_escape(base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgMS41IChTdHJheWhvcm4p'));\n$content = wordpress_museum_sql_escape(base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBGZWJydWFyeSAxNywgMjAwNS48L2gyPgo8cD5Zb3UgYXJlIHN0YW5kaW5nIGluIHRoZSBXb3JkUHJlc3MgMS41ICJTdHJheWhvcm4iIGdhbGxlcnksIHdoZXJlIHRoZW1lcyBhbmQgUGFnZXMgd2Fsa2VkIG9uc3RhZ2UuPC9wPgo8cD5LdWJyaWNrIGJlY2FtZSB0aGUgZGVmYXVsdCBsb29rLCBzdGF0aWMgUGFnZXMgYXBwZWFyZWQsIGFuZCB0ZW1wbGF0ZXMgbWFkZSBjdXN0b21pemF0aW9uIGZlZWwgY2l2aWxpemVkLjwvcD4KPHA+PHN0cm9uZz5NdXNldW0gbm90ZTo8L3N0cm9uZz4gVGhpcyBpcyB0aGUgcmVsZWFzZSB3aGVyZSBXb3JkUHJlc3MgbGVhcm5lZCB0byBjaGFuZ2UgY2xvdGhlcyB3aXRob3V0IGVkaXRpbmcgY29yZSBpbiBwdWJsaWMuPC9wPgo8cD48ZW0+VGhpcyBwb3N0IHdhcyBwbGFudGVkIGJ5IGEgQmx1ZXByaW50IHNvIHRoZSBwYXN0IGhhcyBzb21ldGhpbmcgdG8gc2F5IHdoZW4gdGhlIHNpdGUgb3BlbnMuPC9lbT48L3A+CjxwPjxhIGhyZWY9Imh0dHBzOi8vamFuamFrZXMuZ2l0aHViLmlvL3dvcmRwcmVzcy1tdXNldW0vP3JlbGVhc2U9MS41IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+JiM4NjE3OyBGaW5kIFdvcmRQcmVzcyAxLjUgaW4gdGhlIFdvcmRQcmVzcyBNdXNldW08L2E+PC9wPg=='));\n$slug = 'wordpress-museum-1-5';\n$now = '2005-02-17 10:00:00';\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n$wpdb->query(\n\t\"INSERT INTO \" . $wpdb->posts . \" \" .\n\t\"(post_author, post_date, post_date_gmt, post_content, post_title, \" .\n\t\"post_category, post_excerpt, post_status, comment_status, ping_status, \" .\n\t\"post_password, post_name, to_ping, pinged, post_modified, \" .\n\t\"post_modified_gmt, post_content_filtered, post_parent, menu_order, \" .\n\t\"post_mime_type, comment_count) \" .\n\t\"VALUES (1, '$now', '$now', '$content', '$title', 1, '', 'publish', \" .\n\t\"'open', 'closed', '', '$slug', '', '', '$now', '$now', '', 0, 0, '', 0)\"\n);\n"
+		}
+	]
+}

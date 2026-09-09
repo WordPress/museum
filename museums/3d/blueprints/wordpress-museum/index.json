@@ -1,0 +1,373 @@
+{
+	"description": "WordPress Museum Blueprints for older WordPress versions supported by Playground.",
+	"versions": [
+		{
+			"version": "6.2",
+			"name": "Dolphy",
+			"released": "March 29, 2023",
+			"php": "7.4",
+			"file": "wp-6-2.json",
+			"title": "Museum Dispatch: WordPress 6.2 (Dolphy)"
+		},
+		{
+			"version": "6.1",
+			"name": "Misha",
+			"released": "November 1, 2022",
+			"php": "7.4",
+			"file": "wp-6-1.json",
+			"title": "Museum Dispatch: WordPress 6.1 (Misha)"
+		},
+		{
+			"version": "6.0",
+			"name": "Arturo",
+			"released": "May 24, 2022",
+			"php": "7.4",
+			"file": "wp-6-0.json",
+			"title": "Museum Dispatch: WordPress 6.0 (Arturo)"
+		},
+		{
+			"version": "5.9",
+			"name": "Josephine",
+			"released": "January 25, 2022",
+			"php": "7.4",
+			"file": "wp-5-9.json",
+			"title": "Museum Dispatch: WordPress 5.9 (Josephine)"
+		},
+		{
+			"version": "5.8",
+			"name": "Tatum",
+			"released": "July 20, 2021",
+			"php": "7.4",
+			"file": "wp-5-8.json",
+			"title": "Museum Dispatch: WordPress 5.8 (Tatum)"
+		},
+		{
+			"version": "5.7",
+			"name": "Esperanza",
+			"released": "March 9, 2021",
+			"php": "7.4",
+			"file": "wp-5-7.json",
+			"title": "Museum Dispatch: WordPress 5.7 (Esperanza)"
+		},
+		{
+			"version": "5.6",
+			"name": "Simone",
+			"released": "December 8, 2020",
+			"php": "7.4",
+			"file": "wp-5-6.json",
+			"title": "Museum Dispatch: WordPress 5.6 (Simone)"
+		},
+		{
+			"version": "5.5",
+			"name": "Eckstine",
+			"released": "August 11, 2020",
+			"php": "7.4",
+			"file": "wp-5-5.json",
+			"title": "Museum Dispatch: WordPress 5.5 (Eckstine)"
+		},
+		{
+			"version": "5.4",
+			"name": "Adderley",
+			"released": "March 31, 2020",
+			"php": "7.4",
+			"file": "wp-5-4.json",
+			"title": "Museum Dispatch: WordPress 5.4 (Adderley)"
+		},
+		{
+			"version": "5.3",
+			"name": "Kirk",
+			"released": "November 12, 2019",
+			"php": "7.4",
+			"file": "wp-5-3.json",
+			"title": "Museum Dispatch: WordPress 5.3 (Kirk)"
+		},
+		{
+			"version": "5.2",
+			"name": "Jaco",
+			"released": "May 7, 2019",
+			"php": "7.4",
+			"file": "wp-5-2.json",
+			"title": "Museum Dispatch: WordPress 5.2 (Jaco)"
+		},
+		{
+			"version": "5.1",
+			"name": "Betty",
+			"released": "February 21, 2019",
+			"php": "7.4",
+			"file": "wp-5-1.json",
+			"title": "Museum Dispatch: WordPress 5.1 (Betty)"
+		},
+		{
+			"version": "5.0",
+			"name": "Bebo",
+			"released": "December 6, 2018",
+			"php": "7.4",
+			"file": "wp-5-0.json",
+			"title": "Museum Dispatch: WordPress 5.0 (Bebo)"
+		},
+		{
+			"version": "4.9",
+			"name": "Tipton",
+			"released": "November 15, 2017",
+			"php": "5.2",
+			"file": "wp-4-9.json",
+			"title": "Museum Dispatch: WordPress 4.9 (Tipton)"
+		},
+		{
+			"version": "4.8",
+			"name": "Evans",
+			"released": "June 8, 2017",
+			"php": "5.2",
+			"file": "wp-4-8.json",
+			"title": "Museum Dispatch: WordPress 4.8 (Evans)"
+		},
+		{
+			"version": "4.7",
+			"name": "Vaughan",
+			"released": "December 6, 2016",
+			"php": "5.2",
+			"file": "wp-4-7.json",
+			"title": "Museum Dispatch: WordPress 4.7 (Vaughan)"
+		},
+		{
+			"version": "4.6",
+			"name": "Pepper",
+			"released": "August 16, 2016",
+			"php": "5.2",
+			"file": "wp-4-6.json",
+			"title": "Museum Dispatch: WordPress 4.6 (Pepper)"
+		},
+		{
+			"version": "4.5",
+			"name": "Coleman",
+			"released": "April 12, 2016",
+			"php": "5.2",
+			"file": "wp-4-5.json",
+			"title": "Museum Dispatch: WordPress 4.5 (Coleman)"
+		},
+		{
+			"version": "4.4",
+			"name": "Clifford",
+			"released": "December 8, 2015",
+			"php": "5.2",
+			"file": "wp-4-4.json",
+			"title": "Museum Dispatch: WordPress 4.4 (Clifford)"
+		},
+		{
+			"version": "4.3",
+			"name": "Billie",
+			"released": "August 18, 2015",
+			"php": "5.2",
+			"file": "wp-4-3.json",
+			"title": "Museum Dispatch: WordPress 4.3 (Billie)"
+		},
+		{
+			"version": "4.2",
+			"name": "Powell",
+			"released": "April 23, 2015",
+			"php": "5.2",
+			"file": "wp-4-2.json",
+			"title": "Museum Dispatch: WordPress 4.2 (Powell)"
+		},
+		{
+			"version": "4.1",
+			"name": "Dinah",
+			"released": "December 18, 2014",
+			"php": "5.2",
+			"file": "wp-4-1.json",
+			"title": "Museum Dispatch: WordPress 4.1 (Dinah)"
+		},
+		{
+			"version": "4.0",
+			"name": "Benny",
+			"released": "September 4, 2014",
+			"php": "5.2",
+			"file": "wp-4-0.json",
+			"title": "Museum Dispatch: WordPress 4.0 (Benny)"
+		},
+		{
+			"version": "3.9",
+			"name": "Smith",
+			"released": "April 16, 2014",
+			"php": "5.2",
+			"file": "wp-3-9.json",
+			"title": "Museum Dispatch: WordPress 3.9 (Smith)"
+		},
+		{
+			"version": "3.8",
+			"name": "Parker",
+			"released": "December 12, 2013",
+			"php": "5.2",
+			"file": "wp-3-8.json",
+			"title": "Museum Dispatch: WordPress 3.8 (Parker)"
+		},
+		{
+			"version": "3.7",
+			"name": "Basie",
+			"released": "October 24, 2013",
+			"php": "5.2",
+			"file": "wp-3-7.json",
+			"title": "Museum Dispatch: WordPress 3.7 (Basie)"
+		},
+		{
+			"version": "3.6",
+			"name": "Oscar",
+			"released": "August 1, 2013",
+			"php": "5.2",
+			"file": "wp-3-6.json",
+			"title": "Museum Dispatch: WordPress 3.6 (Oscar)"
+		},
+		{
+			"version": "3.5",
+			"name": "Elvin",
+			"released": "December 11, 2012",
+			"php": "5.2",
+			"file": "wp-3-5.json",
+			"title": "Museum Dispatch: WordPress 3.5 (Elvin)"
+		},
+		{
+			"version": "3.4",
+			"name": "Green",
+			"released": "June 13, 2012",
+			"php": "5.2",
+			"file": "wp-3-4.json",
+			"title": "Museum Dispatch: WordPress 3.4 (Green)"
+		},
+		{
+			"version": "3.3",
+			"name": "Sonny",
+			"released": "December 12, 2011",
+			"php": "5.2",
+			"file": "wp-3-3.json",
+			"title": "Museum Dispatch: WordPress 3.3 (Sonny)"
+		},
+		{
+			"version": "3.2",
+			"name": "Gershwin",
+			"released": "July 4, 2011",
+			"php": "5.2",
+			"file": "wp-3-2.json",
+			"title": "Museum Dispatch: WordPress 3.2 (Gershwin)"
+		},
+		{
+			"version": "3.1",
+			"name": "Reinhardt",
+			"released": "February 23, 2011",
+			"php": "5.2",
+			"file": "wp-3-1.json",
+			"title": "Museum Dispatch: WordPress 3.1 (Reinhardt)"
+		},
+		{
+			"version": "3.0",
+			"name": "Thelonious",
+			"released": "June 17, 2010",
+			"php": "5.2",
+			"file": "wp-3-0.json",
+			"title": "Museum Dispatch: WordPress 3.0 (Thelonious)"
+		},
+		{
+			"version": "2.9",
+			"name": "Carmen",
+			"released": "December 18, 2009",
+			"php": "5.2",
+			"file": "wp-2-9.json",
+			"title": "Museum Dispatch: WordPress 2.9 (Carmen)"
+		},
+		{
+			"version": "2.8",
+			"name": "Baker",
+			"released": "June 11, 2009",
+			"php": "5.2",
+			"file": "wp-2-8.json",
+			"title": "Museum Dispatch: WordPress 2.8 (Baker)"
+		},
+		{
+			"version": "2.7",
+			"name": "Coltrane",
+			"released": "December 10, 2008",
+			"php": "5.2",
+			"file": "wp-2-7.json",
+			"title": "Museum Dispatch: WordPress 2.7 (Coltrane)"
+		},
+		{
+			"version": "2.6",
+			"name": "Tyner",
+			"released": "July 15, 2008",
+			"php": "5.2",
+			"file": "wp-2-6.json",
+			"title": "Museum Dispatch: WordPress 2.6 (Tyner)"
+		},
+		{
+			"version": "2.5",
+			"name": "Brecker",
+			"released": "March 29, 2008",
+			"php": "5.2",
+			"file": "wp-2-5.json",
+			"title": "Museum Dispatch: WordPress 2.5 (Brecker)"
+		},
+		{
+			"version": "2.3",
+			"name": "Dexter",
+			"released": "September 24, 2007",
+			"php": "5.2",
+			"file": "wp-2-3.json",
+			"title": "Museum Dispatch: WordPress 2.3 (Dexter)"
+		},
+		{
+			"version": "2.2",
+			"name": "Getz",
+			"released": "May 16, 2007",
+			"php": "5.2",
+			"file": "wp-2-2.json",
+			"title": "Museum Dispatch: WordPress 2.2 (Getz)"
+		},
+		{
+			"version": "2.1",
+			"name": "Ella",
+			"released": "January 22, 2007",
+			"php": "5.2",
+			"file": "wp-2-1.json",
+			"title": "Museum Dispatch: WordPress 2.1 (Ella)"
+		},
+		{
+			"version": "2.0",
+			"name": "Duke",
+			"released": "December 31, 2005",
+			"php": "5.2",
+			"file": "wp-2-0.json",
+			"title": "Museum Dispatch: WordPress 2.0 (Duke)"
+		},
+		{
+			"version": "1.5",
+			"name": "Strayhorn",
+			"released": "February 17, 2005",
+			"php": "5.2",
+			"file": "wp-1-5.json",
+			"title": "Museum Dispatch: WordPress 1.5 (Strayhorn)"
+		},
+		{
+			"version": "1.2",
+			"name": "Mingus",
+			"released": "May 22, 2004",
+			"php": "5.2",
+			"file": "wp-1-2.json",
+			"title": "Museum Dispatch: WordPress 1.2 (Mingus)"
+		},
+		{
+			"version": "1.0",
+			"name": "Miles",
+			"released": "January 3, 2004",
+			"php": "5.2",
+			"file": "wp-1-0.json",
+			"title": "Museum Dispatch: WordPress 1.0 (Miles)"
+		},
+		{
+			"version": "0.7",
+			"name": "",
+			"released": "May 27, 2003",
+			"php": "",
+			"file": "wp-0-7.json",
+			"title": "Museum Dispatch: WordPress 0.7"
+		}
+	]
+}

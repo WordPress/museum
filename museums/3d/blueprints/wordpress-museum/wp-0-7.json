@@ -1,0 +1,21 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 0.7",
+		"description": "A time-capsule post for WordPress 0.7, released May 27, 2003.",
+		"author": "wordpress-playground",
+		"categories": [
+			"wordpress-museum",
+			"legacy-wordpress"
+		]
+	},
+	"preferredVersions": {
+		"wp": "0.7"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\n// WordPress 0.7 is the b2/cafelog-era release: it predates both wp-load.php as a\n// real loader and the $wpdb->posts table property. Playground ships a wp-load.php\n// shim that pulls in b2config.php, which creates $wpdb (the SQLite integration)\n// and sets the $tableposts global ('b2posts'). Bootstrap through it, then refresh\n// the default first post in place using that table.\nrequire_once '/wordpress/wp-load.php';\n\nfunction wordpress_museum_sql_escape($value) {\n\treturn str_replace(\"'\", \"''\", $value);\n}\n\n$table = (isset($tableposts) && $tableposts) ? $tableposts : 'b2posts';\n$title = wordpress_museum_sql_escape(base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgMC43'));\n$content = wordpress_museum_sql_escape(base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBNYXkgMjcsIDIwMDMuPC9oMj4KPHA+WW91IGFyZSBzdGFuZGluZyBpbiB0aGUgV29yZFByZXNzIDAuNyBnYWxsZXJ5ICZtZGFzaDsgdGhlIHZlcnkgZmlyc3QgcHVibGljIHJlbGVhc2UsIGZvcmtlZCBmcm9tIGIyL2NhZmVsb2cgYnkgTWF0dCBNdWxsZW53ZWcgYW5kIE1pa2UgTGl0dGxlLjwvcD4KPHA+SXQgYXJyaXZlZCBiZWZvcmUgdGhlIGphenotY29kZW5hbWUgdHJhZGl0aW9uIGJlZ2FuIGF0IDEuMCwgc28gdGhpcyByZWxlYXNlIHdlYXJzIG5vIG11c2ljaWFuJnJzcXVvO3MgbmFtZS4gVGhlIExvb3AsIGEgdGVtcGxhdGUgc3lzdGVtLCBhbmQgYSBmcmllbmRseSBmaXZlLW1pbnV0ZSBzZXR1cCB3ZXJlIGFscmVhZHkgdGFraW5nIHNoYXBlLjwvcD4KPHA+PHN0cm9uZz5NdXNldW0gbm90ZTo8L3N0cm9uZz4gUGxlYXNlIHNpbGVuY2UgeW91ciBtb2RlbS4gWW91IGFyZSB3YXRjaGluZyBhIGJsb2cgZW5naW5lIHRha2UgaXRzIHZlcnkgZmlyc3QgYnJlYXRoLjwvcD4KPHA+PGVtPlRoaXMgcG9zdCB3YXMgcGxhbnRlZCBieSBhIEJsdWVwcmludCBzbyB0aGUgcGFzdCBoYXMgc29tZXRoaW5nIHRvIHNheSB3aGVuIHRoZSBzaXRlIG9wZW5zLjwvZW0+PC9wPgo8cD48YSBocmVmPSJodHRwczovL2phbmpha2VzLmdpdGh1Yi5pby93b3JkcHJlc3MtbXVzZXVtLz9yZWxlYXNlPTAuNyIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIiPiYjODYxNzsgRmluZCBXb3JkUHJlc3MgMC43IGluIHRoZSBXb3JkUHJlc3MgTXVzZXVtPC9hPjwvcD4='));\n$now = '2003-05-27 10:00:00';\n$wpdb->query(\n\t\"UPDATE \" . $table . \" SET post_title = '$title', post_content = '$content', post_date = '$now' WHERE ID = 1\"\n);"
+		}
+	]
+}

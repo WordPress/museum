@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 6.2 (Dolphy)",
+		"description": "A time-capsule post for WordPress 6.2, released March 29, 2023.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "7.4",
+		"wp": "6.2"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n\n$wordpress_museum_post_id = wp_insert_post(array(\n\t'post_author' => 1,\n\t'post_title' => base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgNi4yIChEb2xwaHkp'),\n\t'post_name' => 'wordpress-museum-6-2',\n\t'post_content' => base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBNYXJjaCAyOSwgMjAyMy48L2gyPgo8cD5Zb3UgYXJlIHN0YW5kaW5nIGluIHRoZSBXb3JkUHJlc3MgNi4yICJEb2xwaHkiIGdhbGxlcnksIHdoZXJlIHRoZSBTaXRlIEVkaXRvciBzdGVwcGVkIG91dCBvZiBiZXRhLjwvcD4KPHA+T3BlbnZlcnNlIG1vdmVkIGludG8gdGhlIGVkaXRvciwgdGhlIFN0eWxlIEJvb2sgYXJyaXZlZCwgYW5kIENTUyBnb3QgYSBsaXR0bGUgcm9vbSB0byBicmVhdGhlIGFnYWluLjwvcD4KPHA+PHN0cm9uZz5NdXNldW0gbm90ZTo8L3N0cm9uZz4gUGxlYXNlIGFkbWlyZSB0aGUgYmxvY2sgdGhlbWUgd2VhcmluZyBhIG11c2V1bSBiYWRnZSBhbmQgcHJldGVuZGluZyBpdCB3YXMgYWx3YXlzIHRoaXMgb3JnYW5pemVkLjwvcD4KPHA+PGVtPlRoaXMgcG9zdCB3YXMgcGxhbnRlZCBieSBhIEJsdWVwcmludCBzbyB0aGUgcGFzdCBoYXMgc29tZXRoaW5nIHRvIHNheSB3aGVuIHRoZSBzaXRlIG9wZW5zLjwvZW0+PC9wPgo8cD48YSBocmVmPSJodHRwczovL2phbmpha2VzLmdpdGh1Yi5pby93b3JkcHJlc3MtbXVzZXVtLz9yZWxlYXNlPTYuMiIgdGFyZ2V0PSJfYmxhbmsiIHJlbD0ibm9vcGVuZXIiPiYjODYxNzsgRmluZCBXb3JkUHJlc3MgNi4yIGluIHRoZSBXb3JkUHJlc3MgTXVzZXVtPC9hPjwvcD4='),\n\t'post_status' => 'publish',\n\t'post_type' => 'post',\n\t'post_date' => '2023-03-29 10:00:00',\n\t'post_date_gmt' => '2023-03-29 10:00:00',\n\t'comment_status' => 'open',\n\t'ping_status' => 'closed',\n\t'post_category' => array(1),\n));\n\nif ($wordpress_museum_post_id) {\n\t$wpdb->update(\n\t\t$wpdb->posts,\n\t\tarray(\n\t\t\t'post_date' => '2023-03-29 10:00:00',\n\t\t\t'post_date_gmt' => '2023-03-29 10:00:00',\n\t\t\t'post_modified' => '2023-03-29 10:00:00',\n\t\t\t'post_modified_gmt' => '2023-03-29 10:00:00'\n\t\t),\n\t\tarray('ID' => $wordpress_museum_post_id)\n\t);\n}\n"
+		}
+	]
+}

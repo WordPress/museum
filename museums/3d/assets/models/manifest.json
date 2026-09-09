@@ -1,0 +1,58 @@
+{
+	"source": "Kenney asset packs",
+	"license": "Creative Commons Zero, CC0",
+	"licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+	"assets": [
+		{
+			"pack": "Furniture Kit",
+			"sourceUrl": "https://kenney.nl/assets/furniture-kit",
+			"downloadUrl": "https://kenney.nl/media/pages/assets/furniture-kit/440e0608a4-1677580847/kenney_furniture-kit.zip",
+			"files": [
+				"kenney/furniture/benchCushion.glb",
+				"kenney/furniture/bookcaseOpenLow.glb",
+				"kenney/furniture/computerScreen.glb",
+				"kenney/furniture/laptop.glb",
+				"kenney/furniture/loungeDesignChair.glb",
+				"kenney/furniture/loungeDesignSofa.glb",
+				"kenney/furniture/plantSmall2.glb",
+				"kenney/furniture/pottedPlant.glb",
+				"kenney/furniture/radio.glb",
+				"kenney/furniture/speakerSmall.glb",
+				"kenney/furniture/tableCoffee.glb",
+				"kenney/furniture/televisionVintage.glb"
+			]
+		},
+		{
+			"pack": "Retro Urban Kit",
+			"sourceUrl": "https://kenney.nl/assets/retro-urban-kit",
+			"downloadUrl": "https://kenney.nl/media/pages/assets/retro-urban-kit/8314d4db22-1738147509/kenney_retro-urban-kit.zip",
+			"textureDirectory": "kenney/retro-urban/Textures",
+			"files": [
+				"kenney/retro-urban/detail-awning-wide.glb",
+				"kenney/retro-urban/detail-bench.glb",
+				"kenney/retro-urban/detail-light-single.glb",
+				"kenney/retro-urban/detail-light-traffic.glb",
+				"kenney/retro-urban/pallet.glb",
+				"kenney/retro-urban/scaffolding-structure.glb",
+				"kenney/retro-urban/tree-park-large.glb",
+				"kenney/retro-urban/tree-small.glb",
+				"kenney/retro-urban/truck-green.glb"
+			]
+		},
+		{
+			"pack": "Building Kit",
+			"sourceUrl": "https://kenney.nl/assets/building-kit",
+			"downloadUrl": "https://kenney.nl/media/pages/assets/building-kit/0de7aaa492-1743244741/kenney_building-kit.zip",
+			"textureDirectory": "kenney/building/Textures",
+			"files": [
+				"kenney/building/border-high.glb",
+				"kenney/building/column-thin.glb",
+				"kenney/building/door-rotate-round-a.glb",
+				"kenney/building/door-rotate-square-a.glb",
+				"kenney/building/plating-detailed.glb",
+				"kenney/building/stairs-open-short.glb",
+				"kenney/building/wall-doorway-round.glb"
+			]
+		}
+	]
+}

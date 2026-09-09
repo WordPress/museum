@@ -1,0 +1,11 @@
+{
+	"name": "wordpress-museum",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check:wapuus": "node scripts/check-wapuus.mjs",
+		"dev": "node scripts/dev-server.mjs",
+		"start": "node scripts/dev-server.mjs"
+	}
+}

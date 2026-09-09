@@ -1,0 +1,19 @@
+{
+	"landingPage": "/",
+	"meta": {
+		"title": "WordPress Museum: 2.5 (Brecker)",
+		"description": "A time-capsule post for WordPress 2.5, released March 29, 2008.",
+		"author": "wordpress-playground",
+		"categories": ["wordpress-museum", "legacy-wordpress"]
+	},
+	"preferredVersions": {
+		"php": "5.2",
+		"wp": "2.5"
+	},
+	"steps": [
+		{
+			"step": "runPHP",
+			"code": "<?php\nif (!defined('ABSPATH')) {\n\trequire_once '/wordpress/wp-load.php';\n}\n\nglobal $wpdb;\n$wpdb->query(\"UPDATE \" . $wpdb->posts . \" SET post_status = 'draft' WHERE ID = 1\");\n\n$wordpress_museum_post_id = wp_insert_post(array(\n\t'post_author' => 1,\n\t'post_title' => base64_decode('TXVzZXVtIERpc3BhdGNoOiBXb3JkUHJlc3MgMi41IChCcmVja2VyKQ=='),\n\t'post_name' => 'wordpress-museum-2-5',\n\t'post_content' => base64_decode('PGgyPldlbGNvbWUgYmFjayB0byBNYXJjaCAyOSwgMjAwOC48L2gyPgo8cD5Zb3UgYXJlIHN0YW5kaW5nIGluIHRoZSBXb3JkUHJlc3MgMi41ICJCcmVja2VyIiBnYWxsZXJ5LCB3aGVyZSB0aGUgZGFzaGJvYXJkIGdvdCBhIG1ham9yIHJlZGVzaWduLjwvcD4KPHA+VGhlIG1lZGlhIHVwbG9hZGVyLCBnYWxsZXJpZXMsIHNob3J0Y29kZXMsIGFuZCBHcmF2YXRhciBzdXBwb3J0IG1hZGUgcHVibGlzaGluZyBtb3JlIHZpc3VhbC48L3A+CjxwPjxzdHJvbmc+TXVzZXVtIG5vdGU6PC9zdHJvbmc+IFRoZSB1cGxvYWRlciBzYXlzIGl0IGNhbiBoYW5kbGUgbW9yZSB0aGFuIG9uZSBmaWxlLiBQbGVhc2UgcmVtYWluIGNhbG0uPC9wPgo8cD48ZW0+VGhpcyBwb3N0IHdhcyBwbGFudGVkIGJ5IGEgQmx1ZXByaW50IHNvIHRoZSBwYXN0IGhhcyBzb21ldGhpbmcgdG8gc2F5IHdoZW4gdGhlIHNpdGUgb3BlbnMuPC9lbT48L3A+CjxwPjxhIGhyZWY9Imh0dHBzOi8vamFuamFrZXMuZ2l0aHViLmlvL3dvcmRwcmVzcy1tdXNldW0vP3JlbGVhc2U9Mi41IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciI+JiM4NjE3OyBGaW5kIFdvcmRQcmVzcyAyLjUgaW4gdGhlIFdvcmRQcmVzcyBNdXNldW08L2E+PC9wPg=='),\n\t'post_status' => 'publish',\n\t'post_type' => 'post',\n\t'post_date' => '2008-03-29 10:00:00',\n\t'post_date_gmt' => '2008-03-29 10:00:00',\n\t'comment_status' => 'open',\n\t'ping_status' => 'closed',\n\t'post_category' => array(1),\n));\n\nif ($wordpress_museum_post_id) {\n\t$wpdb->update(\n\t\t$wpdb->posts,\n\t\tarray(\n\t\t\t'post_date' => '2008-03-29 10:00:00',\n\t\t\t'post_date_gmt' => '2008-03-29 10:00:00',\n\t\t\t'post_modified' => '2008-03-29 10:00:00',\n\t\t\t'post_modified_gmt' => '2008-03-29 10:00:00'\n\t\t),\n\t\tarray('ID' => $wordpress_museum_post_id)\n\t);\n}\n"
+		}
+	]
+}

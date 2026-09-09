@@ -1,0 +1,469 @@
+{
+  "capturedAt": "2026-05-22T17:17:22.690Z",
+  "description": "Desktop-sized direct WordPress Playground admin screenshots captured without blueprints.",
+  "screenshots": [
+    {
+      "version": "0.7",
+      "musician": "",
+      "file": "assets/wp-screenshots/wp-0-7.png",
+      "source": "https://playground.wordpress.net/?wp=0.7&mode=seamless",
+      "note": "Front-end of the default WordPress 0.7 site (the original Hello world post); 0.7 predates wp-admin parity, so the public page is captured.",
+      "errors": []
+    },
+    {
+      "version": "1.0",
+      "musician": "Miles Davis",
+      "file": "assets/wp-screenshots/wp-1-0.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=1.0",
+      "adminUrl": "https://playground.wordpress.net/scope:patient-classic-valley/wp-admin/post.php",
+      "php": "5.2",
+      "elapsedMs": 24483,
+      "errors": []
+    },
+    {
+      "version": "1.2",
+      "musician": "Charles Mingus",
+      "file": "assets/wp-screenshots/wp-1-2.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=1.2",
+      "adminUrl": "https://playground.wordpress.net/scope:loyal-classic-city/wp-admin/post.php",
+      "php": "5.2",
+      "elapsedMs": 7712,
+      "errors": []
+    },
+    {
+      "version": "1.5",
+      "musician": "Billy Strayhorn",
+      "file": "assets/wp-screenshots/wp-1-5.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=1.5",
+      "adminUrl": "https://playground.wordpress.net/scope:shy-abandoned-ocean/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 7231,
+      "errors": []
+    },
+    {
+      "version": "2.0",
+      "musician": "Duke Ellington",
+      "file": "assets/wp-screenshots/wp-2-0.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.0",
+      "adminUrl": "https://playground.wordpress.net/scope:funny-classic-village/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 9773,
+      "errors": []
+    },
+    {
+      "version": "2.1",
+      "musician": "Ella Fitzgerald",
+      "file": "assets/wp-screenshots/wp-2-1.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.1",
+      "adminUrl": "https://playground.wordpress.net/scope:shy-peaceful-road/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 17379,
+      "errors": [
+        "Refused to set unsafe header \"Connection\"",
+        "Refused to set unsafe header \"Connection\"",
+        "Refused to set unsafe header \"Connection\""
+      ]
+    },
+    {
+      "version": "2.2",
+      "musician": "Stan Getz",
+      "file": "assets/wp-screenshots/wp-2-2.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.2",
+      "adminUrl": "https://playground.wordpress.net/scope:ambitious-old-garden/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 22014,
+      "errors": []
+    },
+    {
+      "version": "2.3",
+      "musician": "Dexter Gordon",
+      "file": "assets/wp-screenshots/wp-2-3.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.3",
+      "adminUrl": "https://playground.wordpress.net/scope:curious-abandoned-garden/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 9756,
+      "errors": []
+    },
+    {
+      "version": "2.5",
+      "musician": "Michael Brecker",
+      "file": "assets/wp-screenshots/wp-2-5.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.5",
+      "adminUrl": "https://playground.wordpress.net/scope:brave-busy-garden/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 16681,
+      "errors": []
+    },
+    {
+      "version": "2.6",
+      "musician": "McCoy Tyner",
+      "file": "assets/wp-screenshots/wp-2-6.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.6",
+      "adminUrl": "https://playground.wordpress.net/scope:clever-cozy-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 16914,
+      "errors": []
+    },
+    {
+      "version": "2.7",
+      "musician": "John Coltrane",
+      "file": "assets/wp-screenshots/wp-2-7.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.7",
+      "adminUrl": "https://playground.wordpress.net/scope:shy-hip-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12119,
+      "errors": []
+    },
+    {
+      "version": "2.8",
+      "musician": "Chet Baker",
+      "file": "assets/wp-screenshots/wp-2-8.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.8",
+      "adminUrl": "https://playground.wordpress.net/scope:happy-noisy-valley/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 9820,
+      "errors": []
+    },
+    {
+      "version": "2.9",
+      "musician": "Carmen McRae",
+      "file": "assets/wp-screenshots/wp-2-9.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=2.9",
+      "adminUrl": "https://playground.wordpress.net/scope:humble-old-river/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 13323,
+      "errors": []
+    },
+    {
+      "version": "3.0",
+      "musician": "Thelonious Monk",
+      "file": "assets/wp-screenshots/wp-3-0.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.0",
+      "adminUrl": "https://playground.wordpress.net/scope:happy-peaceful-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 23887,
+      "errors": []
+    },
+    {
+      "version": "3.1",
+      "musician": "Django Reinhardt",
+      "file": "assets/wp-screenshots/wp-3-1.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.1",
+      "adminUrl": "https://playground.wordpress.net/scope:sad-classic-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12290,
+      "errors": []
+    },
+    {
+      "version": "3.2",
+      "musician": "George Gershwin",
+      "file": "assets/wp-screenshots/wp-3-2.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.2",
+      "adminUrl": "https://playground.wordpress.net/scope:confident-quiet-forest/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 11600,
+      "errors": []
+    },
+    {
+      "version": "3.3",
+      "musician": "Sonny Stitt",
+      "file": "assets/wp-screenshots/wp-3-3.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.3",
+      "adminUrl": "https://playground.wordpress.net/scope:energetic-classic-village/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 35439,
+      "errors": []
+    },
+    {
+      "version": "3.4",
+      "musician": "Grant Green",
+      "file": "assets/wp-screenshots/wp-3-4.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.4",
+      "adminUrl": "https://playground.wordpress.net/scope:sad-modern-state/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 15329,
+      "errors": []
+    },
+    {
+      "version": "3.5",
+      "musician": "Elvin Jones",
+      "file": "assets/wp-screenshots/wp-3-5.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.5",
+      "adminUrl": "https://playground.wordpress.net/scope:confident-glamorous-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 21641,
+      "errors": []
+    },
+    {
+      "version": "3.6",
+      "musician": "Oscar Peterson",
+      "file": "assets/wp-screenshots/wp-3-6.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.6",
+      "adminUrl": "https://playground.wordpress.net/scope:generous-quiet-forest/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 14699,
+      "errors": []
+    },
+    {
+      "version": "3.7",
+      "musician": "Count Basie",
+      "file": "assets/wp-screenshots/wp-3-7.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.7",
+      "adminUrl": "https://playground.wordpress.net/scope:funny-old-forest/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12995,
+      "errors": []
+    },
+    {
+      "version": "3.8",
+      "musician": "Charlie Parker",
+      "file": "assets/wp-screenshots/wp-3-8.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.8",
+      "adminUrl": "https://playground.wordpress.net/scope:happy-hip-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 17580,
+      "errors": []
+    },
+    {
+      "version": "3.9",
+      "musician": "Jimmy Smith",
+      "file": "assets/wp-screenshots/wp-3-9.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=3.9",
+      "adminUrl": "https://playground.wordpress.net/scope:calm-modern-valley/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 29627,
+      "errors": []
+    },
+    {
+      "version": "4.0",
+      "musician": "Benny Goodman",
+      "file": "assets/wp-screenshots/wp-4-0.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.0",
+      "adminUrl": "https://playground.wordpress.net/scope:energetic-abandoned-country/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12847,
+      "errors": []
+    },
+    {
+      "version": "4.1",
+      "musician": "Dinah Washington",
+      "file": "assets/wp-screenshots/wp-4-1.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.1",
+      "adminUrl": "https://playground.wordpress.net/scope:honest-quiet-school/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12382,
+      "errors": []
+    },
+    {
+      "version": "4.2",
+      "musician": "Bud Powell",
+      "file": "assets/wp-screenshots/wp-4-2.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.2",
+      "adminUrl": "https://playground.wordpress.net/scope:energetic-peaceful-city/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 32838,
+      "errors": []
+    },
+    {
+      "version": "4.3",
+      "musician": "Billie Holiday",
+      "file": "assets/wp-screenshots/wp-4-3.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.3",
+      "adminUrl": "https://playground.wordpress.net/scope:honest-hip-school/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12602,
+      "errors": []
+    },
+    {
+      "version": "4.4",
+      "musician": "Clifford Brown",
+      "file": "assets/wp-screenshots/wp-4-4.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.4",
+      "adminUrl": "https://playground.wordpress.net/scope:generous-noisy-garden/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12979,
+      "errors": []
+    },
+    {
+      "version": "4.5",
+      "musician": "Coleman Hawkins",
+      "file": "assets/wp-screenshots/wp-4-5.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.5",
+      "adminUrl": "https://playground.wordpress.net/scope:humble-old-village/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 23865,
+      "errors": []
+    },
+    {
+      "version": "4.6",
+      "musician": "Pepper Adams",
+      "file": "assets/wp-screenshots/wp-4-6.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.6",
+      "adminUrl": "https://playground.wordpress.net/scope:confident-cozy-park/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 12062,
+      "errors": []
+    },
+    {
+      "version": "4.7",
+      "musician": "Sarah Vaughan",
+      "file": "assets/wp-screenshots/wp-4-7.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.7",
+      "adminUrl": "https://playground.wordpress.net/scope:clever-noisy-forest/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 13431,
+      "errors": []
+    },
+    {
+      "version": "4.8",
+      "musician": "Bill Evans",
+      "file": "assets/wp-screenshots/wp-4-8.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.8",
+      "adminUrl": "https://playground.wordpress.net/scope:generous-hip-town/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 32879,
+      "errors": []
+    },
+    {
+      "version": "4.9",
+      "musician": "Billy Tipton",
+      "file": "assets/wp-screenshots/wp-4-9.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=4.9",
+      "adminUrl": "https://playground.wordpress.net/scope:brave-trendy-ocean/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 14565,
+      "errors": []
+    },
+    {
+      "version": "5.0",
+      "musician": "Bebo Valdes",
+      "file": "assets/wp-screenshots/wp-5-0.png",
+      "source": "https://playground.wordpress.net/?php=5.2&wp=5.0",
+      "adminUrl": "https://playground.wordpress.net/scope:happy-abandoned-park/wp-admin/",
+      "php": "5.2",
+      "elapsedMs": 14629,
+      "errors": []
+    },
+    {
+      "version": "5.1",
+      "musician": "Betty Carter",
+      "file": "assets/wp-screenshots/wp-5-1.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.1",
+      "adminUrl": "https://playground.wordpress.net/scope:loyal-quiet-park/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 34848,
+      "errors": []
+    },
+    {
+      "version": "5.2",
+      "musician": "Jaco Pastorius",
+      "file": "assets/wp-screenshots/wp-5-2.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.2",
+      "adminUrl": "https://playground.wordpress.net/scope:energetic-hip-mountain/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 16466,
+      "errors": []
+    },
+    {
+      "version": "5.3",
+      "musician": "Rahsaan Roland Kirk",
+      "file": "assets/wp-screenshots/wp-5-3.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.3",
+      "adminUrl": "https://playground.wordpress.net/scope:clever-modern-country/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 25912,
+      "errors": []
+    },
+    {
+      "version": "5.4",
+      "musician": "Nat Adderley",
+      "file": "assets/wp-screenshots/wp-5-4.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.4",
+      "adminUrl": "https://playground.wordpress.net/scope:excited-classic-city/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 27930,
+      "errors": []
+    },
+    {
+      "version": "5.5",
+      "musician": "Billy Eckstine",
+      "file": "assets/wp-screenshots/wp-5-5.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.5",
+      "adminUrl": "https://playground.wordpress.net/scope:confident-vintage-ocean/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 28112,
+      "errors": []
+    },
+    {
+      "version": "5.6",
+      "musician": "Nina Simone",
+      "file": "assets/wp-screenshots/wp-5-6.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.6",
+      "adminUrl": "https://playground.wordpress.net/scope:creative-old-mountain/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 17493,
+      "errors": []
+    },
+    {
+      "version": "5.7",
+      "musician": "Esperanza Spalding",
+      "file": "assets/wp-screenshots/wp-5-7.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.7",
+      "adminUrl": "https://playground.wordpress.net/scope:determined-abandoned-country/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 19581,
+      "errors": []
+    },
+    {
+      "version": "5.8",
+      "musician": "Art Tatum",
+      "file": "assets/wp-screenshots/wp-5-8.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.8",
+      "adminUrl": "https://playground.wordpress.net/scope:happy-quiet-town/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 26385,
+      "errors": []
+    },
+    {
+      "version": "5.9",
+      "musician": "Josephine Baker",
+      "file": "assets/wp-screenshots/wp-5-9.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=5.9",
+      "adminUrl": "https://playground.wordpress.net/scope:kind-vintage-country/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 19807,
+      "errors": []
+    },
+    {
+      "version": "6.0",
+      "musician": "Arturo O'Farrill",
+      "file": "assets/wp-screenshots/wp-6-0.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=6.0",
+      "adminUrl": "https://playground.wordpress.net/scope:clever-trendy-lake/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 38917,
+      "errors": []
+    },
+    {
+      "version": "6.1",
+      "musician": "Mikhail Alperin",
+      "file": "assets/wp-screenshots/wp-6-1.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=6.1",
+      "adminUrl": "https://playground.wordpress.net/scope:shy-modern-garden/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 22703,
+      "errors": []
+    },
+    {
+      "version": "6.2",
+      "musician": "Eric Dolphy",
+      "file": "assets/wp-screenshots/wp-6-2.png",
+      "source": "https://playground.wordpress.net/?php=7.4&wp=6.2",
+      "adminUrl": "https://playground.wordpress.net/scope:generous-quiet-city/wp-admin/",
+      "php": "7.4",
+      "elapsedMs": 32171,
+      "errors": []
+    }
+  ],
+  "failures": []
+}
