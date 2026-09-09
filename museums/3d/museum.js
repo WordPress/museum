@@ -16916,6 +16916,12 @@ function bindControls() {
 			event.preventDefault();
 		}
 	});
+	window.addEventListener('blur', () => keys.clear());
+	document.addEventListener('visibilitychange', () => {
+		if (document.hidden) {
+			keys.clear();
+		}
+	});
 
 	canvas.addEventListener('click', (event) => {
 		// A touch look-drag ends in a synthetic click; ignore it so dragging to

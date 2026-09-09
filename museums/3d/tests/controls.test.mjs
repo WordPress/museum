@@ -51,6 +51,34 @@ test('modal keys and wheel events do not control the museum', () => {
   assert.equal(dispatch('wheel').defaultPrevented, false);
 });
 
+for (const type of ['window:blur', 'visibilitychange']) {
+  test(`${type} clears held movement and turning keys without keyup`, () => {
+    const museum = bindControls();
+    for (const code of ['KeyW', 'ArrowUp', 'ArrowLeft', 'KeyD']) {
+      museum.press('body', { code });
+    }
+    assert.equal(museum.keys.size, 4);
+    museum.document.hidden = true;
+    museum.dispatch(type);
+    assert.equal(museum.keys.size, 0);
+    museum.document.hidden = false;
+    museum.dispatch('visibilitychange');
+    assert.equal(museum.keys.size, 0);
+    museum.press('body', { code: 'KeyW' });
+    assert.equal(museum.keys.has('KeyW'), true);
+    museum.dispatch('keyup', { code: 'KeyW' });
+    assert.equal(museum.keys.size, 0);
+  });
+}
+
+test('a visible-page notification preserves held keys', () => {
+  const museum = bindControls();
+  museum.press('body', { code: 'KeyW' });
+  museum.document.hidden = false;
+  museum.dispatch('visibilitychange');
+  assert.equal(museum.keys.has('KeyW'), true);
+});
+
 test('native cancellation and both close controls use modal cleanup', () => {
   for (const [selector, type] of [['#playground-modal', 'cancel'], ['#playground-modal-close', 'click'], ['#playground-modal-x', 'click']]) {
     const museum = bindControls({ modalOpen: true });
