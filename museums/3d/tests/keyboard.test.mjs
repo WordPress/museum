@@ -39,6 +39,27 @@ test('Enter does not reopen Playground while its modal is visible', () => {
   assert.equal(event.defaultPrevented, false);
 });
 
+test('modal keys and wheel events do not control the museum', () => {
+  const { press, dispatch, keys } = bindControls({ modalOpen: true });
+  for (const code of ['KeyW', 'ArrowLeft', 'Space', 'Escape', 'Tab']) {
+    assert.equal(press('#playground-modal-x', { code }).defaultPrevented, false);
+  }
+  assert.equal(keys.size, 0);
+  keys.add('KeyW');
+  assert.equal(dispatch('keyup', { code: 'KeyW' }).defaultPrevented, false);
+  assert.equal(keys.size, 0);
+  assert.equal(dispatch('wheel').defaultPrevented, false);
+});
+
+test('native cancellation and both close controls use modal cleanup', () => {
+  for (const [selector, type] of [['#playground-modal', 'cancel'], ['#playground-modal-close', 'click'], ['#playground-modal-x', 'click']]) {
+    const museum = bindControls({ modalOpen: true });
+    const event = museum.dispatch(`${selector}:${type}`);
+    assert.deepEqual(museum.clicks, ['close']);
+    assert.equal(event.defaultPrevented, type === 'cancel');
+  }
+});
+
 function bindControls({ modalOpen = false } = {}) {
   const handlers = new Map();
   const elements = new Map();
@@ -54,35 +75,41 @@ function bindControls({ modalOpen = false } = {}) {
     window: { matchMedia: () => ({ matches: false }), addEventListener() {}, location: { search: '' } },
     canvas: element('#museum-canvas'),
     keys: new Set(),
-    isMovementKey: () => false,
-    closePlaygroundModal() {},
+    isMovementKey: (code) => ['KeyW', 'ArrowLeft', 'Space'].includes(code),
+    closePlaygroundModal() { clicks.push('close'); },
+    stopGuidedTour() {},
+    guidedTarget: null,
     URLSearchParams,
   });
   // Bind the actual event handlers without constructing the WebGL scene.
   vm.runInContext(`${controls}\nbindControls();`, context);
   return {
     clicks,
+    keys: context.keys,
+    dispatch,
     press(selector, options = {}) {
-      const event = {
-        code: 'Enter',
-        target: element(selector),
-        defaultPrevented: false,
-        preventDefault() { this.defaultPrevented = true; },
-        ...options,
-      };
-      handlers.get('keydown')(event);
-      return event;
+      return dispatch('keydown', { code: 'Enter', target: element(selector), ...options });
     },
   };
+
+  function dispatch(type, options = {}) {
+    const event = {
+      defaultPrevented: false,
+      preventDefault() { this.defaultPrevented = true; },
+      ...options,
+    };
+    handlers.get(type)(event);
+    return event;
+  }
 
   function element(selector) {
     if (!elements.has(selector)) {
       elements.set(selector, {
-        addEventListener() {},
+        open: selector === '#playground-modal' && modalOpen,
+        addEventListener: (type, handler) => handlers.set(`${selector}:${type}`, handler),
         classList: {
           add() {},
           toggle() {},
-          contains: (name) => selector === '#playground-modal' && name === 'is-open' && modalOpen,
         },
         click() { clicks.push(selector); },
       });

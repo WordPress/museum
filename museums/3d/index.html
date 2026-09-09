@@ -15,7 +15,7 @@
 			href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Special+Elite&display=swap"
 			rel="stylesheet"
 		/>
-		<link rel="stylesheet" href="./style.css?v=d0f688f5" />
+		<link rel="stylesheet" href="./style.css?v=a18da3a7" />
 	</head>
 	<body data-variant="current" data-ui="glass">
 		<div id="museum-loader" role="status" aria-live="polite">
@@ -138,22 +138,18 @@
 			</ul>
 		</div>
 
-		<div id="playground-modal" class="playground-modal" aria-hidden="true">
+		<dialog id="playground-modal" class="playground-modal" aria-labelledby="playground-modal-title">
 			<button
 				type="button"
 				id="playground-modal-close"
 				class="playground-modal-backdrop"
 				aria-label="Close Playground"
+				tabindex="-1"
 			></button>
-			<div
-				class="playground-modal-dialog"
-				role="dialog"
-				aria-modal="true"
-				aria-label="WordPress Playground"
-			>
+			<div class="playground-modal-dialog">
 				<div class="playground-modal-bar">
 					<span id="playground-modal-title">WordPress Playground</span>
-					<button type="button" id="playground-modal-x" aria-label="Close">✕</button>
+					<button type="button" id="playground-modal-x" aria-label="Close" autofocus>✕</button>
 				</div>
 				<iframe
 					id="playground-modal-iframe"
@@ -162,7 +158,7 @@
 					allow="clipboard-write"
 				></iframe>
 			</div>
-		</div>
+		</dialog>
 
 		<script src="./museum-variants.js?v=c22a4b87"></script>
 		<script src="./museum-data.js?v=35eb2d7e"></script>
@@ -206,6 +202,6 @@
 				document.body.classList.add('museum-ready');
 			}, 12000);
 		</script>
-		<script type="module" src="./museum.js?v=1ae861ee"></script>
+		<script type="module" src="./museum.js?v=29fa9dcd"></script>
 	</body>
 </html>

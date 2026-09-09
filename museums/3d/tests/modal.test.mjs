@@ -41,22 +41,39 @@ test('opening another release directly also discards the previous load', async (
   assert.equal(museum.iframe.src, 'release-1');
 });
 
+test('opening uses native modality and clears held movement keys; closing releases it', () => {
+  const museum = createMuseum();
+  museum.keys.add('KeyW');
+  museum.open(0);
+  assert.equal(museum.modal.open, true);
+  assert.equal(museum.keys.size, 0);
+  museum.close();
+  assert.equal(museum.modal.open, false);
+  assert.equal(museum.iframe.src, 'about:blank');
+  museum.close();
+  assert.equal(museum.modal.open, false);
+});
+
+test('the native dialog names its content and initially focuses the visible close button', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /<dialog[^>]+id="playground-modal"[^>]+aria-labelledby="playground-modal-title"/);
+  assert.match(html, /<button[^>]+id="playground-modal-x"[^>]+autofocus/);
+  assert.match(html, /<button[^>]+id="playground-modal-close"[^>]+tabindex="-1"/);
+});
+
 function createMuseum({ reclaimGpu = false } = {}) {
   const pending = [];
   const timers = [];
-  const classes = new Set();
   const modal = {
-    classList: {
-      add: (name) => classes.add(name),
-      remove: (name) => classes.delete(name),
-      contains: (name) => classes.has(name),
-    },
-    setAttribute() {},
+    open: false,
+    showModal() { this.open = true; },
+    close() { this.open = false; },
   };
   const iframe = { src: 'about:blank' };
   const title = {};
   const elements = { '#playground-modal': modal, '#playground-modal-iframe': iframe, '#playground-modal-title': title };
   const context = vm.createContext({
+    keys: new Set(),
     document: { querySelector: (selector) => elements[selector] },
     releases: [{ version: '1.0' }, { version: '6.2' }],
     wrapIndex: (index) => index,
@@ -70,6 +87,8 @@ function createMuseum({ reclaimGpu = false } = {}) {
   return {
     iframe,
     title,
+    modal,
+    keys: context.keys,
     open: context.openPlaygroundModal,
     close: context.closePlaygroundModal,
     runTimers: () => timers.splice(0).forEach((callback) => callback()),

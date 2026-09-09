@@ -1419,10 +1419,18 @@ body[data-variant='current'] .release-panel.is-collapsed .panel-toggle-tab {
 	position: fixed;
 	inset: 0;
 	z-index: 50;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
 	display: none;
 }
 
-.playground-modal.is-open {
+.playground-modal[open] {
 	display: block;
 }
 

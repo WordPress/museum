@@ -16852,6 +16852,10 @@ function bindControls() {
 	if (pgModal) {
 		document.querySelector('#playground-modal-close').addEventListener('click', closePlaygroundModal);
 		document.querySelector('#playground-modal-x').addEventListener('click', closePlaygroundModal);
+		pgModal.addEventListener('cancel', (event) => {
+			event.preventDefault();
+			closePlaygroundModal();
+		});
 	}
 
 	const panelToggle = document.querySelector('#panel-toggle');
@@ -16880,8 +16884,8 @@ function bindControls() {
 		turnCamera(event.movementX, event.movementY);
 	});
 	document.addEventListener('keydown', (event) => {
-		if (event.code === 'Escape') {
-			closePlaygroundModal();
+		if (pgModal?.open) {
+			return;
 		}
 		keys.add(event.code);
 		if (isMovementKey(event.code)) {
@@ -16895,18 +16899,20 @@ function bindControls() {
 			!event.repeat &&
 			!event.isComposing &&
 			!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey &&
-			(event.target === canvas || event.target === document.body) &&
-			!pgModal?.classList.contains('is-open')
+			(event.target === canvas || event.target === document.body)
 		) {
 			event.preventDefault();
 			openPlayground?.click();
 		}
 	});
 	document.addEventListener('keyup', (event) => {
+		keys.delete(event.code);
+		if (pgModal?.open) {
+			return;
+		}
 		if (isMovementKey(event.code)) {
 			event.preventDefault();
 		}
-		keys.delete(event.code);
 	});
 
 	canvas.addEventListener('click', (event) => {
@@ -16956,7 +16962,7 @@ function bindControls() {
 	document.addEventListener(
 		'wheel',
 		(event) => {
-			if (shouldIgnoreMuseumWheel(event.target)) {
+			if (pgModal?.open || shouldIgnoreMuseumWheel(event.target)) {
 				return;
 			}
 			event.preventDefault();
@@ -17998,18 +18004,19 @@ function openPlaygroundModal(index) {
 	const session = ++playgroundModalSession;
 	document.querySelector('#playground-modal-title').textContent =
 		`WordPress ${release.version}${release.name ? ' ' + release.name : ''} · Playground`;
-	modal.classList.add('is-open');
-	modal.setAttribute('aria-hidden', 'false');
 	if (document.pointerLockElement) {
 		document.exitPointerLock();
 	}
+	keys.clear();
+	// Native modality contains focus (including the iframe) and restores the opener.
+	modal.showModal();
 	const iframe = document.querySelector('#playground-modal-iframe');
 	// Start loading the Blueprint immediately so the fetch overlaps the GPU
 	// reclaim below; apply it only to this opening of the modal.
 	const playgroundUrlPromise = playgroundModalUrlForRelease(release);
 	const bootIframe = () => {
 		playgroundUrlPromise.then((src) => {
-			if (session === playgroundModalSession && modal.classList.contains('is-open')) {
+			if (session === playgroundModalSession && modal.open) {
 				iframe.src = src;
 			}
 		});
@@ -18055,12 +18062,11 @@ async function playgroundModalUrlForRelease(release) {
 
 function closePlaygroundModal() {
 	const modal = document.querySelector('#playground-modal');
-	if (!modal || !modal.classList.contains('is-open')) {
+	if (!modal || !modal.open) {
 		return;
 	}
 	playgroundModalSession++;
-	modal.classList.remove('is-open');
-	modal.setAttribute('aria-hidden', 'true');
+	modal.close();
 	// Reset the iframe so the WordPress instance stops running in the background.
 	document.querySelector('#playground-modal-iframe').src = 'about:blank';
 	// Bring the WebGL context back; the render loop resumes on 'webglcontextrestored'.
