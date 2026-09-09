@@ -75,6 +75,11 @@ Use relative asset references so all three deployments work. Directory entry
 points redirect to a trailing slash and preserve query parameters. WordPress
 refreshes its rewrite rules when the manifest route list changes.
 
+WordPress caches shared release data, JSON, images, and models for one hour, and
+bundled fonts for one year. Pages, styles, and experience scripts require a fresh
+response. Rename font files when their contents change so browsers use the new
+version. Local preview always serves fresh files.
+
 ## GitHub Pages preview
 
 Every push to `trunk` publishes the preview to

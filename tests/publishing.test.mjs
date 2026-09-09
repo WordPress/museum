@@ -96,6 +96,7 @@ test('WordPress exposes the same files, types, redirects, and HTTP behavior', as
       assert.equal(response.headers.get('location'), `/museum/${slug}/?variant=test&release=6.2`);
     }
     await checkHttpBoundary(base, 'desktop/');
+    await checkAssetCaching(base);
     for (const route of ['', 'unknown/', 'desktop/museum.json', 'desktop/../../museum.php', 'data/releasesXjs']) {
       assert.equal((await fetch(base + route)).status, 404, route);
     }
@@ -117,4 +118,41 @@ async function checkHttpBoundary(base, file) {
   const post = await fetch(base + file, { method: 'POST' });
   assert.equal(post.status, 405);
   assert.equal(post.headers.get('allow'), 'GET, HEAD, OPTIONS');
+}
+
+async function checkAssetCaching(base) {
+  const policies = new Map([
+    ['no-cache', [
+      'desktop/',
+      'winamp/',
+      '3d/',
+      '3d/index.html',
+      '3d/explorations.html',
+      '3d/style.css',
+      '3d/museum.js',
+      '3d/playground.js',
+    ]],
+    ['public, max-age=3600', [
+      'data/releases.js',
+      '3d/blueprints/wordpress-museum/wp-6-2.json',
+      '3d/assets/musicians/wp-1-0.jpg',
+      '3d/assets/wp-screenshots/wp-0-7.png',
+      '3d/assets/wapuu/wapuu-original.svg',
+      '3d/assets/models/kenney/furniture/benchCushion.glb',
+    ]],
+    ['public, max-age=31536000, immutable', [
+      'assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
+      'assets/fonts/vt323/VT323-Regular.ttf',
+    ]],
+  ]);
+  for (const [policy, routes] of policies) {
+    for (const route of routes) {
+      for (const method of ['GET', 'HEAD']) {
+        const response = await fetch(base + route, { method });
+        assert.equal(response.status, 200, `${method} ${route}`);
+        assert.equal(response.headers.get('cache-control'), policy, `${method} ${route}`);
+        await response.arrayBuffer();
+      }
+    }
+  }
 }

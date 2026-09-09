@@ -182,8 +182,25 @@ function asset( $file ) {
 	return array(
 		'file'  => $file,
 		'type'  => $types[ pathinfo( $file, PATHINFO_EXTENSION ) ],
-		'cache' => 'Cache-Control: no-cache',
+		'cache' => asset_cache_control( $file ),
 	);
+}
+
+/**
+ * Cache static assets while keeping pages and unversioned application code fresh.
+ *
+ * @param string $file Repository-relative file path.
+ * @return string
+ */
+function asset_cache_control( $file ) {
+	$extension = pathinfo( $file, PATHINFO_EXTENSION );
+	if ( 'ttf' === $extension ) {
+		return 'Cache-Control: public, max-age=31536000, immutable';
+	}
+	if ( 'museums/data/releases.js' === $file || in_array( $extension, array( 'json', 'jpg', 'png', 'svg', 'webp', 'glb' ), true ) ) {
+		return 'Cache-Control: public, max-age=3600';
+	}
+	return 'Cache-Control: no-cache';
 }
 
 /**
