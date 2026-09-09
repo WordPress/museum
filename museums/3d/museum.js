@@ -26,6 +26,7 @@ const renderer = new THREE.WebGLRenderer({
 // browser lacks the extension (then the modal simply keeps the scene resident).
 const loseContextExtension = renderer.getContext().getExtension('WEBGL_lose_context');
 let webglContextLost = false;
+let playgroundModalSession = 0;
 canvas.addEventListener('webglcontextlost', () => { webglContextLost = true; }, false);
 canvas.addEventListener('webglcontextrestored', () => { webglContextLost = false; }, false);
 const textureCanvases = new Map();
@@ -17994,6 +17995,7 @@ function openPlaygroundModal(index) {
 	if (!modal) {
 		return;
 	}
+	const session = ++playgroundModalSession;
 	document.querySelector('#playground-modal-title').textContent =
 		`WordPress ${release.version}${release.name ? ' ' + release.name : ''} · Playground`;
 	modal.classList.add('is-open');
@@ -18003,11 +18005,11 @@ function openPlaygroundModal(index) {
 	}
 	const iframe = document.querySelector('#playground-modal-iframe');
 	// Start loading the Blueprint immediately so the fetch overlaps the GPU
-	// reclaim below; apply it only while the modal is still open.
+	// reclaim below; apply it only to this opening of the modal.
 	const playgroundUrlPromise = playgroundModalUrlForRelease(release);
 	const bootIframe = () => {
 		playgroundUrlPromise.then((src) => {
-			if (modal.classList.contains('is-open')) {
+			if (session === playgroundModalSession && modal.classList.contains('is-open')) {
 				iframe.src = src;
 			}
 		});
@@ -18056,6 +18058,7 @@ function closePlaygroundModal() {
 	if (!modal || !modal.classList.contains('is-open')) {
 		return;
 	}
+	playgroundModalSession++;
 	modal.classList.remove('is-open');
 	modal.setAttribute('aria-hidden', 'true');
 	// Reset the iframe so the WordPress instance stops running in the background.
