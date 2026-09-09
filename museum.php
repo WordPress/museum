@@ -3,7 +3,7 @@
  * Plugin Name: WordPress Museum Experiences
  * Plugin URI:  https://github.com/WordPress/museum
  * Description: Serves the WordPress Museum's static experiences at clean URLs.
- * Version:     0.2.0
+ * Version:     0.3.0
  * Requires PHP: 7.4
  * License:     GPL-2.0-only
  */
@@ -11,7 +11,6 @@
 namespace WordPressdotorg\Museum;
 
 const ROUTE_QUERY_VAR = 'wporg_museum_asset';
-const ROUTE_VERSION = '2';
 const ROUTE_VERSION_OPTION = 'wporg_museum_route_version';
 
 add_action( 'init', __NAMESPACE__ . '\register_routes' );
@@ -33,10 +32,27 @@ function serve_asset() {
 	}
 
 	$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( $_SERVER['REQUEST_METHOD'] ) : 'GET';
-	if ( ! in_array( $method, array( 'GET', 'HEAD' ), true ) ) {
+	if ( ! in_array( $method, array( 'GET', 'HEAD', 'OPTIONS' ), true ) ) {
 		status_header( 405 );
-		header( 'Allow: GET, HEAD' );
+		header( 'Allow: GET, HEAD, OPTIONS' );
 		exit;
+	}
+
+	if ( 'OPTIONS' === $method ) {
+		header( 'Access-Control-Allow-Origin: *' );
+		header( 'Access-Control-Allow-Methods: GET, HEAD, OPTIONS' );
+		header( 'Access-Control-Allow-Headers: Content-Type' );
+		status_header( 204 );
+		exit;
+	}
+
+	if ( ! empty( $assets[ $route ]['directory'] ) ) {
+		$pathname = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+		if ( '/' !== substr( $pathname, -1 ) ) {
+			$query = isset( $_SERVER['QUERY_STRING'] ) && '' !== $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '';
+			wp_safe_redirect( home_url( '/' . $route . '/' ) . $query, 301 );
+			exit;
+		}
 	}
 
 	$file = __DIR__ . '/' . $assets[ $route ]['file'];
@@ -51,6 +67,7 @@ function serve_asset() {
 	status_header( 200 );
 	header( 'Content-Type: ' . $assets[ $route ]['type'] );
 	header( 'X-Content-Type-Options: nosniff' );
+	header( 'Access-Control-Allow-Origin: *' );
 	header( $assets[ $route ]['cache'] );
 
 	if ( 'HEAD' !== $method ) {
@@ -64,7 +81,7 @@ function serve_asset() {
  */
 function register_routes() {
 	foreach ( assets() as $route => $asset ) {
-		$optional_slash = 'text/html; charset=UTF-8' === $asset['type'] ? '/?' : '';
+		$optional_slash = ! empty( $asset['directory'] ) ? '/?' : '';
 		add_rewrite_rule(
 			'^' . preg_quote( $route, '#' ) . $optional_slash . '$',
 			'index.php?' . ROUTE_QUERY_VAR . '=' . $route,
@@ -77,12 +94,13 @@ function register_routes() {
  * Refresh stored rules once when the public route map changes.
  */
 function refresh_routes_after_update() {
-	if ( ROUTE_VERSION === get_option( ROUTE_VERSION_OPTION ) ) {
+	$version = route_version();
+	if ( $version === get_option( ROUTE_VERSION_OPTION ) ) {
 		return;
 	}
 
 	flush_rewrite_rules( false );
-	update_option( ROUTE_VERSION_OPTION, ROUTE_VERSION );
+	update_option( ROUTE_VERSION_OPTION, route_version() );
 }
 
 /**
@@ -102,7 +120,7 @@ function register_query_var( $query_vars ) {
 function activate() {
 	register_routes();
 	flush_rewrite_rules( false );
-	update_option( ROUTE_VERSION_OPTION, ROUTE_VERSION );
+	update_option( ROUTE_VERSION_OPTION, route_version() );
 }
 
 /**
@@ -114,39 +132,65 @@ function deactivate() {
 }
 
 /**
- * Files exposed through the museum site's URL space.
+ * Files explicitly published by the shared and per-experience manifests.
  *
- * The map is deliberately explicit. Adding a file to the repository does not
- * make it public until its route is reviewed and added here.
- *
- * @return array<string, array{file: string, type: string, cache: string}>
+ * @return array
  */
 function assets() {
-	return array(
-		'desktop' => array(
-			'file'  => 'museums/desktop/index.html',
-			'type'  => 'text/html; charset=UTF-8',
-			'cache' => 'Cache-Control: no-cache',
-		),
-		'winamp' => array(
-			'file'  => 'museums/winamp/index.html',
-			'type'  => 'text/html; charset=UTF-8',
-			'cache' => 'Cache-Control: no-cache',
-		),
-		'data/releases.js' => array(
-			'file'  => 'museums/data/releases.js',
-			'type'  => 'text/javascript; charset=UTF-8',
-			'cache' => 'Cache-Control: public, max-age=3600',
-		),
-		'assets/fonts/press-start-2p/PressStart2P-Regular.ttf' => array(
-			'file'  => 'museums/assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
-			'type'  => 'font/ttf',
-			'cache' => 'Cache-Control: public, max-age=31536000, immutable',
-		),
-		'assets/fonts/vt323/VT323-Regular.ttf' => array(
-			'file'  => 'museums/assets/fonts/vt323/VT323-Regular.ttf',
-			'type'  => 'font/ttf',
-			'cache' => 'Cache-Control: public, max-age=31536000, immutable',
-		),
+	static $assets = null;
+	if ( null !== $assets ) {
+		return $assets;
+	}
+
+	$registry = json_decode( file_get_contents( __DIR__ . '/museums.json' ), true );
+	$assets   = array();
+	foreach ( $registry['shared'] as $file ) {
+		$assets[ $file ] = asset( 'museums/' . $file );
+	}
+	foreach ( $registry['experiences'] as $slug ) {
+		$manifest = json_decode( file_get_contents( __DIR__ . '/museums/' . $slug . '/museum.json' ), true );
+		foreach ( $manifest['files'] as $file ) {
+			$assets[ $slug . '/' . $file ] = asset( 'museums/' . $slug . '/' . $file );
+		}
+		$assets[ $slug ] = $assets[ $slug . '/index.html' ];
+		$assets[ $slug ]['directory'] = true;
+	}
+	return $assets;
+}
+
+/**
+ * Content types for the static files accepted by the repository checks.
+ *
+ * @param string $file Repository-relative file path.
+ * @return array
+ */
+function asset( $file ) {
+	$types = array(
+		'html' => 'text/html; charset=UTF-8',
+		'css'  => 'text/css; charset=UTF-8',
+		'js'   => 'text/javascript; charset=UTF-8',
+		'json' => 'application/json; charset=UTF-8',
+		'jpg'  => 'image/jpeg',
+		'png'  => 'image/png',
+		'svg'  => 'image/svg+xml',
+		'webp' => 'image/webp',
+		'glb'  => 'model/gltf-binary',
+		'ttf'  => 'font/ttf',
+		'md'   => 'text/plain; charset=UTF-8',
+		'txt'  => 'text/plain; charset=UTF-8',
 	);
+	return array(
+		'file'  => $file,
+		'type'  => $types[ pathinfo( $file, PATHINFO_EXTENSION ) ],
+		'cache' => 'Cache-Control: no-cache',
+	);
+}
+
+/**
+ * Refresh rewrites when a manifest adds or removes a route.
+ *
+ * @return string
+ */
+function route_version() {
+	return md5( json_encode( array_keys( assets() ) ) );
 }

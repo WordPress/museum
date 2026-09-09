@@ -1,13 +1,13 @@
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import vm from 'node:vm';
+import { loadMuseums } from './museums.mjs';
+import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
-const pages = [
-  'index.html',
-  'museums/desktop/index.html',
-  'museums/winamp/index.html',
-];
+const { experiences, files } = await loadMuseums();
+const pages = [...files].filter((file) => file.endsWith('.html'));
+const sharedPages = new Set(experiences.filter((experience) => experience.sharedReleases).map((experience) => `museums/${experience.slug}/index.html`));
 const errors = [];
 
 await checkReleaseData();
@@ -16,6 +16,10 @@ for (const page of pages) {
 }
 await checkWordPressRoutes();
 await checkRemovedExperience();
+for (const file of files) {
+  if (file.endsWith('.js')) execFileSync(process.execPath, ['--check', path.join(root, file)]);
+  if (file.endsWith('.json')) JSON.parse(await read(file));
+}
 
 if (errors.length) {
   for (const error of errors) {
@@ -84,17 +88,17 @@ async function checkPage(relativePath) {
     }
   }
 
-  if (relativePath !== 'index.html' && !html.includes('<script src="../data/releases.js"></script>')) {
+  if (sharedPages.has(relativePath) && !html.includes('<script src="../data/releases.js"></script>')) {
     errors.push(`${relativePath} does not load the shared release data.`);
   }
 
-  if (/fonts\.(?:googleapis|gstatic)\.com/i.test(html)) {
+  if (sharedPages.has(relativePath) && /fonts\.(?:googleapis|gstatic)\.com/i.test(html)) {
     errors.push(`${relativePath} loads a font from a third-party host.`);
   }
-  if (/\bMonk\b|2026-02-10|Twenty Twenty-Six/.test(html)) {
+  if (sharedPages.has(relativePath) && /\bMonk\b|2026-02-10|Twenty Twenty-Six/.test(html)) {
     errors.push(`${relativePath} contains the discarded WordPress 7.0 placeholder record.`);
   }
-  if (/\b\d+ (?:objects|releases|tracks)\b/i.test(html)) {
+  if (sharedPages.has(relativePath) && /\b\d+ (?:objects|releases|tracks)\b/i.test(html)) {
     errors.push(`${relativePath} hard-codes a release total instead of deriving it from the shared data.`);
   }
 
@@ -110,8 +114,9 @@ async function checkPage(relativePath) {
     const target = path.resolve(root, path.dirname(relativePath), reference);
     try {
       const details = await stat(target);
-      if (details.isDirectory()) {
-        await stat(path.join(target, 'index.html'));
+      const resolved = details.isDirectory() ? path.join(target, 'index.html') : target;
+      if (!files.has(path.relative(root, resolved))) {
+        errors.push(`${relativePath} references an unpublished file: ${reference}.`);
       }
     } catch {
       errors.push(`${relativePath} points to missing local file ${reference}.`);
@@ -120,22 +125,19 @@ async function checkPage(relativePath) {
 }
 
 async function checkWordPressRoutes() {
-  const plugin = await read('museum.php');
-  const expected = [
-    'museums/desktop/index.html',
-    'museums/winamp/index.html',
-    'museums/data/releases.js',
-    'museums/assets/fonts/press-start-2p/PressStart2P-Regular.ttf',
-    'museums/assets/fonts/vt323/VT323-Regular.ttf',
-  ];
-  for (const file of expected) {
-    if (!plugin.includes(`'file'  => '${file}'`)) {
+  const output = execFileSync('php', ['tests/wordpress-fixture.php', 'routes'], { encoding: 'utf8' });
+  const routes = JSON.parse(output);
+  for (const file of files) {
+    if (file.startsWith('museums/') && routes[file.slice('museums/'.length)]?.file !== file) {
       errors.push(`museum.php does not expose ${file}.`);
     }
   }
-  if (plugin.includes("'kubrick'")) {
-    errors.push('museum.php still registers the removed Kubrick route.');
+  for (const experience of experiences) {
+    if (routes[experience.slug]?.file !== `museums/${experience.slug}/index.html`) {
+      errors.push(`museum.php does not expose the ${experience.slug} entry point.`);
+    }
   }
+
 }
 
 async function checkRemovedExperience() {
@@ -151,7 +153,7 @@ async function checkRemovedExperience() {
 
 function inlineScripts(html) {
   return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)]
-    .filter((match) => !/type="application\/json"/i.test(match[0]))
+    .filter((match) => !/type="(?:application\/json|importmap)"/i.test(match[0]))
     .map((match) => match[1]);
 }
 

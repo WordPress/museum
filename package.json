@@ -5,7 +5,11 @@
   "description": "Static WordPress Museum experiences and their WordPress routing adapter.",
   "license": "GPL-2.0-only",
   "scripts": {
-    "start": "php -S 127.0.0.1:4173",
-    "check": "node scripts/check-static.mjs"
+    "start": "node scripts/dev-server.mjs",
+    "check": "node scripts/check-static.mjs && node --test tests/*.test.mjs",
+    "package": "node scripts/package-site.mjs"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
